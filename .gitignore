@@ -1,6 +1,30 @@
-composer.phar
+# Composer
 /vendor/
+composer.lock
+composer.phar
 
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+# PhpStorm / IntelliJ
+.idea/
+# VSCode
+.vscode/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Logs / Temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Unit testing / coverage
+/coverage/
+.phpunit.result.cache
+
+# System cache
+.cache/
