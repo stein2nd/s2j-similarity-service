@@ -1,26 +1,39 @@
 {
   "name": "s2j-similarity-service",
   "version": "1.0.0",
-  "description": "[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHP](https://img.shields.io/badge/PHP-8.0-blue.svg)](https://www.php.net/) [![Composer](https://img.shields.io/badge/Composer-v2-blue.svg)](https://getcomposer.org)",
-  "main": "index.js",
+  "description": "A pure PHP library for semantic similarity detection",
+  "main": "src/SimilarityService.php",
   "directories": {
     "doc": "docs",
     "example": "examples",
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "cd tools/docs-linter && npm install",
+    "prelint:docs": "git submodule update --remote --merge && cd tools/docs-linter && (npm ci || (rm -f package-lock.json && npm install)) && npm run build",
+    "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stein2nd/s2j-similarity-service.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "php",
+    "library",
+    "semantic",
+    "similarity"
+  ],
+  "author": "Koutarou ISHIKAWA",
+  "license": "GPL-2.0-or-later",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/stein2nd/s2j-similarity-service/issues"
   },
-  "homepage": "https://github.com/stein2nd/s2j-similarity-service#readme"
+  "homepage": "https://github.com/stein2nd/s2j-similarity-service#readme",
+  "files": [
+    "README.md",
+    "COMMON_SPEC.md",
+    "LICENSE",
+    "tools/"
+  ]
 }

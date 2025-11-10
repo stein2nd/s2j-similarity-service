@@ -2,7 +2,7 @@
 
 ## はじめに
 
-* 本ドキュメントでは、WordPress プラグイン開発等において利用可能な「意味類似度判定ライブラリ」の専用仕様を定義します。
+* 本ドキュメントでは、WordPress プラグイン開発等において利用可能な「意味的な類似度判定ライブラリ」の専用仕様を定義します。
 * 本プラグインの設計は、以下の共通 SPEC に準拠します。
     * [WordPress Plugin Development Spec (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/docs/WP_PLUGIN_SPEC.md) の「5.4. 共通ライブラリを Composer 化」
 * 以下は、本ライブラリ固有の仕様をまとめたものです。
@@ -14,9 +14,9 @@
 * 名称: S2J Similarity Service
 * Composer パッケージ名称: `s2j/similarity-service`
 * ライセンス: GPL-2.0-or-later
-* 目的: 任意の言語における文章 A・文章 B 間の意味的類似度を数値化して返却します。
+* 目的: 任意の言語における文章 A と文章 B との間の意味的な類似度を数値化して返却します。
 * 特徴:
-    * 「OpenAI Embeddings API (`text-embedding-3-small`)」を用いて、意味的類似度を判定します。
+    * 「OpenAI Embeddings API (`text-embedding-3-small`)」を用いて、意味的な類似度を判定します。
     * Strategy パターンを採用した `EmbeddingStrategyInterface` により、将来、`text-embedding-3-large` や、他ベンダーモデル (Claude、Gemini 等) を差し替え可能とします。
     * Adapter パターンを採用した `OpenAIEmbeddingStrategy` にて外部 API との通信部分を抽象化し、互換 API も扱えます。
 
@@ -26,7 +26,7 @@
 
 本ライブラリは、Composer パッケージとして配布・管理されます。
 
-**composer.json の主要設定:**
+**`composer.json` の主要設定:**
 
 ```json
 {
@@ -47,7 +47,7 @@
 
 ### 2.2. オートローディング
 
-* **PSR-4 準拠**: 名前空間 `S2J\SimilarityService\` が `src/` ディレクトリにマッピングされます。
+* **PSR-4準拠**: 名前空間 `S2J\SimilarityService\` が `src/` ディレクトリにマッピングされます。
 * **名前空間プレフィックス**: `S2J\SimilarityService\`
 * **ディレクトリ構造**: `src/` 配下の PHP ファイルが自動的にオートロードされます。
 
@@ -72,7 +72,7 @@ use S2J\SimilarityService\OpenAIEmbeddingStrategy;
 
 ### 2.4. 依存関係
 
-* **PHP**: 8.0 以降
+* **PHP**: v8.0以降
 * **外部依存**: なし (cURL は PHP 標準機能を使用)
 
 ---
@@ -107,7 +107,7 @@ s2j-similarity-service/
 
 ## 4. 技術スタック・開発環境
 
-* **PHP**: v8.0 以降 (Composer に対応)
+* **PHP**: v8.0以降 (Composer に対応)
 * **OpenAI Embeddings API**: 意味類似度の算出
 
 ### 4.1. モデル選定方針
@@ -126,13 +126,13 @@ s2j-similarity-service/
 
 ### 5.1. 基本機能
 
-* 処理：
+* 処理:
     1. 基準テキスト本文と検証テキスト本文それぞれを、API でベクトル化します。
     2. 両者のコサイン類似度 (0.0〜1.0) を算出します。
 
 ### 5.2. パラメーター
 
-| パラメータ | 型 | 説明 |
+| パラメーター | 型 | 説明 |
 |---|---|---|
 | apiKey | string | OpenAI API Key |
 | model | string | モデル名 (例: text-embedding-3-small) |
@@ -175,7 +175,7 @@ echo $result['language'];   // en
 
 * 共通ライブラリでは、**キーを保持できません**。
 * 呼び出し側で、環境変数または WordPress 設定画面を通じて管理してください。
-* 例：
+* 例:
   * `OPENAI_API_KEY` (OpenAI Embeddings)
 
 ---
@@ -190,7 +190,7 @@ echo $result['language'];   // en
 * ✅ `EmbeddingStrategyInterface`: Strategy パターンのインターフェイス
 * ✅ `OpenAIEmbeddingStrategy`: OpenAI Embeddings API を利用する実装
 * ✅ `VectorMath`: コサイン類似度を計算する、ユーティリティ・クラス
-* ✅ Composer パッケージ化 (PSR-4 準拠のオートローディング)
+* ✅ Composer パッケージ化 (PSR-4準拠のオートローディング)
 
 ### 6.2. 実装完了率
 
@@ -199,7 +199,7 @@ echo $result['language'];   // en
 
 ### 6.3. 品質評価
 
-* **コード品質**: PSR-4 準拠、Strategy パターン採用により、拡張性が高い
+* **コード品質**: PSR-4準拠、Strategy パターン採用により、拡張性が高い
 * **ユーザビリティ**: Composer 経由で簡単にインストール・利用が可能
 * **セキュリティ**: API キーは呼び出し側で管理 (ライブラリ側では保持しない)
 * **パフォーマンス**: cURL を使用した効率的な API 通信、ベクトル計算は最適化済み
@@ -286,7 +286,7 @@ echo $result['language'];   // en
 
 * Composer パッケージとして配布可能な形で実装完了
 * Strategy パターンによる拡張性の確保
-* PSR-4 準拠による標準的なオートローディング
+* PSR-4準拠による標準的なオートローディング
 * 純粋な PHP ライブラリとして、WordPress プラグインから簡単に利用可能
 
 ### 9.2. 今後の展望

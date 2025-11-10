@@ -6,7 +6,7 @@
 
 ## Description
 
-S2J Similarity Service は、任意の言語における文章 A・文章 B 間の意味的類似度を数値化して返却する、純粋な PHP ライブラリです。WordPress プラグイン開発等において利用可能な Composer パッケージとして提供されています。
+S2J Similarity Service は、任意の言語における文章 A と文章 B 間の意味的類似度を数値化して返却する、純粋な PHP ライブラリです。WordPress プラグイン開発等において利用可能な Composer パッケージとして提供されています。
 
 このライブラリは、OpenAI Embeddings API (`text-embedding-3-small`) を用いて意味的な類似度を判定し、Strategy パターンを採用した `EmbeddingStrategyInterface` により、将来、`text-embedding-3-large` や、他ベンダーモデル (Claude、Gemini 等) を差し替え可能な設計となっています。
 
@@ -14,7 +14,7 @@ S2J Similarity Service は、任意の言語における文章 A・文章 B 間�
 
 #### 🎯 コア機能
 
-* **意味的類似度の算出**: 2つの文章間の意味的類似度を 0.0〜1.0 の数値で返却
+* **意味的類似度の算出**: 2つの文章間の意味的類似度を0.0〜1.0の数値で返却
 * **コサイン類似度による判定**: ベクトル化された文章間のコサイン類似度を計算
 * **多言語対応**: 任意の言語における文章の類似度判定が可能 (例: ja、en、fr)
 * **ロケール対応**: 言語コードとロケールの両方を指定可能 (例: ja_JP、en_US、fr_FR)
@@ -23,7 +23,7 @@ S2J Similarity Service は、任意の言語における文章 A・文章 B 間�
 
 * **Strategy パターン**: `EmbeddingStrategyInterface` により、将来の拡張が容易
 * **Adapter パターン**: `OpenAIEmbeddingStrategy` にて外部 API との通信部分を抽象化
-* **PSR-4 準拠**: 標準的なオートローディングにより、Composer 経由で簡単に利用可能
+* **PSR-4準拠**: 標準的なオートローディングにより、Composer 経由で簡単に利用可能
 * **純粋な PHP ライブラリ**: WordPress に依存しない、独立したライブラリ実装
 * **セキュリティ**: API キーはライブラリ側では保持せず、呼び出し側で管理
 
@@ -103,7 +103,7 @@ echo $result['language'];   // en
 
 ### パラメーター
 
-| パラメータ | 型 | 説明 |
+| パラメーター | 型 | 説明 |
 |---|---|---|
 | apiKey | string | OpenAI API Key |
 | model | string | モデル名 (例: text-embedding-3-small) |
@@ -116,7 +116,7 @@ echo $result['language'];   // en
 
 * 共通ライブラリでは、**キーを保持できません**。
 * 呼び出し側で、環境変数または WordPress 設定画面を通じて管理してください。
-* 例：
+* 例:
   * `OPENAI_API_KEY` (OpenAI Embeddings)
 
 ### 戻り値
@@ -145,7 +145,7 @@ A: 通常利用では `text-embedding-3-small` を推奨します。精度重視
 
 ### Q: 必要な PHP のバージョンは ?
 
-A: PHP 8.0 以降が必要です。Composer に対応した環境が必要です。
+A: PHP v8.0以降が必要です。Composer に対応した環境が必要です。
 
 ### Q: 外部依存関係はありますか ?
 
@@ -157,9 +157,9 @@ A: 外部依存はありません。cURL は PHP 標準機能を使用します�
 
 ### 技術スタック
 
-* **PHP**: v8.0 以降 (Composer に対応)
+* **PHP**: v8.0以降 (Composer に対応)
 * **OpenAI Embeddings API**: 意味類似度の算出
-* **Composer**: パッケージ管理とオートローディング (PSR-4 準拠)
+* **Composer**: パッケージ管理とオートローディング (PSR-4準拠)
 
 ### モデル選定方針
 
@@ -212,7 +212,7 @@ composer install
 
 ### テスト手法の概要
 
-1. **PHPUnit による単体テスト**: `phpunit.xml` と `tests/SimilarityTest.php` を使用した自動テスト
+1. **PHPUnit によるユニットテスト**: `phpunit.xml` と `tests/SimilarityTest.php` を使用した自動テスト
 2. **CLI による手動テスト**: `examples/test_similarity.php` を使用した対話的なテスト
 
 ### API キーの取得と設定
@@ -236,7 +236,7 @@ composer install
 export OPENAI_API_KEY=your_api_key_here
 ```
 
-永続的に設定する場合（`.zshrc` または `.bashrc` に追加）:
+永続的に設定する場合 (`.zshrc` または `.bashrc` に追加):
 
 ```zsh
 echo 'export OPENAI_API_KEY=your_api_key_here' >> ~/.zshrc
@@ -259,7 +259,7 @@ $env:OPENAI_API_KEY="your_api_key_here"
 
 永続的に設定する場合は、システムの環境変数設定から設定してください。
 
-### PHPUnit による単体テスト
+### PHPUnit によるユニットテスト
 
 PHPUnit を使用した自動テストを実行します。このテストは、`tests/SimilarityTest.php` で定義されたテストケースを実行し、`SimilarityService` の動作を検証します。
 
@@ -269,7 +269,7 @@ PHPUnit を使用した自動テストを実行します。このテストは、
 composer install
 ```
 
-#### PHPUnit による単体テストの実行
+#### PHPUnit によるユニットテストの実行
 
 ```zsh
 ./vendor/bin/phpunit
@@ -348,7 +348,7 @@ Array
 ### 開発ガイドライン
 
 * 既存のコードスタイルに従ってください。
-* PSR-4 準拠のオートローディングを維持してください。
+* PSR-4準拠のオートローディングを維持してください。
 * Strategy パターンの設計原則を尊重してください。
 * 必要に応じて、ドキュメントを更新してください。
 
@@ -369,7 +369,7 @@ Array
 * `EmbeddingStrategyInterface` インターフェイスの実装
 * `OpenAIEmbeddingStrategy` クラスの実装
 * `VectorMath` ユーティリティ・クラスの実装
-* Composer パッケージ化 (PSR-4 準拠)
+* Composer パッケージ化 (PSR-4準拠)
 * Strategy パターンによる拡張性の確保
 
 ## Upgrade Notice
