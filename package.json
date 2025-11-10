@@ -1,0 +1,26 @@
+{
+  "name": "s2j-similarity-service",
+  "version": "1.0.0",
+  "description": "[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHP](https://img.shields.io/badge/PHP-8.0-blue.svg)](https://www.php.net/) [![Composer](https://img.shields.io/badge/Composer-v2-blue.svg)](https://getcomposer.org)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stein2nd/s2j-similarity-service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/stein2nd/s2j-similarity-service/issues"
+  },
+  "homepage": "https://github.com/stein2nd/s2j-similarity-service#readme"
+}
