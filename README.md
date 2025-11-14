@@ -6,7 +6,7 @@
 
 ## Description
 
-S2J Similarity Service は、任意の言語における文章 A と文章 B 間の意味的類似度を数値化して返却する、純粋な PHP ライブラリです。WordPress プラグイン開発等において利用可能な Composer パッケージとして提供されています。
+S2J Similarity Service は、任意の言語における文章 A と文章 B 間の「意味的な類似度」を数値化して返却する、純粋な PHP ライブラリです。WordPress プラグイン開発等において利用可能な Composer パッケージとして提供されています。
 
 このライブラリは、OpenAI Embeddings API (`text-embedding-3-small`) を用いて意味的な類似度を判定し、Strategy パターンを採用した `EmbeddingStrategyInterface` により、将来、`text-embedding-3-large` や、他ベンダーモデル (Claude、Gemini 等) を差し替え可能な設計となっています。
 
@@ -14,7 +14,7 @@ S2J Similarity Service は、任意の言語における文章 A と文章 B 間
 
 #### 🎯 コア機能
 
-* **意味的類似度の算出**: 2つの文章間の意味的類似度を0.0〜1.0の数値で返却
+* **「意味的な類似度」の算出**: 2つの文章間の「意味的な類似度」を0.0〜1.0の数値で返却
 * **コサイン類似度による判定**: ベクトル化された文章間のコサイン類似度を計算
 * **多言語対応**: 任意の言語における文章の類似度判定が可能 (例: ja、en、fr)
 * **ロケール対応**: 言語コードとロケールの両方を指定可能 (例: ja_JP、en_US、fr_FR)
@@ -158,14 +158,14 @@ A: 外部依存はありません。cURL は PHP 標準機能を使用します�
 ### 技術スタック
 
 * **PHP**: v8.0以降 (Composer に対応)
-* **OpenAI Embeddings API**: 意味類似度の算出
+* **OpenAI Embeddings API**: 「意味的な類似度」の算出
 * **Composer**: パッケージ管理とオートローディング (PSR-4準拠)
 
 ### モデル選定方針
 
 | モデル名 | 用途 | コメント |
 | --- | ---- | --- |
-| `text-embedding-3-small` | 通常利用 | 意味類似度の判定、コスト効率に優れる |
+| `text-embedding-3-small` | 通常利用 | 「意味的な類似度」の判定、コスト効率に優れる |
 | `text-embedding-3-large` | 精度重視 | 研究・学習データの類似検索等に向く |
 
 * 原則として `text-embedding-3-small` を採用します。
@@ -257,7 +257,7 @@ PowerShell (一時的):
 $env:OPENAI_API_KEY="your_api_key_here"
 ```
 
-永続的に設定する場合は、システムの環境変数設定から設定してください。
+永続的に設定する場合は、「システムのプロパティ → 詳細設定 → 環境変数…」で、システム環境変数を設定してください。
 
 ### PHPUnit によるユニットテスト
 

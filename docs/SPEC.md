@@ -186,7 +186,7 @@ echo $result['language'];   // en
 
 ### 6.1. 完全実装済み機能 (100% 完了)
 
-* ✅ `SimilarityService`: 2つの文章間の意味的類似度を計算する、メイン・クラス
+* ✅ `SimilarityService`: 2つの文章間の「意味的な類似度」を計算する、メイン・クラス
 * ✅ `EmbeddingStrategyInterface`: Strategy パターンのインターフェイス
 * ✅ `OpenAIEmbeddingStrategy`: OpenAI Embeddings API を利用する実装
 * ✅ `VectorMath`: コサイン類似度を計算する、ユーティリティ・クラス
