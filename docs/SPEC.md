@@ -7,6 +7,10 @@
     * [WordPress Plugin Development Spec (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/docs/WP_PLUGIN_SPEC.md) の「5.4. 共通ライブラリを Composer 化」
 * 以下は、本ライブラリ固有の仕様をまとめたものです。
 
+**仕様の細分化版**  
+AI 伴走開発・メンテナンス時は、[docs/specs.md](specs.md) を起点に各ドキュメントを参照してください。  
+（[SPEC_STRUCTURE.md](SPEC_STRUCTURE.md) に細分化の考え方を記載しています。）
+
 ---
 
 ## 1. ライブラリ概要
