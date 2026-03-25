@@ -9,7 +9,7 @@
 
 **仕様の細分化版**  
 AI 伴走開発・メンテナンス時は、[docs/specs.md](specs.md) を起点に各ドキュメントを参照してください。  
-（[SPEC_STRUCTURE.md](SPEC_STRUCTURE.md) に細分化の考え方を記載しています。）
+([SPEC_STRUCTURE.md](SPEC_STRUCTURE.md) に細分化の考え方を記載しています)
 
 ---
 
@@ -52,7 +52,7 @@ AI 伴走開発・メンテナンス時は、[docs/specs.md](specs.md) を起点
 ### 2.2. オートローディング
 
 * **PSR-4準拠**: 名前空間 `S2J\SimilarityService\` が `src/` ディレクトリにマッピングされます。
-* **名前空間プレフィックス**: `S2J\SimilarityService\`
+* **名前空間の接頭辞**: `S2J\SimilarityService\`
 * **ディレクトリ構造**: `src/` 配下の PHP ファイルが自動的にオートロードされます。
 
 ### 2.3. インストール方法
@@ -134,9 +134,9 @@ s2j-similarity-service/
     1. 基準テキスト本文と検証テキスト本文それぞれを、API でベクトル化します。
     2. 両者のコサイン類似度 (0.0〜1.0) を算出します。
 
-### 5.2. パラメーター
+### 5.2. パラメータ
 
-| パラメーター | 型 | 説明 |
+| パラメータ | 型 | 説明 |
 |---|---|---|
 | apiKey | string | OpenAI API Key |
 | model | string | モデル名 (例: text-embedding-3-small) |
