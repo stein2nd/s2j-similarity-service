@@ -13,7 +13,7 @@
 | type | library |
 | license | GPL-2.0-or-later |
 
-## composer.json の主要設定
+## `composer.json` の主要設定
 
 ```json
 {
@@ -34,17 +34,17 @@
 
 ## オートロード
 
-* **PSR-4 準拠**: `S2J\SimilarityService\` → `src/`
-* 名前空間プレフィックス: `S2J\SimilarityService\`
+* **PSR-4準拠**: `S2J\SimilarityService\` → `src/`
+* 名前空間の接頭辞: `S2J\SimilarityService\`
 * `src/` 配下の PHP ファイルがオートロード対象。
 
-## インストール（プラグイン／テーマ側）
+## インストール (プラグイン/テーマ側)
 
 ```bash
 composer require s2j/similarity-service
 ```
 
-## 読み込み例（プラグイン／テーマのメインファイル）
+## 読み込み例 (プラグイン/テーマのメインファイル)
 
 ```php
 <?php
@@ -70,5 +70,5 @@ echo $result['similarity'];
 
 ## 依存関係
 
-* **PHP**: v8.0 以降
-* **外部パッケージ**: なし（cURL は PHP 標準機能を使用）
+* **PHP**: v8.0以降
+* **外部パッケージ**: なし (cURL は PHP 標準機能を使用)
