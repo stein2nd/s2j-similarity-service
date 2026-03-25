@@ -1,0 +1,18 @@
+{
+    "extends": ["./tools/docs-linter/presets/base/.textlintrc.base.json"],
+    "plugins": {},
+    "filters": {
+      "allowlist": {
+        "allow": [
+          "/エントリー/",
+          "/エントリ/",
+          "/(?<!プ)レイヤー/",
+          "/(?<!プレ)レイヤ(?!ー)/"
+        ]
+      }
+    },
+    "rules": {
+      "preset-wp-docs-ja": true
+    }
+  }
+  
