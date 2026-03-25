@@ -101,9 +101,9 @@ echo $result['model'];      // text-embedding-3-small
 echo $result['language'];   // en
 ```
 
-### パラメーター
+### パラメータ
 
-| パラメーター | 型 | 説明 |
+| パラメータ | 型 | 説明 |
 |---|---|---|
 | apiKey | string | OpenAI API Key |
 | model | string | モデル名 (例: text-embedding-3-small) |
@@ -147,7 +147,7 @@ A: 通常利用では `text-embedding-3-small` を推奨します。精度重視
 
 A: PHP v8.0以降が必要です。Composer に対応した環境が必要です。
 
-### Q: 外部依存関係はありますか ?
+### Q: 外部依存の関係はありますか ?
 
 A: 外部依存はありません。cURL は PHP 標準機能を使用します。
 
@@ -157,9 +157,12 @@ A: 外部依存はありません。cURL は PHP 標準機能を使用します�
 
 ### 技術スタック
 
-* **PHP**: v8.0以降 (Composer に対応)
-* **OpenAI Embeddings API**: 「意味的な類似度」の算出
-* **Composer**: パッケージ管理とオートローディング (PSR-4準拠)
+* **PHP**:
+  * v8.0以降 (Composer に対応)
+* **OpenAI Embeddings API**:
+  * 「意味的な類似度」の算出
+* **Composer**:
+  * パッケージ管理とオートローディング (PSR-4準拠)
 
 ### モデル選定方針
 
