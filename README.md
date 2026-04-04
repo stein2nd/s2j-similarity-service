@@ -6,9 +6,11 @@
 
 ## Description
 
-S2J Similarity Service は、任意の言語における文章 A と文章 B 間の「意味的な類似度」を数値化して返却する、純粋な PHP ライブラリです。WordPress プラグイン開発等において利用可能な Composer パッケージとして提供されています。
+本『S2J Similarity Service』は、任意の言語における文章 A と文章 B 間の「意味的な類似度」を数値化して返却する、純粋な PHP ライブラリです。WordPress プラグイン開発等において利用可能な Composer パッケージとして提供されています。
 
-このライブラリは、OpenAI Embeddings API (`text-embedding-3-small`) を用いて意味的な類似度を判定し、Strategy パターンを採用した `EmbeddingStrategyInterface` により、将来、`text-embedding-3-large` や、他ベンダーモデル (Claude、Gemini 等) を差し替え可能な設計となっています。
+このライブラリは、OpenAI Embeddings API (`text-embedding-3-small`) を用いて意味的な類似度を判定しています。
+
+Strategy パターンを採用した `EmbeddingStrategyInterface` により、将来、`text-embedding-3-large` や、他ベンダーモデル (Claude、Gemini 等) に差し替え可能な設計となっています。
 
 ### 特徴
 
@@ -29,7 +31,7 @@ S2J Similarity Service は、任意の言語における文章 A と文章 B 間
 
 #### 🔧 拡張性
 
-* **他ベンダーモデル対応**: 将来的に Claude、Gemini 等の他ベンダーモデルを差し替え可能
+* **他ベンダーモデル対応**: 将来的に Claude、Gemini 等の他ベンダーモデルに差し替え可能
 * **モデル選択**: `text-embedding-3-small` (通常利用) と `text-embedding-3-large` (精度重視) に対応
 
 ## License
