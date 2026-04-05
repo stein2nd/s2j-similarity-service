@@ -31,6 +31,15 @@
 * 認証・認可を、明示的に扱います。
 * エラーは、機械可読な形式で返します。
 
+本 API は、Contracts 層の DTO を直接公開しません。
+
+代わりに、下記の「変換」を内部で行います。
+
+* text → Embedding → vector
+* vector → Similarity
+
+したがって、本 API は、Application 層のユースケース API として定義されます。
+
 ### 非対象 (Out of Scope)
 
 * UI 実装
