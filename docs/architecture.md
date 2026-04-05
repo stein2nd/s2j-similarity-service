@@ -97,6 +97,15 @@ s2j-similarity-service/
 * Core と Infrastructure を調停します。
 * トランザクション境界を担います。
 
+### アプリケーションサービス「SimilarityService」
+
+本サービスは、ユースケースの単位となります。
+本サービスの責務は、下記の通りです。
+
+* テキスト入力を受け取ります。
+* Embedding を取得します。
+* Core に委譲して、スコアを算出します。
+
 ### Interfaces
 
 #### 設計意図 (ゴール)
@@ -126,6 +135,11 @@ s2j-similarity-service/
 | Infrastructure | How (副作用) |
 | Application | 制御 |
 | Interfaces | 入出力 |
+
+## Validation の Source of Truth
+
+バリデーションは、Contracts 層のスキーマを唯一の正とします。
+Interfaces 層は、このスキーマに基づいて検証を行います。
 
 ## 副作用 (External API) の扱い
 
