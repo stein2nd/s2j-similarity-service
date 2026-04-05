@@ -9,7 +9,7 @@
 
 ## 概要
 
-* 本仕様は、REST、PHP、JS のすべてで共通の契約とします。
+* 本仕様は、REST、PHP、JS のすべてで共通の「コアロジックに対する契約」とします。
 * スキーマは、将来的に OpenAPI として統合可能です。
 * バリデーションは、Interfaces 層で実施することを推奨します。
 
@@ -21,6 +21,8 @@
 * バリデーションルール
 * エラー仕様
 
+REST API など外部インターフェースでは、本契約を基にした「変換レイヤー (Application)」を介して利用されます。
+
 ## 入力 DTO
 
 ### フィールド定義
@@ -28,7 +30,8 @@
 ```json
 {
   "vectorA": [number],
-  "vectorB": [number]
+  "vectorB": [number],
+  "model": "string"
 }
 ```
 
@@ -38,6 +41,9 @@
 | ------- | -------- | -- | ------------------- |
 | vectorA | number[] | 必須 | テキスト A の Embedding ベクトル |
 | vectorB | number[] | 必須 | テキスト B の Embedding ベクトル |
+| model | string | - | - |
+
+* vectorA と vectorB は、同一モデルから生成されている必要があります。
 
 ## 出力 DTO
 
@@ -141,6 +147,13 @@ export type SimilarityResponse = {
 * 出力スコアは、0.0〜1.0に収まること。
 
 ## エラー仕様
+
+### エラーのレイヤー分類
+
+* Domain Error (Core)
+* Application Error
+* Infrastructure Error
+* Transport Error (HTTP)
 
 ### エラー分類
 
