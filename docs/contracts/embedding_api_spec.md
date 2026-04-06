@@ -97,6 +97,13 @@ Embedding プロバイダやモデルの変更に対して、**呼び出し側�
 | vector | number[] | Embedding ベクトル |
 | dimension | number | ベクトル次元数 |
 
+## Strategy パターンとの関係
+
+本仕様は、EmbeddingStrategyInterface の契約を定義します。
+
+* Strategy 実装は、Infrastructure 層に属します。
+* Contracts は、インターフェースのみ定義します。
+
 ## 抽象インターフェース
 
 ### PHP
