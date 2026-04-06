@@ -18,6 +18,17 @@
 * 将来的に OpenAPI で定義できます。
 * フロントエンドは型生成を前提とします。
 
+## 契約レイヤーとの関係
+
+本 API は、Contracts 層の DTO (vector ベース) を直接公開しません。
+
+代わりに、以下の変換を内部で行います。
+
+* text → Embedding → vector
+* vector → Similarity 計算
+
+したがって、本 API は、「Application 層のユースケース API」として位置付けられます。
+
 ## 設計意図、設計方針、非対象
 
 ### 設計意図 (ゴール)
@@ -222,7 +233,9 @@ API を安定的に運用します。
 
 UI 側での一貫した挙動を保証します。
 
-### 状態
+### 状態遷移の契約
+
+クライアントは、下図の状態遷移を前提とします。
 
 ```mermaid id="ui_state"
 flowchart TD
@@ -230,6 +243,11 @@ flowchart TD
   B --> C["success"]
   B --> C["error"]
 ```
+
+エラー種別により、UI の挙動を分岐します。
+
+* ValidationError: 入力修正
+* ProviderError: リトライ可能
 
 ### リトライ
 
