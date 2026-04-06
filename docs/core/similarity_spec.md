@@ -105,6 +105,11 @@ similarityScore: float
 
 「cosine similarity」の範囲 (-1〜1) を、扱いやすいスコア (0〜1) に変換します。
 
+### 正規化の責務
+
+スコアの正規化は、Core 層で必ず実施します。
+上位レイヤー (Application、Interfaces) は、未正規化の値を扱ってはなりません。
+
 ### 変換式
 
 score = \frac{cos + 1}{2}
