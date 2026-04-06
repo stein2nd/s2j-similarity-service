@@ -16,7 +16,8 @@
 
 * OpenAPI を、契約の最上位定義とします。
 * JSON Schema は、OpenAPI から生成します。
-* 型定義(TS、PHP) は、自動生成します。
+* 型定義(TS、PHP) は、それぞれ異なる視点で投影し、自動生成します。
+* DTO、TypeScript 型、cliant は、すべて同一の Schema から生成します。
 
 ### Source of Truth
 
