@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+title: S2J Similarity Service API
+version: 1.0.0
+description: |
+Semantic similarity calculation service.
+
+servers:
+
+* url: https://api.example.com
+
+paths:
+/v1/similarity:
+post:
+summary: Calculate similarity between two texts
+operationId: calculateSimilarity
+requestBody:
+required: true
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/SimilarityRequest'
+responses:
+'200':
+description: Success
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/SimilarityResponse'
+'400':
+description: Validation error
+
+/v1/embedding:
+post:
+summary: Generate embedding vector
+operationId: generateEmbedding
+requestBody:
+required: true
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/EmbeddingRequest'
+responses:
+'200':
+description: Success
+content:
+application/json:
+schema:
+$ref: '#/components/schemas/EmbeddingResponse'
+
+components:
+schemas:
+
+```
+SimilarityRequest:
+  type: object
+  required: [textA, textB]
+  properties:
+    textA:
+      type: string
+    textB:
+      type: string
+    model:
+      type: string
+      nullable: true
+
+SimilarityResponse:
+  type: object
+  required: [similarityScore]
+  properties:
+    similarityScore:
+      type: number
+      minimum: 0
+      maximum: 1
+
+EmbeddingRequest:
+  type: object
+  required: [text]
+  properties:
+    text:
+      type: string
+    model:
+      type: string
+      nullable: true
+
+EmbeddingResponse:
+  type: object
+  required: [vector, dimension]
+  properties:
+    vector:
+      type: array
+      items:
+        type: number
+    dimension:
+      type: integer
+```
