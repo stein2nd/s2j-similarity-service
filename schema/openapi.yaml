@@ -1,19 +1,24 @@
 openapi: 3.0.3
+
 info:
 title: S2J Similarity Service API
 version: 1.0.0
 description: |
-Semantic similarity calculation service.
+Single Source of Truth for:
+- TypeScript types
+- Zod schemas
+- PHP DTOs
 
 servers:
 
-* url: https://api.example.com
+* url: http://localhost
 
 paths:
+
 /v1/similarity:
 post:
-summary: Calculate similarity between two texts
 operationId: calculateSimilarity
+summary: Calculate semantic similarity
 requestBody:
 required: true
 content:
@@ -27,13 +32,11 @@ content:
 application/json:
 schema:
 $ref: '#/components/schemas/SimilarityResponse'
-'400':
-description: Validation error
 
 /v1/embedding:
 post:
-summary: Generate embedding vector
 operationId: generateEmbedding
+summary: Generate embedding vector
 requestBody:
 required: true
 content:
@@ -49,33 +52,42 @@ schema:
 $ref: '#/components/schemas/EmbeddingResponse'
 
 components:
+
 schemas:
 
 ```
 SimilarityRequest:
   type: object
-  required: [textA, textB]
+  required:
+    - textA
+    - textB
   properties:
     textA:
       type: string
+      description: Input text A
     textB:
       type: string
+      description: Input text B
     model:
       type: string
       nullable: true
+      description: Optional embedding model
 
 SimilarityResponse:
   type: object
-  required: [similarityScore]
+  required:
+    - similarityScore
   properties:
     similarityScore:
       type: number
+      format: float
       minimum: 0
       maximum: 1
 
 EmbeddingRequest:
   type: object
-  required: [text]
+  required:
+    - text
   properties:
     text:
       type: string
@@ -85,7 +97,9 @@ EmbeddingRequest:
 
 EmbeddingResponse:
   type: object
-  required: [vector, dimension]
+  required:
+    - vector
+    - dimension
   properties:
     vector:
       type: array
