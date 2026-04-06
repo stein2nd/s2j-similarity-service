@@ -38,5 +38,6 @@
 | [契約 - 入出力仕様](./contracts/data_contract_spec.md) | 入出力仕様 |
 | [契約 - データ辞書](./contracts/data_dictionary.md) | 型、データ定義 |
 | [契約 - 外部 API 仕様](./contracts/embedding_api_spec.md) | 外部 API 仕様 |
+| [契約 - OpenAPI 契約統合仕様](./contracts/openapi_spec.md) | API 契約の統合 (OpenAPI 形式) |
 | [インターフェイス - 使用方法](./interfaces/usage_spec.md) | 使用方法 (PHP、JS) |
 | [インターフェイス - REST API 仕様](./interfaces/rest_api_spec.md) | REST API 仕様 |
