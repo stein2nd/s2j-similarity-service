@@ -56,6 +56,113 @@ flowchart TD
   D --> E["SimilarityScore"]
 ```
 
+## ApiClient 仕様 (型安全インターフェース)
+
+本セクションでは、外部 API との通信を担う `ApiClient` の仕様を定義します。
+本クライアントは、OpenAPI から生成された型 (TypeScript、Zod) を利用し、型安全な API コールを提供します。
+
+* ApiClient は、Interfaces 層に属します。
+* Application 層は、ApiClient のみを依存対象とします。
+* 実装は、DI により差し替え可能とします。
+
+### 設計意図 (ゴール)
+
+* API コールを、型安全にします。
+* 契約 (OpenAPI) と実装の、乖離を防ぎます。
+* エラーハンドリングとリトライを、統一します。
+
+### 設計方針 (規約)
+
+* OpenAPI から生成された型のみを使用します。
+* raw client (generated/api) は、直接使用しません。
+* ApiClient が、唯一の外部 API 窓口となります。
+* 入出力は、すべて型で保証します。
+
+### エラーハンドリング方針
+
+* `4xx`: ValidationError
+* `5xx`: ServerError
+* Network: Retry 対象
+
+### 責務
+
+| 項目 | 内容 |
+| ------- | -------------------------- |
+| 認証 | API キー付与 |
+| 通信 | HTTP リクエスト実行 |
+| バリデーション | Zod による runtime validation |
+| エラー処理 | HTTP エラーの統一処理 |
+
+### 非責務
+
+| 項目 | 内容 |
+| ------- | --------------------- |
+| DTO 定義 | generated に委譲 |
+| 類似度計算 | Core に委譲 |
+| プロバイダ処理 | EmbeddingStrategy に委譲 |
+
+### rawClient との関係
+
+* generated/api の raw client は、低レベル API です。
+* ApiClient は、これをラップします。
+* raw client の直接使用は、禁止します。
+
+### インターフェース定義
+
+```ts
+import { SimilarityRequest, SimilarityResponse } from "@s2j/similarity-client";
+
+export interface ApiClient {
+  calculateSimilarity(
+    request: SimilarityRequest
+  ): Promise<SimilarityResponse>;
+
+  generateEmbedding(
+    request: EmbeddingRequest
+  ): Promise<EmbeddingResponse>;
+}
+```
+
+### 実装例 (fetch ベース)
+
+```ts
+import { z } from "zod";
+import {
+  SimilarityRequest,
+  SimilarityResponse,
+} from "@s2j/similarity-client";
+import { SimilarityResponseSchema } from "@s2j/similarity-client";
+
+export class DefaultApiClient implements ApiClient {
+  constructor(
+    private readonly baseUrl: string,
+    private readonly apiKey?: string
+  ) {}
+
+  async calculateSimilarity(
+    request: SimilarityRequest
+  ): Promise<SimilarityResponse> {
+    const res = await fetch(`${this.baseUrl}/v1/similarity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(this.apiKey && { Authorization: `Bearer ${this.apiKey}` }),
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    // runtime validation（Zod）
+    return SimilarityResponseSchema.parse(json);
+  }
+}
+```
+
 ## PHP 使用例
 
 ### 1. 初期化
