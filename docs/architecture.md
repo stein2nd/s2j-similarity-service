@@ -155,6 +155,55 @@ Interfaces 層は、このスキーマに基づいて、runtime validation を�
 * Application 経由でのみ呼び出します。
 * 例外は、ドメインエラーに変換します。
 
+## 外部 API 連携の設計 (Strategy + Adapter)
+
+### 設計意図 (ゴール)
+
+外部 Embedding API への依存を分離し、プロバイダ差し替えとテスト容易性を確保します。
+
+### 設計方針 (規約)
+
+* Strategy パターンにより、抽象化します。
+* Adapter パターンにより、外部 API をラップします。
+* Core、Application は、具体実装に依存しません。
+
+### 構成
+
+```mermaid
+flowchart TD
+  A["SimilarityService"] --> B["EmbeddingStrategyInterface"]
+  B --> C["OpenAIEmbeddingStrategy、ClaudeEmbeddingStrategy、…"]
+  C --> D["External API"]
+```
+
+### インターフェース定義 (概念)
+
+```php
+interface EmbeddingStrategyInterface {
+    public function embed(string $text): array;
+}
+```
+
+### 実装責務
+
+| 要素 | 責務 |
+| --------- | ------- |
+| Interface | 契約定義 |
+| Strategy | API コール |
+| Adapter | レスポンス変換 |
+
+### 依存の向き
+
+* Application → Interface に依存します。
+* Interface → 実装には依存しません。
+* 実装 → 外部 API に依存します。
+
+### 効果
+
+* プロバイダの差し替えが、可能になります。
+* Mock 実装が容易になります。
+* 外部 API の変更影響を局所化できます。
+
 ## 権限設計
 
 ### 設計意図 (ゴール)
