@@ -84,9 +84,9 @@ s2j-similarity-service/
 │└─ ...
 ├┬── scripts/
 │└┬─ generate/
-│　├─ `all.sh`  # 共通の入り口
-│　├─ `ts.sh`
-│　├─ `php.sh`
+│　├─ `all.zsh`  # 共通の入り口
+│　├─ `ts.zsh`
+│　├─ `php.zsh`
 │　└─ ...
 └┬── dist/  # Vite ビルド成果物 (Git 管理外)
 　└┬─ js/
