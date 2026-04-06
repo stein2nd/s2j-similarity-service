@@ -1,3 +1,7 @@
+<!--
+目的：「OpenAPI 契約統合仕様」の明文化
+-->
+
 # S2J Similarity Service - OpenAPI 契約統合仕様
 
 本ドキュメントは、Contracts 層における API 契約を、OpenAPI 形式で統合するための方針を定義します。
@@ -14,6 +18,13 @@
 * JSON Schema は、OpenAPI から生成します。
 * 型定義(TS、PHP) は、自動生成します。
 
+### Source of Truth
+
+OpenAPI 定義を、本プロジェクトにおける唯一の契約定義 (Source of Truth) とします。
+
+- [契約 - 入出力仕様](./data_contract_spec.md) は、説明用ドキュメントとします。
+- 実際の型、バリデーション、API 仕様は、OpenAPI に従います。
+
 ## 対象範囲
 
 OpenAPI は、以下を対象とします。
@@ -25,8 +36,11 @@ OpenAPI は、以下を対象とします。
 ## 非対象 (Out of Scope)
 
 * Embedding Provider API
+* 外部サービスの契約
 * Core ロジック
 * 内部データ構造
+
+「Embedding Provider API」「外部サービスの契約」は、Strategy パターンにより抽象化されます。
 
 ## 期待効果
 
