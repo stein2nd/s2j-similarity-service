@@ -24,7 +24,7 @@
 
 本仕様は、Embedding 生成の「抽象契約」を定義します。
 
-具体的な API コール (HTTP 等) は、Infrastructure 層で実装されます。
+具体的な HTTP 通信や、SDK コールは、Infrastructure 層で実装されます。
 
 ## 設計意図、方針、非対象
 
@@ -188,8 +188,6 @@ export interface EmbeddingProvider {
 
 ## キャッシュ戦略 (参考)
 
-**注記:** キャッシュは、「実装最適」であり、Contracts 層には含まれず、Infrastructure 層で実装します。
-
 ### 設計意図 (ゴール)
 
 API コストの削減とパフォーマンスを向上します。
@@ -199,3 +197,9 @@ API コストの削減とパフォーマンスを向上します。
 * text + model を、キーとします。
 * ハッシュ化して保存します。
 * TTL は、用途に応じて設定します。
+
+### キャッシュの位置付け
+
+キャッシュは、パフォーマンス最適化であり、本 Contracts には含まれません。
+
+実装は、Infrastructure 層に委ねます。
