@@ -97,7 +97,7 @@ s2j-similarity-service/
 * Core と Infrastructure を調停します。
 * トランザクション境界を担います。
 
-### SimilarityService
+#### SimilarityService
 
 本サービスは、ユースケース単位のエントリーポイントです。
 本サービスの責務は、下記の通りです。
@@ -140,8 +140,10 @@ s2j-similarity-service/
 
 ### Validation の Source of Truth
 
-バリデーションの定義は、Contracts 層のスキーマを唯一の正とします。
-Interfaces 層は、このスキーマに基づいて、runtime validation を実施します。
+バリデーションの定義は、Contracts 層の OpenAPI を唯一の正とします。
+
+* Contracts は、概念仕様です。
+* Interfaces は、OpenAPI 由来のスキーマで runtime validation を実施します。
 
 ## 副作用 (External API) の扱い
 
