@@ -18,6 +18,17 @@
 * 将来的に OpenAPI で定義できます。
 * フロントエンドは型生成を前提とします。
 
+## Contracts との関係
+
+本 API は、Contracts 層の DTO を直接公開しません。
+
+内部で、以下の変換を行います。
+
+* text → Embedding → vector
+* vector → Similarity
+
+したがって、本 API は、Application 層のユースケース API として定義されます。
+
 ## 契約レイヤーとの関係
 
 本 API は、Contracts 層の DTO (vector ベース) を直接公開しません。
