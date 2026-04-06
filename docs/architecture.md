@@ -97,14 +97,14 @@ s2j-similarity-service/
 * Core と Infrastructure を調停します。
 * トランザクション境界を担います。
 
-### アプリケーションサービス「SimilarityService」
+### SimilarityService
 
-本サービスは、ユースケースの単位となります。
+本サービスは、ユースケース単位のエントリーポイントです。
 本サービスの責務は、下記の通りです。
 
 * テキスト入力を受け取ります。
-* Embedding を取得します。
-* Core に委譲して、スコアを算出します。
+* EmbeddingProvider を用いて、ベクトルを取得します。
+* Core に委譲して、類似度スコアを算出します。
 
 ### Interfaces
 
@@ -128,6 +128,8 @@ s2j-similarity-service/
 * What (契約・仕様) と How (実装) を分離します。
 * Source of Truth は Contracts に集約します。
 
+### レイヤーごとの責務
+
 | レイヤー | 責務 |
 | -------------- | ---------- |
 | Contracts | What |
@@ -136,10 +138,10 @@ s2j-similarity-service/
 | Application | 制御 |
 | Interfaces | 入出力 |
 
-## Validation の Source of Truth
+### Validation の Source of Truth
 
-バリデーションは、Contracts 層のスキーマを唯一の正とします。
-Interfaces 層は、このスキーマに基づいて検証を行います。
+バリデーションの定義は、Contracts 層のスキーマを唯一の正とします。
+Interfaces 層は、このスキーマに基づいて、runtime validation を実施します。
 
 ## 副作用 (External API) の扱い
 
