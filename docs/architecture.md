@@ -20,6 +20,15 @@
 
 ### フォルダー構成 (想定)
 
+* dist は、スコープごとに独立する生成物です。他コードから、直接依存してはなりません (常に src または generated を参照すること)。
+  * `root/dist`: アプリケーションビルド成果物
+  * `packages/*/dist`: 各パッケージの配布成果物
+* generated ディレクトリは、src とは独立した領域であり、schema (OpenAPI) から生成される契約の派生物です。手動編集は禁止します。
+* generate スクリプトは、以下を保証します。
+  * 冪等性 (べきとうせい。何度実行しても同じ結果)
+  * 生成物の完全上書き
+  * 手動編集の消去
+
 ```plaintext id="arch_structure"
 s2j-similarity-service/
 ├─── `README.md`
@@ -31,7 +40,7 @@ s2j-similarity-service/
 ├─── `tsconfig.json`
 ├─── `eslint.config.js`  # ESLint 設定
 ├─── docs/  # 仕様・設計ドキュメント
-├┬── src/
+├┬── src/  # TypeScript
 │├┬─ Core/  # ドメインロジック
 ││└─ ...
 │├┬─ Contracts/  # データ構造、外部契約
@@ -41,14 +50,47 @@ s2j-similarity-service/
 │├┬─ Application/  # ユースケース単位の処理
 ││└─ ...
 │├┬─ Interfaces/  # 外部 (PHP、REST、UI) との接続点
+││├─ `ApiClient.ts`
 ││└─ ...
-│└┬─ types/  # プラグイン用のグローバル型定義
+│└┬─ types/  # グローバル型定義 (手書き型のみ)
 │　├─ `index.ts`
-│　├─ `api.ts`  # TypeScript 型 (自動生成)
 │　└─ `dom.d.ts`  # DOM
+├┬─── packages/
+│├┬── ts-client/  # Contracts
+││├┬─ generated/  # schema/openai.yaml から codegen
+│││├┬─ models/
+││││└─ `types.ts`  # TypeScript 型 (契約型のみ)
+│││├┬─ schemas/
+││││└─ `schema.ts`  # Zod スキーマ
+│││└┬─ api/  # 任意 (純粋生成のみ)
+│││　└─ `rawClients.ts`
+││├┬─ dist/  # npm パッケージ配布用
+│││├─ `types.js`  # types.ts のトランスパイル物
+│││├─ `schema.js`  # schema.ts のトランスパイル物
+│││└─ `rawClients.js`  # 任意の純粋生成された api ファイルのトランスパイル物
+││├─ `package.json`
+││└─ ...
+│└┬── php/
+│　├┬─ src/
+│　│└┬─ Contracts/
+│　│　└┬─ DTO/  # scripts/generate/php.sh で schema/openai.yaml から codegen された php DTO
+│　│　　├─ `SimilarityRequest.php`
+│　│　　├─ `SimilarityResponse.php`
+│　│　　├─ `EmbeddingRequest.php`
+│　│　　└─ `EmbeddingResponse.php`
+│　└─ ...
+├┬── schema/  # Source of Truth
+│├─ `openapi.yaml`
+│└─ ...
+├┬── scripts/
+│└┬─ generate/
+│　├─ `all.sh`  # 共通の入り口
+│　├─ `ts.sh`
+│　├─ `php.sh`
+│　└─ ...
 └┬── dist/  # Vite ビルド成果物 (Git 管理外)
 　└┬─ js/
-　　└─ ...
+　　└─ ...  # src 直下の Core、Contracts、Infrastructure、Application、Interfaces のトランスパイル物
 ```
 
 ## レイヤー構成
@@ -74,6 +116,17 @@ s2j-similarity-service/
 
 * 型・スキーマを Source of Truth とします。
 * 入出力仕様を一元管理します。
+
+### Contracts の分類
+
+本プロジェクトにおける Contracts は、2種類存在します。
+
+* External Contracts (OpenAPI)
+  * `schema/openapi.yaml` を唯一の Source of Truth します。
+  * codegen により生成されます。
+* Internal Contracts（`src/Contracts`）
+  * アプリケーション内部のインターフェース定義です。
+  * 外部契約とは独立して定義されます。
 
 ### Infrastructure
 
@@ -116,6 +169,30 @@ s2j-similarity-service/
 
 * 入出力の整形と検証を担当します。
 * 認証・認可をここで扱います。
+
+#### ApiClient の責務
+
+ApiClient は、外部 API コールの高レベルインターフェースを提供します。
+
+ApiClient の責務は、下記の通りです。
+
+* 認証 (API キー付与)
+* リトライ制御
+* エラーハンドリング
+* rawClient のラップ
+
+下記は、ApiClient の責務に含まれません。
+
+* DTO 定義 (generated に委譲)
+* ビジネスロジック (Application に委譲)
+
+## `generated/api` の位置付け
+
+`generated/api` は、OpenAPI から自動生成される低レベルクライアントです。
+
+* 認証、リトライ、エラーハンドリングは含みません。
+* 直接利用は推奨しません。
+* `src/Interfaces/ApiClient` から利用します。
 
 ## 責務分離ポリシー
 
