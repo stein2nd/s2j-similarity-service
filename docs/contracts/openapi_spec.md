@@ -2,7 +2,7 @@
 目的：「OpenAPI 契約統合仕様」の明文化
 -->
 
-# S2J Similarity Service - OpenAPI 契約統合仕様
+# S2J Similarity Service - OpenAPI 契約の統合仕様
 
 本ドキュメントは、Contracts 層における API 契約を、OpenAPI 形式で統合するための方針を定義します。
 
@@ -16,7 +16,7 @@
 
 * OpenAPI を、契約の最上位定義とします。
 * JSON Schema は、OpenAPI から生成します。
-* 型定義(TS、PHP) は、それぞれ異なる視点で投影し、自動生成します。
+* 型定義 (TS、PHP) は、それぞれ異なる視点で投影し、自動生成します。
 * DTO、TypeScript 型、cliant は、すべて同一の Schema から生成します。
 
 ### Source of Truth
