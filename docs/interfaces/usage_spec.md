@@ -163,6 +163,201 @@ export class DefaultApiClient implements ApiClient {
 }
 ```
 
+### 通信制御 (Retry、Timeout、Circuit Breaker)
+
+ApiClient は、外部 API コールにおける信頼性を確保するため、以下の通信制御を提供します。
+
+#### 設計意図 (ゴール)
+
+* 一時的なネットワーク障害からの回復
+* API の応答遅延による、処理停止の防止
+* 外部サービス障害時の、システム全体への影響の抑制
+
+#### 設計方針 (規約)
+
+* 設定値は、コンストラクタ経由で注入可能とします。
+* リトライ対象は、「安全な再実行が可能なリクエスト」のみとします。
+* タイムアウトは、全リクエストに適用します。
+* サーキットブレーカーは、外部 API 単位で管理します。
+
+#### 責務
+
+* 「通信の信頼性」の確保です。
+* エラーの「分類と制御」です。
+
+#### 非責務
+
+* ビジネスロジックのリトライ判断 (Application 側)
+* API 仕様変更への対応 (Contracts 側)
+
+#### エラー分類との関係 (リトライとサーキットブレイク)
+
+| エラー種別　| Retry | Circuit Breaker |
+| ------------ | ----- | --------------- |
+| NetworkError | リトライ可 | サーキットブレイク可 |
+| `5xx`　| リトライ可 | サーキットブレイク可 |
+| `4xx`　| リトライ不可 | サーキットブレイク不可 |
+
+#### Circuit Breaker
+
+##### 状態
+
+* `CLOSED`: 通常動作
+* `OPEN`: リクエスト遮断
+* `HALF-OPEN`: 試験的に1リクエスト許可
+
+##### 遷移条件
+
+| 条件 | 動作 |
+| -------- | --------- |
+| 連続失敗回数超過 | OPEN |
+| 一定時間経過 | HALF-OPEN |
+| 成功 | CLOSED |
+| 再失敗 | OPEN |
+
+##### デフォルト設定
+
+| 項目 | 値 |
+| ---- | --- |
+| 失敗閾値 | 5回 |
+| 回復時間 | 30秒 |
+
+#### Retry
+
+##### ポリシー
+
+* 対象
+  * ネットワークエラー
+  * `5xx` レスポンス
+* 非対象
+  * `4xx` (バリデーションエラー等)
+
+##### デフォルト設定
+
+| 項目 | 値 |
+| -------- | ----------- |
+| 最大リトライ回数 | 2 |
+| バックオフ | exponential |
+| 初期の待機時間 | 100ms |
+
+#### Timeout
+
+##### ポリシー
+
+* 全リクエストに適用します。
+* fetch の AbortController を使用します。
+
+##### デフォルト設定
+
+| 項目 | 値 |
+| ------ | ------ |
+| タイムアウト | 5000ms |
+
+### Fetch Abstraction (通信レイヤー抽象化)
+
+ApiClient は、HTTP 通信を直接扱わず、抽象化された Fetch インターフェースを経由して実行します。
+
+#### 設計意図 (ゴール)
+
+* 通信実装 (fetch、axios、node-fetch) の差し替えを可能にします。
+* テスト容易性を向上させます (Mock 可能)。
+* 通信制御 (Retry、Timeout、Circuit Breaker) を一元化します。
+
+#### 設計方針 (規約)
+
+* ApiClient は、Fetch 実装に依存しません。
+* Fetch 実装は、DI (依存性注入) で渡します。
+* 通信制御は、Fetch 層に集約します。
+
+#### 責務
+
+* 通信を抽象化します。
+* 実装差し替えを提供します。
+* テスト容易性を確保します。
+
+#### 非責務
+
+* API 仕様の管理 (OpenAPI)
+* DTO 定義 (generated)
+
+#### インターフェース定義
+
+```ts
+export interface HttpClient {
+  request<TResponse>(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<TResponse>;
+}
+```
+
+#### 実装構成
+
+```mermaid
+flowchart TD
+  A["ApiClient"] --> B["HttpClient (抽象)"]
+  B --> C["FetchHttpClient (実装)"]
+  C --> D["fetch、axios"]
+```
+
+#### デフォルト実装 (FetchHttpClient)
+
+```ts
+export class FetchHttpClient implements HttpClient {
+  async request<TResponse>(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<TResponse> {
+    const res = await fetch(input, init);
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status}`);
+    }
+
+    return res.json() as Promise<TResponse>;
+  }
+}
+```
+
+#### ApiClient との統合
+
+```ts
+export class DefaultApiClient implements ApiClient {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly baseUrl: string
+  ) {}
+
+  async calculateSimilarity(request: SimilarityRequest) {
+    return this.http.request<SimilarityResponse>(
+      `${this.baseUrl}/v1/similarity`,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+```
+
+#### 拡張ポイント
+
+* RetryHttpClient (デコレータ)
+* TimeoutHttpClient (デコレータ)
+* CircuitBreakerHttpClient (デコレータ)
+
+#### デコレータ構成例
+
+```mermaid
+flowchart TD
+  A["ApiClient"] --> B["RetryHttpClient"]
+  B --> C["TimeoutHttpClient"]
+  C --> D["FetchHttpClient"]
+```
+
 ## PHP 使用例
 
 ### 1. 初期化
