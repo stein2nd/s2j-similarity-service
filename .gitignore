@@ -11,7 +11,7 @@ Thumbs.db
 # PhpStorm / IntelliJ
 .idea/
 # VSCode
-.vscode/
+#.vscode/
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
