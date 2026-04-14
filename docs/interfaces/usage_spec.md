@@ -24,7 +24,7 @@
 
 ### 設計意図 (ゴール)
 
-利用者が内部実装を意識せず、**シンプルな API で類似度を利用できるようにします。**
+ユーザーが内部実装を意識せず、**シンプルな API で類似度を利用できるようにします。**
 
 ### 設計方針 (規約)
 
@@ -182,8 +182,8 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 
 #### 責務
 
-* 「通信の信頼性」の確保です。
-* エラーの「分類と制御」です。
+* 「通信の信頼性」を確保すること。
+* エラーを分類すること、制御すること。
 
 #### 非責務
 
@@ -271,9 +271,9 @@ ApiClient は、HTTP 通信を直接扱わず、抽象化された Fetch イン�
 
 #### 責務
 
-* 通信を抽象化します。
-* 実装差し替えを提供します。
-* テスト容易性を確保します。
+* 通信を抽象化すること。
+* 実装差し替えを提供すること。
+* テスト容易性を確保すること。
 
 #### 非責務
 
@@ -376,8 +376,8 @@ flowchart TD
 
 #### 責務
 
-* 各デコレータは、単一の通信機能の提供
-* 合成による、機能の拡張
+* 各デコレータは、単一の通信機能を提供すること。
+* 合成によって、機能を拡張すること。
 
 #### 非責務
 
@@ -495,8 +495,8 @@ ApiClient では、すべてのエラーを DomainError に正規化します。
 
 #### 責務
 
-* エラーの分類と標準化
-* 型安全なエラーハンドリングの提供
+* エラーを分類することと標準化すること。
+* 「型安全なエラーハンドリング」を提供すること。
 
 #### 非責務
 
@@ -567,8 +567,8 @@ OpenAPI のレスポンス仕様と DomainError を、対応付けます。
 
 #### 責務
 
-* OpenAPI 仕様とエラー処理の整合性維持
-* 型安全なエラー変換
+* OpenAPI 仕様とエラー処理の、整合性を維持すること。
+* 型安全なエラーを変換すること。
 
 #### 非責務
 
@@ -636,8 +636,8 @@ ApiClient は、依存性注入 (DI) により、構築されます。
 
 #### 責務
 
-* 依存関係の明示化
-* 「実装の差し替え性」の確保
+* 依存関係を明示化すること。
+* 「実装の差し替え性」を確保すること。
 
 #### 非責務
 
@@ -708,8 +708,8 @@ ApiClient は、エラー発生時にログを出力するが、ログ処理は�
 
 #### 責務
 
-* エラーの観測性向上
-* ログ出力の統一
+* エラーの観測性を向上すること。
+* ログ出力を統一すること。
 
 #### 非責務
 
@@ -783,8 +783,8 @@ OpenAPI にエラー用スキーマを定義し、DomainError との対応関係
 
 #### 責務
 
-* エラー構造の標準化
-* API 契約との整合性確保
+* エラー構造を標準化すること。
+* API 契約との整合性を確保すること。
 
 #### 非責務
 
@@ -995,8 +995,8 @@ try {
 
 ### 責務
 
-* 契約と生成物の同期保証
-* 破壊的変更の早期検知
+* 契約と生成物の同期を保証すること。
+* 破壊的変更を早期検知すること。
 
 ### 非責務
 
@@ -1075,8 +1075,8 @@ jobs:
 
 ### 責務
 
-* バージョン管理の自動化
-* リリースノート生成
+* バージョン管理を自動化すること。
+* リリースノートを生成すること。
 
 ### 非責務
 
@@ -1153,8 +1153,8 @@ jobs:
 
 ### 責務
 
-* API 互換性の保証
-* 破壊的変更の可視化
+* API 互換性を保証すること。
+* 破壊的変更を可視化すること。
 
 ### 非責務
 
@@ -1237,8 +1237,8 @@ jobs:
 
 ### 責務
 
-* 契約の配布
-* 型安全な利用の提供
+* 契約を配布すること。
+* 型安全な利用を提供すること。
 
 ### 非責務
 
@@ -1338,24 +1338,24 @@ s2j/similarity-client
 
 ### 責務
 
-* SDK の構造設計
-* 依存関係の明確化
+* SDK の構造を設計すること。
+* 依存関係を明確化すること。
 
 ### 非責務
 
 * アプリケーション統合
 * UI 層の設計
 
-### 注意点
-
-* 過剰分割を避けること。
-* バージョン整合性を維持すること。
-
 ### 利点
 
 * 軽量利用 (型のみ)
 * 高度利用 (フル SDK)
 * テスト容易性向上
+
+### 注意点
+
+* 過剰分割を避けてください。
+* バージョン整合性を維持してください。
 
 ### パッケージ構成
 
@@ -1441,8 +1441,8 @@ import { cosineSimilarity } from "@s2j/similarity-core";
 
 ### 責務
 
-* SDK の長期運用
-* 互換性維持
+* SDK を長期運用すること。
+* 互換性を維持すること。
 
 ### 非責務
 
@@ -1522,8 +1522,8 @@ import { SimilarityRequest } from "@s2j/similarity-client@1";
 
 ### 責務
 
-* パッケージ間の整合性維持
-* ビルドの効率化
+* パッケージ間の整合性を維持すること。
+* ビルドを効率化すること。
 
 ### 非責務
 
@@ -1605,8 +1605,8 @@ packages:
 
 ### 責務
 
-* バージョン管理方式の定義
-* チーム運用の標準化
+* バージョン管理方式を定義すること。
+* チーム運用を標準化すること。
 
 ### 非責務
 
@@ -1639,8 +1639,8 @@ packages:
 
 本プロジェクトでは、以下を推奨します。
 
-* モノレポ構成においては、Changesets を採用します。
-* 将来的に単一 SDK 化する場合は、semantic-release に移行可能とします。
+* モノレポ構成においては、Changesets を採用すること。
+* 将来的に単一 SDK 化する場合は、semantic-release に移行可能とすること。
 
 ### 本プロジェクトでの推奨
 
@@ -1680,8 +1680,8 @@ Add new embedding endpoint
 
 ### 責務
 
-* モノレポ全体の統合管理
-* ビルドとリリースの自動化
+* モノレポ全体を統合管理すること。
+* ビルドとリリースを自動化すること。
 
 ### 非責務
 
@@ -1787,8 +1787,8 @@ pnpm changeset init
 
 ### 責務
 
-* パッケージ単位の構成定義
-* 依存関係の明示化
+* パッケージ単位の構成を定義すること。
+* 依存関係を明示化すること。
 
 ### 非責務
 
@@ -1909,8 +1909,8 @@ flowchart TD
 
 ### 責務
 
-* TypeScript 設定の統一
-* ビルド構造の明確化
+* TypeScript 設定を統一すること。
+* ビルド構造を明確化すること。
 
 ### 非責務
 
@@ -1978,8 +1978,8 @@ packages/
 
 ### 責務
 
-* コード品質の統一
-* スタイルの標準化
+* コード品質を統一すること。
+* スタイルを標準化すること。
 
 ### 非責務
 
@@ -2049,8 +2049,8 @@ pnpm format
 
 ### 責務
 
-* 品質保証
-* 自動検証
+* 品質を保証すること。
+* 自動検証すること。
 
 ### 非責務
 
@@ -2137,8 +2137,8 @@ pnpm turbo run build --parallel
 
 ### 責務
 
-* ビルドの最適化
-* 配布物の軽量化
+* ビルドを最適化すること。
+* 配布物を軽量化すること。
 
 ### 非責務
 
@@ -2220,8 +2220,8 @@ pnpm turbo run build
 
 ### 責務
 
-* 実行環境の互換性の提供
-* 安定した API 公開
+* 実行環境の互換性を提供すること。
+* 安定した API を公開すること。
 
 ### 非責務
 
@@ -2243,8 +2243,8 @@ pnpm turbo run build
 
 ### 注意点
 
-* deep import を禁止します。
-* exports に定義されたパスのみ、公開します。
+* deep import をしないでください。
+* exports に定義されたパスのみ、公開してください。
 
 ### サブパスのエクスポート (任意)
 
@@ -2295,12 +2295,12 @@ pnpm turbo run build
 
 ### 責務
 
-* モジュールの一貫性保証
-* 実行時バグの防止
+* モジュールの一貫性を保証すること。
+* 実行時バグを防止すること。
 
 ### 非責務
 
-* バンドラ依存の解決
+* bundler 依存の解決
 * Node の仕様変更に対応
 
 ### 問題例
@@ -2371,8 +2371,8 @@ Node.js (NodeNext) と bundler (Vite、webpack) では、モジュール解決�
 
 ### 責務
 
-* モジュール解決の一貫性確保
-* 環境差異の吸収
+* モジュール解決の一貫性を確保すること。
+* 環境差異を吸収すること。
 
 ### 非責務
 
@@ -2451,8 +2451,8 @@ import { foo } from "./utils.js";
 
 ### 責務
 
-* エッジ環境での動作保証
-* 軽量実行の実現
+* エッジ環境での動作を保証すること。
+* 軽量実行を実現すること。
 
 ### 非責務
 
@@ -2487,8 +2487,8 @@ import { foo } from "./utils.js";
 
 ### 注意点
 
-* 環境依存コードを分離します。
-* polyfill に依存しません。
+* 環境依存コードを分離してください。
+* polyfill に依存しないでください。
 
 ### バンドル
 
@@ -2518,8 +2518,8 @@ export default {
 
 ### 責務
 
-* モジュール戦略の統一
-* 将来の保守性向上
+* モジュール戦略を統一すること。
+* 将来の保守性を向上すること。
 
 ### 非責務
 
@@ -2559,9 +2559,9 @@ CJS ユーザーには、deprecation warning を表示
 
 ### 利点
 
-* 設計を単純化できます。
-* ビルドを軽量化できます。
-* エッジ互換性を向上できます。
+* 設計を単純化できること。
+* ビルドを軽量化できること。
+* エッジ互換性を向上できること。
 
 ### 注意点
 
@@ -2599,8 +2599,8 @@ CJS ユーザーには、deprecation warning を表示
 
 ### 責務
 
-* 環境ごとの最適ビルドの提供
-* 実行時の互換性の担保
+* 環境ごとの最適ビルドを提供すること。
+* 実行時の互換性を担保すること。
 
 ### 非責務
 
@@ -2622,8 +2622,8 @@ CJS ユーザーには、deprecation warning を表示
 
 ### 注意点
 
-* Node 専用依存は、edge に含めません (external)。
-* 環境判定コード (`process.env` など) は、極力排除します。
+* Node 専用依存は、edge に含めないでください (external)。
+* 環境判定コード (`process.env` など) は、極力排除してください。
 
 ### entry 構成
 
@@ -2691,13 +2691,25 @@ export default defineConfig([
 
 ### 責務
 
-* 環境別 entry の提供
-* API 公開面の統制
+* 環境別 entry を提供すること。
+* API 公開面を統制すること。
 
 ### 非責務
 
 * 実行環境の検出
 * bundler 設定の補助
+
+### 注意点
+
+* 条件は、最小限にしてください (複雑化の防止)。
+* bundler が、edge 条件を理解しない場合があります。
+* default は、必ず定義してください。
+
+### 推奨ルール
+
+* すべての公開 API は、exports を経由すること。
+* 内部ファイルの直接参照は、禁止します。
+* バージョン変更時に exports を見直すこと。
 
 ### 基本構成
 
@@ -2728,10 +2740,10 @@ export default defineConfig([
 
 ### 解決の優先順位
 
-```plaintext id="exports_priority"
-1. 環境条件 (edge / node)
-2. モジュール形式 (import / require)
-3. default
+```mermaid id="exports_priority"
+flowchart TD
+  A["環境条件 (edge / node)"] --> B["モジュール形式 (import / require)"]
+  B --> C["default"]
 ```
 
 ### サブパス設計
@@ -2759,14 +2771,1344 @@ import { createClient } from "@s2j/similarity-client";
 import { createClient } from "@s2j/similarity-client";
 ```
 
+## edge、node の完全分離 (package 分割)
+
+本プロジェクトでは、実行環境ごとの最適化をさらに強化するため、Edge 用と Node.js 用のパッケージを完全に分離する構成を採用します。
+
+### 設計意図 (ゴール)
+
+* 環境ごとの依存関係を完全に分離します。
+* バンドルサイズの最小化を目指します。
+* 実行時の不整合 (環境依存コード) を排除します。
+
+### 設計方針 (規約)
+
+* パッケージ単位で runtime を分離します。
+* 共通ロジックは、core に集約します。
+* 各 runtime は、独立して配布可能とします。
+
+### 責務
+
+* runtime ごとに完全分離すること。
+* 依存関係を明確化すること。
+
+### 非責務
+
+* 単一パッケージの簡便性
+* 自動 runtime 選択
+
+### パッケージ構成
+
+```plaintext id="pkg_runtime_split"
+packages/
+  core/           ← 共通ロジック
+  client-node/    ← Node.js 用
+  client-edge/    ← Edge 用
+  ts-client/      ← Contracts
+```
+
+### 依存関係
+
+```plaintext id="pkg_runtime_dep"
+core         (独立)
+ts-client    (独立)
+
+client-node  → core + ts-client
+client-edge  → core + ts-client
+```
+
+### 特徴
+
+| パッケージ | 特徴 |
+| ----------- | ------------------ |
+| client-node | Node API 使用可 |
+| client-edge | fetch / Web 標準 API のみ |
+
+### conditional exports との関係
+
+* 単一パッケージ方式の代替
+* 明示的な依存選択が可能
+
+### 利点
+
+* 環境依存バグを排除できること。
+* 明確な責務を分離できること。
+* バンドルを最適化できること。
+
 ### 注意点
 
-* 条件は、最小限にします (複雑化防止)。
-* bundler が、edge 条件を理解しない場合があります。
-* default は、必ず定義します。
+* パッケージ数が増加します。
+* バージョン整合性の管理が必要です。
 
-### 推奨ルール
+### 推奨ケース
 
-* すべての公開 API は、exports 経由します。
-* 内部ファイルの直接参照は、禁止します。
-* バージョン変更時に exports を見直します。
+* エッジ最適化が重要な場合
+* Node 依存が強い場合
+
+### 利用例
+
+```ts id="runtime_import_node"
+import { createClient } from "@s2j/similarity-client-node";
+```
+
+```ts id="runtime_import_edge"
+import { createClient } from "@s2j/similarity-client-edge";
+```
+
+## browser 専用 build
+
+本プロジェクトでは、ブラウザ環境向けに最適化されたビルドを提供します。
+
+### 設計意図 (ゴール)
+
+* フロントエンドでの利用を最適化します。
+* バンドルサイズを削減します。
+* Node 依存を排除します。
+
+### 設計方針 (規約)
+
+* browser 専用 entry を提供します。
+* Node 依存コードを含めません。
+* Tree-shaking を最大限活用します。
+
+### 責務
+
+* ブラウザ環境に対応すること。
+* 軽量ビルドを提供すること。
+
+### 非責務
+
+* Node 互換性
+* サーバーサイド処理
+
+### 制約
+
+* `fs`、`path` などは使用できません。
+* `require` には非対応です。
+* 環境変数への依存を排除します。
+
+### 最適化ポイント
+
+* `sideEffects: false`
+* 小さな依存のみ採用します。
+* 動的 import を最小化します。
+
+### 利点
+
+* バンドルが軽量であること。
+* フロントエンド適合であること。
+* ロードが高速であること。
+
+### 注意点
+
+* SSR との互換性を考慮してください。
+* bundler 依存を解決してください。
+
+### entry 構成
+
+```plaintext id="browser_entry"
+src/
+  runtime/
+    browser.ts
+```
+
+### `package.json`
+
+```json id="browser_pkg"
+{
+  "exports": {
+    ".": {
+      "browser": "./dist/browser.js",
+      "import": "./dist/node.es.js"
+    }
+  }
+}
+```
+
+### Vite 設定例
+
+```ts id="browser_vite"
+export default {
+  build: {
+    lib: {
+      entry: "src/runtime/browser.ts",
+      formats: ["es"],
+      fileName: "browser"
+    },
+    target: "es2020"
+  }
+};
+```
+
+### 出力
+
+```plaintext id="browser_dist"
+dist/
+  browser.js
+```
+
+### 利用例
+
+```ts id="browser_use"
+import { createClient } from "@s2j/similarity-client";
+```
+
+(bundler が、browser フィールドを解決)
+
+## runtime の自動的な検出戦略
+
+本プロジェクトでは、ユーザーの負担を軽減するため、実行環境 (Node、Edge、Browser) を自動検出し、適切な実装を選択するしくみを提供します。
+
+### 設計意図 (ゴール)
+
+* ユーザーが、runtime を意識せずに、使用できます。
+* 設定ミスによるバグを防止します。
+* DX (開発体験) を向上します。
+
+### 設計方針 (規約)
+
+* 実行環境は、ランタイムで検出します。
+* 検出ロジックは。最小限にします。
+* 明示指定 (override) を可能にします。
+
+### 責務
+
+* runtime を簡易判定すること。
+* 初期選択を自動化すること。
+
+### 非責務
+
+* 完全な環境識別
+* build 時最適化 (conditional exports に委譲)
+
+### 検出対象
+
+| runtime | 判定方法 |
+| ------- | -------------------------------------- |
+| Node.js | `typeof process !== "undefined"` |
+| Edge | `typeof WebSocketPair !== "undefined"` |
+| Browser | `typeof window !== "undefined"` |
+
+### 推奨
+
+* production では、明示指定すること。
+* 開発時のみ、自動検出すること。
+
+### 注意点
+
+* bundler による静的解析と、競合する可能性があります。
+* 環境判定は、完全ではありません。
+
+### 実装例
+
+```ts id="runtime_detect"
+export function detectRuntime(): "node" | "edge" | "browser" {
+  if (typeof WebSocketPair !== "undefined") {
+    return "edge";
+  }
+
+  if (typeof window !== "undefined") {
+    return "browser";
+  }
+
+  if (typeof process !== "undefined") {
+    return "node";
+  }
+
+  return "node";
+}
+```
+
+### ファクトリ統合
+
+```ts id="runtime_factory"
+export function createClientAuto(config: Config) {
+  const runtime = detectRuntime();
+
+  switch (runtime) {
+    case "edge":
+      return createEdgeClient(config);
+    case "browser":
+      return createBrowserClient(config);
+    default:
+      return createNodeClient(config);
+  }
+}
+```
+
+### override
+
+```ts id="runtime_override"
+createClientAuto({
+  runtime: "edge"
+});
+```
+
+## CDN 配布 (unpkg、`esm.sh`)
+
+本プロジェクトでは、npm パッケージに加えて CDN 経由での利用を可能とします。
+
+### 設計意図 (ゴール)
+
+* ビルド不要で利用を可能とします。
+* 試用・プロトタイピングの容易化を目指します。
+* ブラウザ環境で直接利用を目指します。
+
+### 設計方針 (規約)
+
+* ESM 形式で配布します。
+* CDN 向けに軽量化します。
+* browser build を利用します。
+
+### 責務
+
+* ブラウザ直接利用を提供すること。
+* 配布チャネルを拡張すること。
+
+### 非責務
+
+* CDN の可用性保証
+* キャッシュ制御
+
+### 最適化
+
+* minify (Vite)
+* tree-shaking
+* sideEffects: false
+
+### バージョン指定
+
+```plaintext id="cdn_version"
+https://esm.sh/@s2j/similarity-client@1.2.0
+```
+
+### 注意点
+
+* CDN キャッシュ
+* バージョン固定を推奨します。
+* セキュリティ (信頼性)
+
+### 対応 CDN
+
+| CDN | 特徴 |
+| -------- | ----- |
+| unpkg | npm 直結 |
+| `esm.sh` | ESM 変換 |
+| jsDelivr | 高速 CDN |
+
+### 利用例 (unpkg)
+
+```html id="cdn_unpkg"
+<script type="module">
+  import { createClient } from "https://unpkg.com/@s2j/similarity-client/dist/browser.js";
+</script>
+```
+
+### 利用例 (`esm.sh`)
+
+```html id="cdn_esm"
+<script type="module">
+  import { createClient } from "https://esm.sh/@s2j/similarity-client";
+
+  const client = createClient({ baseUrl: "..." });
+</script>
+```
+
+### `package.json` 設定
+
+```json id="cdn_pkg"
+{
+  "unpkg": "./dist/browser.js",
+  "jsdelivr": "./dist/browser.js"
+}
+```
+
+## runtime 自動検出の削除 (完全ビルド依存化)
+
+本プロジェクトでは、runtime の自動的な検出戦略を廃止し、ビルド時およびパッケージ選択により、実行環境を確定する方式に移行します。
+
+### 設計意図 (ゴール)
+
+* runtime 判定ロジックの不確実性を排除します。
+* bundler、tree-shaking と競合しない設計にします。
+* 実行時の分岐をゼロにします。
+
+### 設計方針 (規約)
+
+* runtime は、ビルドまたはパッケージで確定します。
+* 実行時の環境判定は、行いません。
+* ユーザーに、明示的選択を委ねます。
+
+### 責務
+
+* 実行環境の明示的に選択すること。
+* 実行時分岐を排除すること。
+
+### 非責務
+
+* 自動的な最適化
+* 環境の推測
+
+### 廃止対象
+
+* `detectRuntime()` のような関数
+* runtime 自動切り替えロジック
+
+### conditional exports との関係
+
+* 自動検出の代替として利用します。
+* 環境ごとに最適な entry を選択します。
+
+### 利点
+
+* 挙動が完全に決定的になること。
+* バンドルサイズの削減
+* デバッグ容易性の向上
+
+### 欠点
+
+* ユーザーの選択負担が増加します。
+
+### 推奨
+
+* ドキュメントで明確に誘導すること。
+* デフォルトパッケージを (node などで) 用意すること。
+
+### 新しい利用方法
+
+```ts id="no_auto_runtime"
+import { createClient } from "@s2j/similarity-client-node";
+```
+
+```ts id="no_auto_runtime_edge"
+import { createClient } from "@s2j/similarity-client-edge";
+```
+
+## CDN 専用パッケージ分離
+
+本プロジェクトでは、CDN 利用を最適化するために、CDN 専用の軽量パッケージを分離します。
+
+### 設計意図 (ゴール)
+
+* CDN 配布用に最適化されたビルドを、提供します。
+* 不要なコードや依存を排除します。
+* 初期ロード時間を最小化します。
+
+### 設計方針 (規約)
+
+* CDN 用は、専用パッケージとして分離します。
+* browser build のみ含めます。
+* 依存は、最小限にします。
+
+### 責務
+
+* CDN 配布を最適化すること。
+* 軽量 SDK を提供すること。
+
+### 非責務
+
+* フル機能の提供
+* サーバーサイドの対応
+
+### CDN パッケージ内容
+
+* browser build (ESM)
+* 最小限の API
+* 軽量依存のみ
+
+### 最適化
+
+* minify 必須
+* tree-shaking 前提
+* sideEffects: false
+
+### 利点
+
+* バンドルが最小であること。
+* CDN が最適化されること。
+* フロントエンドに特化できること。
+
+### 注意点
+
+* Node 機能は、提供しません。
+* (軽量化のため) API が制限されます。
+
+### 推奨ケース
+
+* デモ
+* 小規模フロントエンド
+* CDN 直利用
+
+### パッケージ構成
+
+```plaintext id="cdn_pkg_structure"
+packages/
+  client-browser/   ← CDN 専用
+  client-node/
+  client-edge/
+  core/
+  ts-client/
+```
+
+### `package.json`
+
+```json id="cdn_pkg_json"
+{
+  "name": "@s2j/similarity-client-browser",
+  "type": "module",
+  "exports": {
+    ".": "./dist/browser.js"
+  },
+  "unpkg": "./dist/browser.js",
+  "jsdelivr": "./dist/browser.js"
+}
+```
+
+### 利用例
+
+```html id="cdn_pkg_use"
+<script type="module">
+  import { createClient } from "https://esm.sh/@s2j/similarity-client-browser";
+
+  const client = createClient({ baseUrl: "..." });
+</script>
+```
+
+## default パッケージ設計 (入口統一)
+
+本プロジェクトでは、複数の runtime 向けパッケージが存在する中で、ユーザーが迷わないように「標準入口 (default package)」を定義します。
+
+### 設計意図 (ゴール)
+
+* 初学者・ユーザーの迷いを排除します。
+* ドキュメントと実装の入口を統一します。
+* ユースケースの80%を簡単にします。
+
+### 設計方針 (規約)
+
+* default は、最も一般的な環境 (Node.js) を指します。
+* 他 runtime は、明示的に選択させます。
+* default は、薄いラッパーとして実装します。
+
+### 責務
+
+* SDK の入口を統一すること。
+* 利用体験を簡素化すること。
+
+### 非責務
+
+* runtime の自動判定
+* 最適化の判断
+
+### 利点
+
+* 学習コストが低減できること。
+* 導入が簡易化できること。
+* 一貫した利用方法であること。
+
+### 注意点
+
+* default の責務を肥大化させないでください。
+* runtime 固有ロジックを含めないでください。
+
+### ドキュメント方針
+
+* 基本例は、default を使用します。
+* runtime 別は、応用として説明します。
+
+### 実装方針
+
+default パッケージは、内部的に node 実装に委譲します。
+
+```ts id="default_impl"
+export * from "@s2j/similarity-client-node";
+```
+
+### パッケージ構成
+
+```plaintext id="default_pkg"
+@s2j/similarity-client         ← default (Node)
+@s2j/similarity-client-node
+@s2j/similarity-client-edge
+@s2j/similarity-client-browser
+```
+
+### 利用例
+
+```ts id="default_use"
+import { createClient } from "@s2j/similarity-client";
+```
+
+### 明示利用 (上級者)
+
+```ts id="explicit_use"
+import { createClient } from "@s2j/similarity-client-edge";
+```
+
+## SDK 命名規則 (かなり重要)
+
+本プロジェクトでは、長期運用と可読性を確保するため、パッケージおよびモジュールの命名規則を統一します。
+
+### 設計意図 (ゴール)
+
+* パッケージの役割を、名前から即座に理解できるようにします。
+* モノレポ運用での混乱を防ぎます。
+* 将来的な拡張に対応します。
+
+### 設計方針 (規約)
+
+* `@s2j/` 接頭辞を統一します。
+* `<domain>-<role>-<runtime>` の構造を採用します。
+* role は、固定語彙を使用します。
+
+### 責務
+
+* 命名を統一すること。
+* 構造を明確化すること。
+
+### 非責務
+
+* 実装内容を保証すること。
+* バージョンを管理すること。
+
+### 利点
+
+* 可読性を向上できること。
+* 一貫性を確保できること。
+* 拡張の容易性を期待できること。
+
+### 注意点
+
+* 命名変更は、breaking change としてください。
+* 初期設計で固定してください。
+
+### 禁止事項
+
+* (utils、lib など) あいまいな名前にしないでください。
+* runtime を省略した、特殊パッケージにしないでください。
+* role が不明確な命名をしないでください。
+
+### 命名フォーマット
+
+```plaintext id="naming_format"
+@s2j/<domain>-<role>-<runtime>
+```
+
+### 例
+
+```plaintext id="naming_examples"
+@s2j/similarity-client          ← default
+@s2j/similarity-client-node
+@s2j/similarity-client-edge
+@s2j/similarity-client-browser
+@s2j/similarity-core
+@s2j/similarity-contracts
+```
+
+### role 定義
+
+| role | 意味 |
+| --------- | --------- |
+| client | API クライアント |
+| core | ドメインロジック |
+| contracts | 型・スキーマ |
+
+### runtime 定義
+
+| runtime | 意味 |
+| ------- | ------------ |
+| node | Node.js |
+| edge | Edge runtime |
+| browser | Browser |
+
+### import 一貫性
+
+```ts id="naming_import"
+import { createClient } from "@s2j/similarity-client-node";
+```
+
+### 将来拡張
+
+```plaintext id="naming_future"
+@s2j/similarity-client-deno
+@s2j/similarity-client-worker
+```
+
+## README テンプレート設計
+
+本プロジェクトでは、各パッケージにおいて一貫した README 構造を採用し、ユーザーが最短で理解・導入できるようにします。
+
+### 設計意図 (ゴール)
+
+* 初見ユーザーの理解コストを下げます。
+* ドキュメント品質を均一化します。
+* Quick Start への導線を最短化します。
+
+### 設計方針 (規約)
+
+* README は、「導入→使用→詳細」の順で構成します。
+* すべてのパッケージで、同一テンプレートを使用します。
+* 1分以内に動くサンプルを、最上部に置きます。
+
+### 責務
+
+* 初期導入のガイドであること。
+* 利用の入口を提供すること。
+
+### 非責務
+
+* 詳細な仕様説明 (docs へ委譲)
+* 実装の解説
+
+### 記述ルール
+
+* コードは、最小限にします。
+* 冗長な説明は、docs に委譲します。
+* 実行可能な例のみ、掲載します。
+
+### Runtime 対応
+
+| runtime | パッケージ |
+| ------- | ------------------------------ |
+| Node | @s2j/similarity-client |
+| Edge | @s2j/similarity-client-edge |
+| Browser | @s2j/similarity-client-browser |
+
+### テンプレート構成
+
+```plaintext id="readme_structure"
+# パッケージ名
+
+## Overview
+## Quick Start (最重要)
+## Installation
+## Usage
+## Runtime対応
+## API 概要
+## Advanced (任意)
+## FAQ
+## License
+```
+
+### Overview
+
+* 何をするライブラリか
+* どの問題を解決するか
+* どの環境で使えるか
+
+### Quick Start (例)
+
+```ts id="readme_quick"
+import { createClient } from "@s2j/similarity-client";
+
+const client = createClient({ baseUrl: "..." });
+
+const score = await client.similarity({
+  text1: "hello",
+  text2: "hi"
+});
+
+console.log(score);
+```
+
+## Quick Start 最適化
+
+本プロジェクトでは、利用者が最短で成功体験を得られるように、Quick Start を最適化します。
+
+### 設計意図 (ゴール)
+
+* 初回での成功体験を、最速で提供します。
+* 離脱率を下げます。
+* 学習コストを最小化します。
+
+### 設計方針 (規約)
+
+* 10行以内で完結します。
+* コピー & ペーストで動作します。
+* 前提条件を最小化します。
+
+### 責務
+
+* 初回での成功体験を提供すること。
+* 導入障壁を低減すること。
+
+### 非責務
+
+* 詳細設定
+* 高度なユースケース
+
+### 要件
+
+* 外部依存なし (最低限)
+* API キーは、環境変数で説明すること。
+* エラー処理は、省略 (後述)
+
+### 成功基準
+
+* 1分以内に動くこと。
+* エラーなく実行できること。
+* 結果が確認できること。
+
+### Good 例
+
+* 単一ファイル
+* 即実行可能
+* 結果がすぐ見える
+
+### NG 例
+
+* 設定が多すぎる
+* ファイル分割が必要
+* 長い説明
+
+### 段階構成
+
+```plaintext id="quick_steps"
+Step1: 最小実行
+Step2: オプション追加
+Step3: 実運用例
+```
+
+### CDN 版 Quick Start
+
+```html id="quick_cdn"
+<script type="module">
+  import { createClient } from "https://esm.sh/@s2j/similarity-client-browser";
+
+  const client = createClient({ baseUrl: "..." });
+</script>
+```
+
+### CLI (任意)
+
+```bash id="quick_cli"
+curl -X POST /similarity ...
+```
+
+### 最小構成
+
+```ts id="quick_min"
+import { createClient } from "@s2j/similarity-client";
+
+const client = createClient({ baseUrl: "..." });
+
+await client.similarity({
+  text1: "A",
+  text2: "B"
+});
+```
+
+## README 自動生成 (docs から)
+
+本プロジェクトでは、docs 配下の仕様書を Source of Truth とし、README を自動生成することで、ドキュメントの一貫性を維持します。
+
+### 設計意図 (ゴール)
+
+* ドキュメントの二重管理を防ぎます。
+* README と仕様書の乖離を排除します。
+* 更新コストを削減します。
+
+### 設計方針 (規約)
+
+* docs を一次情報 (Source of Truth) とします。
+* README は、生成物とします (手編集禁止)。
+* CI で差分検出・強制同期します。
+
+### 責務
+
+* README を自動生成すること。
+* ドキュメントと同期すること。
+
+### 非責務
+
+* docs の内容品質
+* Markdown の整形
+
+### 利点
+
+* 常に最新の README を維持できること。
+* メンテナンスコストを削減できること。
+* ドキュメントの信頼性を向上できること。
+
+### 注意点
+
+* README の手動編集は、禁止にしてください。
+* docs の構造変更に注意してください。
+
+### データフロー
+
+```plaintext id="readme_flow"
+docs/ (Markdown)
+   ↓
+scripts/generate/readme.zsh
+   ↓
+README.md (生成)
+```
+
+### 対象ソース
+
+| docs | README 反映 |
+| ------------- | ------------------- |
+| overview.md | Overview |
+| usage_spec.md | Usage / Quick Start |
+| concept.md | Background |
+
+### 生成戦略
+
+* セクション単位で抽出します。
+* Markdown をそのまま転用します。
+* 必要に応じてテンプレートに埋め込みます。
+
+### スクリプト例
+
+```bash id="readme_script"
+#!/bin/zsh
+
+cat docs/overview.md > README.md
+cat docs/interfaces/usage_spec.md >> README.md
+```
+
+### CI 検証
+
+```bash id="readme_ci"
+./scripts/generate/readme.zsh
+git diff --exit-code
+```
+
+## playground (ブラウザ実行環境)
+
+本プロジェクトでは、ブラウザ上で SDK を試せる playground を提供します。
+
+### 設計意図 (ゴール)
+
+* インストール不要で試用可能にします。
+* 学習コストを下げます。
+* 動作確認を容易にします。
+
+### 設計方針 (規約)
+
+* CDN (esm.sh) を利用します。
+* ブラウザのみで完結します。
+* 最小 UI で提供します。
+
+### 責務
+
+* 試用環境を提供すること。
+* UX を向上すること。
+
+### 非責務
+
+* 本番利用
+* セキュリティ保証
+
+### 利用用途
+
+* デモ
+* 検証
+* ドキュメント補助
+
+### 発展
+
+* Monaco Editor 統合
+* サンプルテンプレート切替
+
+### 注意点
+
+* API キーの扱い (公開禁止)
+* レート制限
+
+### デプロイ
+
+| 方法 | 内容 |
+| ---------------- | ------ |
+| GitHub Pages | 静的配信 |
+| Vercel | 即時デプロイ |
+| CloudFlare Pages | Edge 配信 |
+
+### 構成
+
+```plaintext id="playground_structure"
+playground/
+  index.html
+  main.ts
+```
+
+### 実装例 (HTML)
+
+```html id="playground_html"
+<script type="module">
+  import { createClient } from "https://esm.sh/@s2j/similarity-client-browser";
+
+  const client = createClient({ baseUrl: "..." });
+
+  const result = await client.similarity({
+    text1: "hello",
+    text2: "hi"
+  });
+
+  console.log(result);
+</script>
+```
+
+### UI (最小)
+
+* テキスト入力 (2つ)
+* 実行ボタン
+* 結果表示
+
+### オプション
+
+* エラーメッセージ表示
+* API キー入力欄
+* ログ表示
+
+## docs → OpenAPI → README → Playground の完全連動
+
+本プロジェクトでは、ドキュメント・契約・実行環境を一貫したパイプラインで連動させます。
+
+### 設計意図 (ゴール)
+
+* 仕様と実装の乖離を完全に排除します。
+* すべてのアウトプットを単一の情報源から生成します。
+* ドキュメント更新を即座に実行環境へ反映します。
+
+### 設計方針 (規約)
+
+* Source of Truth は docs と OpenAPI に限定します。
+* README、SDK、Playground はすべて生成物とします。
+* 手動編集は禁止します。
+
+### 責務
+
+* 全レイヤの同期を保証すること。
+* 情報の一貫性を維持すること。
+
+### 非責務
+
+* コンテンツ品質
+* UX デザイン
+
+### 利点
+
+* 常に整合した状態を維持
+* ドキュメント信頼性の最大化
+* 開発効率の向上
+
+### 注意点
+
+* 初期構築コストが高い
+* パイプラインの複雑化
+
+### 全体フロー
+
+```plaintext id="full_pipeline"
+docs/
+   ↓
+OpenAPI (schema/openapi.yaml)
+   ↓
+codegen (TS / PHP)
+   ↓
+README 生成
+   ↓
+Playground 反映
+```
+
+### 役割分担
+
+| レイヤ | 役割 |
+| ---------- | ----- |
+| docs | 意図・仕様 |
+| OpenAPI | 契約 |
+| codegen | 実装補助 |
+| README | 利用ガイド |
+| Playground | 実行環境  |
+
+### 同期ポイント
+
+* OpenAPI 更新 → 型 / SDK 再生成
+* docs 更新 → README 再生成
+* Usage 変更 → Playground 更新
+
+### CI フロー
+
+```plaintext id="ci_pipeline"
+1. docs 変更検出
+2. OpenAPI 検証
+3. codegen 実行
+4. README 生成
+5. Playground build
+6. 差分チェック
+```
+
+### 失敗条件
+
+* README と docs の不一致
+* OpenAPI と型の不一致
+* Playground サンプルの不整合
+
+## サンプルコード自動同期
+
+本プロジェクトでは、README、docs、Playground に掲載するサンプルコードを単一ソースから自動同期する。
+
+### 設計意図 (ゴール)
+
+* サンプルコードの乖離を防ぐ
+* コピー & ペーストで動く保証を維持する
+* メンテナンスコスト削減
+
+### 設計方針 (規約)
+
+* サンプルコードは `/examples/` に集約する
+* README / docs / Playground は参照のみ
+* CI で動作検証を行う
+
+### 責務
+
+* サンプルの一元管理
+* 動作保証
+
+### 非責務
+
+* 実運用コード
+* パフォーマンス最適化
+
+### 利点
+
+* 常に動くサンプル
+* ドキュメントの信頼性向上
+* 開発効率の向上
+
+### 注意点
+
+* examples の責務肥大化
+* サンプル粒度の管理
+
+### テスト方針
+
+* すべての examples は実行可能
+* 型エラーゼロ
+* API 応答確認
+
+### NG パターン
+
+* README に直接コード記述
+* Playground 専用コード分岐
+* 手動更新
+
+### CI 検証
+
+```bash id="example_ci"
+pnpm test:examples
+```
+
+### Playground 連携
+
+* examples/browser.ts を直接読み込む
+* UI から切り替え可能
+
+### ディレクトリ構成
+
+```plaintext id="examples_structure"
+examples/
+  basic.ts
+  node.ts
+  edge.ts
+  browser.ts
+```
+
+### スクリプト例
+
+```bash id="example_sync"
+cp examples/basic.ts playground/main.ts
+```
+
+### 利用方法
+
+#### README への埋め込み
+
+````md id="example_embed"
+```ts
+// examples/basic.ts
+```
+````
+
+(ビルド時に内容を展開)
+
+## examples → テスト → Playground の完全共有
+
+本プロジェクトでは、examples を中心に「実装・テスト・体験」を完全に共有する構成を採用する。
+
+### 設計意図 (ゴール)
+
+* サンプルコードの信頼性を担保する
+* 実装とドキュメントの乖離を防ぐ
+* Playground とテストを統一する
+
+### 設計方針 (規約)
+
+* examples を唯一の実行コードとする
+* テストは examples をそのまま実行する
+* Playground は examples を読み込む
+
+### 責務
+
+* 実行可能サンプルの管理
+* テストとの統合
+
+### 非責務
+
+* 実サービスコード
+* パフォーマンス最適化
+
+### 利点
+
+* サンプルが必ず動く
+* テストとドキュメントが一致
+* 保守コスト削減
+
+### 注意点
+
+* examples の肥大化に注意
+* 実運用コードと分離する
+
+### データフロー
+
+```plaintext id="examples_flow"
+examples/
+   ↓
+テスト（実行）
+   ↓
+Playground（表示）
+   ↓
+README（埋め込み）
+```
+
+### ディレクトリ構成
+
+```plaintext id="examples_full"
+examples/
+  basic.ts
+  node.ts
+  edge.ts
+  browser.ts
+
+tests/
+  examples.test.ts
+
+playground/
+  main.ts
+```
+
+### テスト戦略
+
+```ts id="examples_test"
+import example from "../examples/basic";
+
+test("basic example works", async () => {
+  const result = await example();
+  expect(result).toBeDefined();
+});
+```
+
+### Playground 連携
+
+```ts id="examples_playground"
+import example from "../examples/browser";
+
+await example();
+```
+
+### README 連携
+
+* examples/basic.ts をそのまま埋め込み
+* ビルド時に展開
+
+## Storybook 的な UI ドキュメント
+
+本プロジェクトでは、API の利用方法を可視化するために、Storybook 的な UI ドキュメント環境を構築する。
+
+### 設計意図 (ゴール)
+
+* API の動作を視覚的に理解できるようにする
+* Playground より体系的なドキュメントを提供する
+* ユースケースごとの理解を促進する
+
+### 設計方針 (規約)
+
+* examples をベースに UI を構築する
+* ストーリー単位でユースケースを定義する
+* インタラクティブ操作を可能にする
+
+### 構成
+
+```plaintext id="storybook_structure"
+docs-ui/
+  stories/
+    basic.ts
+    similarity.ts
+  components/
+    Form.tsx
+    Result.tsx
+```
+
+### ストーリー例
+
+```ts id="storybook_example"
+export const BasicSimilarity = async () => {
+  const result = await client.similarity({
+    text1: "hello",
+    text2: "hi"
+  });
+
+  return result;
+};
+```
+
+### UI 要素
+
+* 入力フォーム
+* 実行ボタン
+* 結果表示
+* エラー表示
+
+### 技術選択 (例)
+
+| ツール | 用途 |
+| --------- | ---- |
+| Storybook | UI 管理 |
+| Vite | ビルド |
+| React | UI |
+
+### Playground との違い
+
+| 項目 | Playground | Storybook |
+| -- | ---------- | --------- |
+| 目的 | 試す | 理解する |
+| 構造 | 単一 | 複数シナリオ |
+| UI | 最小 | リッチ |
+
+### examples との関係
+
+* stories は examples をラップする
+* ロジックは共有する
+
+### 利点
+
+* 視覚的理解
+* デモとして活用可能
+* QA、営業資料として利用可能
+
+### 注意点
+
+* UI の肥大化
+* メンテナンスコスト増
+
+### 責務
+
+* ユースケースの可視化
+* 体験型ドキュメント提供
+
+### 非責務
+
+* 本番 UI
+* API 仕様定義
