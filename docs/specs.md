@@ -13,7 +13,7 @@
 2. `concept.md`
 3. `architecture.md`
 
-### 利用者 (API / ライブラリとして利用)
+### ユーザー (API / ライブラリとして利用)
 
 1. `concept.md`
 2. `contracts/data_contract_spec.md`
