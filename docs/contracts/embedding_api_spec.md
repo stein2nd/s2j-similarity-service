@@ -145,17 +145,17 @@ export interface EmbeddingProvider {
 
 プロバイダごとの差異を統一し、上位レイヤを単純化します。
 
+### 方針
+
+* Infrastructure 層で変換します。
+* Contracts 層には、統一形式のみ公開します。
+
 ### 吸収対象
 
 * レスポンス形式
 * エラー形式
 * モデル指定方法
 * トークン制限
-
-### 方針
-
-* Infrastructure 層で変換します。
-* Contracts 層には、統一形式のみ公開します。
 
 ## エラー仕様
 
