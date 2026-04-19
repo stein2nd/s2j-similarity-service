@@ -124,7 +124,7 @@ s2j-similarity-service/
 * External Contracts (OpenAPI)
   * `schema/openapi.yaml` を唯一の Source of Truth します。
   * codegen により生成されます。
-* Internal Contracts（`src/Contracts`）
+* Internal Contracts (`src/Contracts`)
   * アプリケーション内部のインターフェース定義です。
   * 外部契約とは独立して定義されます。
 
@@ -385,7 +385,7 @@ flowchart TD
 ### 設計方針 (規約)
 
 * OpenAPI を契約の Source of Truth とします。
-* 型・バリデーションを自動生成します。
+* 型、バリデーションを自動生成します。
 
 ## End-to-End 実行フロー
 
