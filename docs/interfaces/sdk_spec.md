@@ -1157,6 +1157,17 @@ embedBatch(texts: string[]): Promise<Embedding[]>
 results[i] corresponds to inputs[i]
 ```
 
+## 再試行と再現性
+
+### 設計方針 (規約)
+
+* リトライによる結果の変動を、許容します。
+* deterministic は、保証しません。
+
+### 注意
+
+Embedding は、プロバイダ依存で変動する可能性があります。
+
 ## キャッシュ戦略 (Embedding)
 
 ### 設計意図 (ゴール)
