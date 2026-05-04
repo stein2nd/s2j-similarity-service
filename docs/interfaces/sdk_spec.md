@@ -820,8 +820,8 @@ const httpClient =
 
 ### 設計方針 (規約)
 
-* HTTP 429 は、リトライ対象とします。
-* Retry-After ヘッダを優先します。
+* `HTTP 429` は、リトライ対象とします。
+* Retry-After ヘッダーを優先します。
 
 ### 非責務
 
