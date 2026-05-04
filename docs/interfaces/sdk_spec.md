@@ -396,6 +396,87 @@ const mockHttpClient: HttpClient = {
 const client = new DefaultApiClient(mockHttpClient, "http://test");
 ```
 
+## Dependency Injection (DI) 設計
+
+### 設計意図 (ゴール)
+
+依存関係を明示的に注入することで、テスト容易性と実装の柔軟性を確保します。
+
+### 設計方針 (規約)
+
+* コンストラクタインジェクションを採用します。
+* Service は、外部依存を直接生成しません。
+* Interface に依存し、実装には依存しません。
+
+### 責務
+
+* 依存関係の注入方法を定義すること。
+* 初期化パターンを統一すること。
+
+### 非責務
+
+* 実装の詳細
+* runtime 判定
+* DI フレームワーク導入
+
+### コンストラクタ定義
+
+```ts id="di_constructor"
+type SimilarityServiceOptions = {
+  embeddingStrategy: EmbeddingStrategyInterface
+  httpClient: HttpClient
+}
+
+class SimilarityService {
+  constructor(private options: SimilarityServiceOptions) {}
+}
+```
+
+### 初期化例
+
+```ts id="di_usage"
+const service = new SimilarityService({
+  embeddingStrategy: new OpenAIEmbeddingStrategy(...),
+  httpClient: new FetchHttpClient(...)
+})
+```
+
+### Factory (任意)
+
+#### 設計意図 (ゴール)
+
+初期化ロジックを集中管理します。
+
+#### 例
+
+```ts id="di_factory"
+function createSimilarityService(): SimilarityService {
+  return new SimilarityService({
+    embeddingStrategy: new OpenAIEmbeddingStrategy(),
+    httpClient: new FetchHttpClient()
+  })
+}
+```
+
+### DI のルール
+
+* new は、entry ポイント (Factory / usage) に限定します。
+* Service 内で new を行ってはなりません。
+* runtime 差異は、DI により吸収します。
+
+### テスト戦略
+
+```ts id="di_test"
+const mockStrategy = {
+  embed: async () => mockEmbedding
+}
+
+const service = new SimilarityService({
+  embeddingStrategy: mockStrategy,
+  httpClient: mockHttpClient
+})
+```
+
 ## エラーハンドリングモデル
 
 ### 設計意図 (ゴール)

@@ -371,6 +371,22 @@ flowchart TD
 * 各エンドポイントで明示的に実施します。
 * ユースケース単位で権限を定義します。
 
+## DI と依存方向
+
+### 構造
+
+```mermaid id="di_arch"
+flowchart TD
+  A["Application / Service"] --> B["Interface (抽象)"]
+  B --> C["Infrastructure (実装)"]
+```
+
+### ルール
+
+* 上位層は、Interface のみを参照します。
+* 実装は、外部から注入します。
+* Service 内で依存を生成しません。
+
 ## Runtime Validation
 
 ### 設計意図 (ゴール)

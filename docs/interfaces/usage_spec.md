@@ -272,6 +272,17 @@ try {
 
 <!-- 小見出し「README テンプレート設計」は、docs/engineering/codegen_pipeline.md に移動 -->
 
+## 初期化方法
+
+Service は、依存オブジェクトを渡して初期化します。
+
+```ts id="usage_di"
+const service = new SimilarityService({
+  embeddingStrategy,
+  httpClient
+})
+```
+
 ## Quick Start 最適化
 
 本プロジェクトでは、ユーザーが最短で成功体験を得られるように、Quick Start を最適化します。
