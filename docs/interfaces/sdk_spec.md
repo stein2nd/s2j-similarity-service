@@ -28,6 +28,18 @@
 * retry / timeout
 * DI 可能
 
+### 責務
+
+* SDK の構造を設計すること。
+* ApiClient / HttpClient を定義すること。
+* 型安全インターフェースを提供すること。
+
+### 非責務
+
+* OpenAPI 契約定義
+* codegen 実装
+* runtime 分岐
+
 ### 非対象 (Out of Scope)
 
 * UI 提供
