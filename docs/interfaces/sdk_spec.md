@@ -451,6 +451,29 @@ class DomainError extends Error {
 * EmbeddingStrategy → DomainError に変換
 * ApiClient → そのまま throw
 
+## Runtime 非依存設計
+
+### 設計意図 (ゴール)
+
+ApiClient を runtime から独立させます。
+
+### 設計方針 (規約)
+
+* ApiClient は、HttpClient インターフェースにのみ依存します。
+* fetch 実装は、DI により注入します。
+
+### 例
+
+```ts id="sdk_di"
+new ApiClient({
+  httpClient: new NodeHttpClient()
+})
+```
+
+### 注意
+
+ApiClient 内で runtime を判定しません。
+
 ## HttpClient 実装 (Decorator パターン)
 
 本プロジェクトでは、HttpClient に対する機能拡張を、デコレータパターンで実現します。

@@ -236,6 +236,23 @@ flowchart TD
 * タイムアウトは、ApiClient に持たせない。
 * サーキットブレーカーは、HttpClient の責務とする。
 
+## Runtime 依存の分離
+
+### 構造
+
+```mermaid id="runtime_arch"
+flowchart TD
+  A["Core"] --> B["Application"]
+  B --> C["Interfaces (ApiClient)"]
+  C --> D["Infrastructure (HttpClient / Runtime 実装)"]
+```
+
+### ルール
+
+* runtime 依存は、Infrastructure 層に閉じ込めます。
+* Core / Application は、runtime を知りません。
+* Interfaces は、抽象のみを扱います。
+
 ## 副作用 (External API) の扱い
 
 ### 設計意図 (ゴール)

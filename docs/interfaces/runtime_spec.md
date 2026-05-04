@@ -372,6 +372,69 @@ CJS ユーザーには、deprecation warning を表示
 }
 ```
 
+## Runtime 別実装境界 (Node、Edge、Browser)
+
+### 設計意図 (ゴール)
+
+実行環境ごとの差異を明確に分離し、ビルドおよび実行時の不整合を防ぎます。
+
+### 設計方針 (規約)
+
+* HTTP 通信は、fetch 抽象に統一します。
+* runtime ごとに fetch 実装を差し替えます。
+* ApiClient は、runtime を意識しません。
+
+### 責務
+
+* runtime 差異を定義すること。
+* fetch 実装の切り替え方針を定義すること。
+
+### 非責務
+
+* ApiClient の仕様
+* リトライ・タイムアウト制御
+* ビジネスロジック
+
+### Runtime 別実装
+
+| Runtime | 実装 |
+|--------|------|
+| Node.js | undici |
+| Edge (CloudFlare Workers 等) | global fetch |
+| Browser | native fetch |
+
+### 抽象インターフェース
+
+```ts id="fetch_interface"
+export interface HttpClient {
+  request(input: RequestInfo, init?: RequestInit): Promise<Response>
+}
+```
+
+### 実装構成
+
+```mermaid id="runtime_structure"
+flowchart TD
+  A["ApiClient"] --> B["HttpClient (抽象)"]
+  B --> C["Runtime 実装 (node / edge / browser)"]
+  C --> D["fetch"]
+```
+
+### ルール
+
+* runtime 判定は、行いません (自動検出の禁止)。
+* build 時に対象 runtime を決定します。
+* runtime ごとにパッケージを分離します。
+
+### パッケージ例
+
+```plaintext id="runtime_package"
+@org/sdk-core
+@org/sdk-node
+@org/sdk-edge
+@org/sdk-browser
+```
+
 ## runtime 別 build 出し分け (edge、node)
 
 本プロジェクトでは、実行環境 (Edge、Node.js) ごとに最適化された、ビルド成果物を出し分けます。

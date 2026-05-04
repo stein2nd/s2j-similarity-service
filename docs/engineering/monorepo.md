@@ -129,3 +129,20 @@ packages:
   }
 }
 ```
+
+## Runtime 別パッケージ
+
+### 設計方針 (規約)
+
+- runtime ごとにパッケージを分離します。
+- core ロジックは、共有パッケージに集約します。
+
+### 例
+
+```plaintext id="mono_runtime"
+packages/
+  core/
+  node/
+  edge/
+  browser/
+```
