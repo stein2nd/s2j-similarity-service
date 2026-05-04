@@ -222,6 +222,20 @@ ApiClient の責務は、下記の通りです。
 * Contracts は、概念仕様です。
 * Interfaces は、OpenAPI 由来のスキーマで runtime validation を実施します。
 
+## 通信レイヤの責務分離
+
+```mermaid id="net_layer"
+flowchart TD
+  A["ApiClient (retry)"] --> B["HttpClient (timeout / circuit breaker)"]
+  B --> C["fetch / transport"]
+```
+
+### ルール
+
+* リトライは、HttpClient に持たせない。
+* タイムアウトは、ApiClient に持たせない。
+* サーキットブレーカーは、HttpClient の責務とする。
+
 ## 副作用 (External API) の扱い
 
 ### 設計意図 (ゴール)

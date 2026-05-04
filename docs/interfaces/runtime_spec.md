@@ -1131,3 +1131,22 @@ packages/
   const client = createClient({ baseUrl: "..." });
 </script>
 ```
+
+## タイムアウト実装差異
+
+### 設計意図 (ゴール)
+
+runtime ごとの差異を吸収し、一貫したタイムアウト動作を保証します。
+
+### 実装方針
+
+| runtime | 実装 |
+|--------|------|
+| Node.js | AbortController / undici |
+| Edge | native fetch + AbortController |
+| Browser | native fetch |
+
+### 注意
+
+* タイムアウトは、HttpClient 層で統一します。
+* ApiClient は、runtime 差異を意識しません。
