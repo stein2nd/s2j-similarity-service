@@ -130,6 +130,64 @@ export type SimilarityResponse = {
 };
 ```
 
+## Embedding 型定義
+
+### 設計意図 (ゴール)
+
+Embedding ベクトルをプロバイダ非依存で扱うための、統一フォーマットを定義します。
+
+### 責務
+
+* Embedding の構造を定義すること。
+* 型安全を保証すること。
+
+### 非責務
+
+* Embedding の取得処理
+* プロバイダ固有ロジック
+
+### 型定義 (TypeScript)
+
+```ts
+export type Embedding = {
+  vector: number[]
+  dimension: number
+  model: string
+  provider: string
+}
+```
+
+### フィールド定義
+
+| フィールド | 説明 |
+|------------|------|
+| vector | 埋め込みベクトル |
+| dimension | ベクトル次元数 |
+| model | 使用モデル |
+| provider | プロバイダ識別子 |
+
+### 制約
+
+* `vector.length === dimension` を保証すること。
+* dimension は、同一計算内で一致する必要があること。
+* vector は、数値配列 (float) とすること。
+
+### 正規化ルール
+
+* ベクトルは、unit vector (L2正規化) とすること。
+* 正規化は、Strategy 実装側で実施すること。
+
+### エラー仕様
+
+Embedding 取得失敗時は、例外を throw します。
+
+```ts
+class EmbeddingError extends Error {
+  provider: string
+  cause?: unknown
+}
+```
+
 ## バリデーション
 
 ### 必須チェック

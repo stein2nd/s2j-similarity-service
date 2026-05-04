@@ -125,6 +125,50 @@ export interface EmbeddingProvider {
 }
 ```
 
+## Embedding Strategy / Adapter
+
+### 設計意図 (ゴール)
+
+複数の Embedding API プロバイダを差し替え可能にします。
+
+### 設計方針 (規約)
+
+* Strategy パターンで抽象化します。
+* Adapter で外部 API をラップします。
+* 戻り値は Embedding 型に統一します。
+
+### 責務
+
+* 外部 API との接続
+* データ変換
+
+### 非責務
+
+* 類似度計算
+* キャッシュ戦略
+
+### Adapter の責務
+
+* 外部 API レスポンスを Embedding に変換すること。
+* 正規化を適用すること。
+* 次元整合性を保証すること。
+
+### インターフェース
+
+```ts
+export interface EmbeddingStrategyInterface {
+  embed(text: string): Promise<Embedding>
+}
+```
+
+### プロバイダ差異
+
+| 項目 | 差異 |
+|------|------|
+| 次元数 | モデルごとに異なる |
+| 正規化 | API によって未実施 |
+| レスポンス形式 | JSON 構造が異なる |
+
 ## バリデーション
 
 ### 入力

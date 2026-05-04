@@ -283,6 +283,37 @@ interface EmbeddingStrategyInterface {
 * Mock 実装が容易になります。
 * 外部 API の変更影響を局所化できます。
 
+## Embedding 抽象化レイヤー
+
+### 設計意図 (ゴール)
+
+ドメインロジックを外部 API 依存から分離します。
+
+### 責務
+
+* 依存方向を制御すること。
+* 抽象化を維持すること。
+
+### 非責務
+
+* API 仕様定義
+* 型定義
+
+### 構成
+
+```mermaid
+flowchart TD
+  A["SimilarityService"] --> B["EmbeddingStrategyInterface"]
+  B --> C["Provider Adapter"]
+  C --> D["External API"]
+```
+
+### 依存ルール
+
+* Core は EmbeddingStrategyInterface のみに依存する
+* Adapter は Infrastructure 層に配置する
+* 外部 API は Adapter 以外から直接呼ばない
+
 ## 権限設計
 
 ### 設計意図 (ゴール)
