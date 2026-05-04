@@ -382,7 +382,7 @@ cp examples/basic.ts playground/main.ts
 
 ### CI ポリシー
 
-* schema 変更時に、必ず検証を実行します。
+* schema 変更時に、必ず検証します。
 * 不整合がある場合は、ビルドを失敗します。
 
 ### チェック項目
