@@ -17,7 +17,7 @@
 | baseText | string | 基準テキスト本文 |
 | targetText | string | 検証テキスト本文 |
 
-※ `language` / `locale` は現状、OpenAI Embeddings のリクエストには含めていません。呼び出し側の識別用として保持しています。
+※ `language` / `locale` は現状、OpenAI Embeddings のリクエストには含めていません。コール側の識別用として保持しています。
 
 ## 戻り値 (compare の返却)
 
@@ -52,4 +52,4 @@
 ## API キー管理
 
 * ライブラリは **キーを保持しない**。
-* 呼び出し側で、環境変数 (例: `OPENAI_API_KEY`) または WordPress の設定画面等で管理してください。
+* コール側で、環境変数 (例: `OPENAI_API_KEY`) または WordPress の設定画面等で管理してください。
