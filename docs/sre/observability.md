@@ -18,9 +18,21 @@ observability
 
 ### 設計方針 (規約)
 
-* Metrics / Logs / Traces を統合します。
+* Metrics、Logs、Traces を統合します。
 * tenant 単位で可視化します。
 * correlation_id により追跡します。
+
+### 責務
+
+* Metrics、Logs、Traces を定義すること。
+* システム可視化を設計すること。
+* コスト計測基盤を提供すること。
+
+### 非責務
+
+* 障害復旧
+* スケーリング
+* SLA 定義
 
 ### 非対象 (Out of Scope)
 
