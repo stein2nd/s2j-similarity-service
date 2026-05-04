@@ -992,6 +992,59 @@ flowchart TD
   C --> D["FetchHttpClient"]
 ```
 
+## バッチ処理 API
+
+### 設計意図 (ゴール)
+
+大量データに対する、効率的な類似度計算を可能にします。
+
+### 責務
+
+* バッチ API を提供すること。
+* 並列制御を提供すること。
+
+### 非責務
+
+* アルゴリズム定義
+* インフラ制御
+
+### API 例
+
+```ts id="batch_api"
+similarityOneToMany(
+  query: string,
+  candidates: string[]
+): Promise<number[]>
+
+similarityMatrix(
+  inputs: string[]
+): Promise<number[][]>
+```
+
+### Embedding バッチ
+
+```ts id="batch_embed"
+embedBatch(texts: string[]): Promise<Embedding[]>
+```
+
+### 並列実行制御
+
+#### 設計方針 (規約)
+
+* concurrency を設定可能とします。
+* デフォルト上限を設けます。
+
+```ts id="batch_concurrency"
+{
+  concurrency: 5
+}
+```
+
+#### ルール
+
+* 外部 API のレート制限を超えません。
+* retry と組み合わせて制御します。
+
 ## SDK 配布戦略
 
 本プロジェクトは、OpenAPI を起点として複数言語向け SDK を生成・配布します。
