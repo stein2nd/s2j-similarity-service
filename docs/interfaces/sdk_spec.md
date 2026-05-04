@@ -1141,6 +1141,22 @@ embedBatch(texts: string[]): Promise<Embedding[]>
 * 外部 API のレート制限を超えません。
 * retry と組み合わせて制御します。
 
+## 並列実行と順序保証
+
+### 設計意図 (ゴール)
+
+バッチ処理の結果整合性を保証します。
+
+### 設計方針 (規約)
+
+* 出力は、入力順を維持します。
+
+### 仕様
+
+```ts
+results[i] corresponds to inputs[i]
+```
+
 ## キャッシュ戦略 (Embedding)
 
 ### 設計意図 (ゴール)
