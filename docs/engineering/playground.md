@@ -2,7 +2,7 @@
  playground / examples 系
  -->
 
-# S2J Similarity Service - Playground 環境と examples
+# S2J Similarity Service - Playground 環境と `examples`
 
 ## 概要
 
