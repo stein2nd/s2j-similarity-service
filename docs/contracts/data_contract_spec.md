@@ -287,6 +287,26 @@ class EmbeddingError extends Error {
 }
 ```
 
+## エラー型定義
+
+### 設計意図 (ゴール)
+
+API および SDK 間で、共通のエラー構造を定義します。
+
+### 型定義
+
+```ts id="error_shape"
+export type ErrorResponse = {
+  code: string
+  message: string
+  details?: unknown
+}
+```
+
+### 注意
+
+SDK では、ErrorResponse を DomainError に変換して throw します。
+
 ## エラー型 (DomainError) 統一
 
 ApiClient では、すべてのエラーを DomainError に正規化します。

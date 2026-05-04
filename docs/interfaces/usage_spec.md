@@ -156,6 +156,21 @@ $provider = new OpenAIEmbeddingProvider([
 
 ## エラーハンドリング
 
+ApiClient は、例外モデルを採用しているため、try/catch により処理します。
+
+```ts id="usage_try_catch"
+try {
+  const result = await client.similarity(input)
+} catch (e) {
+  // エラー処理
+}
+```
+
+### 推奨
+
+* エラー種別 (code) で分岐する。
+* ユーザー表示とログを分離する。
+
 ### PHP
 
 ```php id="php_error"

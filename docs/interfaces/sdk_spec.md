@@ -396,6 +396,61 @@ const mockHttpClient: HttpClient = {
 const client = new DefaultApiClient(mockHttpClient, "http://test");
 ```
 
+## エラーハンドリングモデル
+
+### 設計意図 (ゴール)
+
+ApiClient の失敗時挙動を一意に定義し、ユーザーおよび SDK 実装間での扱いの不一致を防ぎます。
+
+### 設計方針 (規約)
+
+* ApiClient は、**例外 (throw) モデル** を採用します。
+* 成功時はデータを返却し、失敗時は例外を throw します。
+* Result 型 (ok / error) は、採用しません。
+
+### 責務
+
+* エラー処理モデルを統一すること。
+* 呼び出し側の利用パターンを固定すること。
+
+### 非責務
+
+* ログ出力
+* リトライ制御
+* UI 表示
+
+### インターフェース
+
+```ts id="api_throw_model"
+const result = await client.similarity(input)
+// エラー時は例外が throw される
+```
+
+### エラー分類
+
+| 種別 | 内容 |
+|------|------|
+| NetworkError | 通信失敗 |
+| TimeoutError | タイムアウト |
+| ApiError | API レスポンスエラー |
+| ValidationError | 入力不正 |
+| EmbeddingError | 外部 API 失敗 |
+
+### エラー型
+
+```ts id="api_error_type"
+class DomainError extends Error {
+  code: string
+  cause?: unknown
+}
+```
+
+### 例外の伝播ルール
+
+* HttpClient → DomainError に変換
+* EmbeddingStrategy → DomainError に変換
+* ApiClient → そのまま throw
+
 ## HttpClient 実装 (Decorator パターン)
 
 本プロジェクトでは、HttpClient に対する機能拡張を、デコレータパターンで実現します。
