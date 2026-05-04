@@ -22,6 +22,18 @@
 * Playground / Storybook / Test を連動させます。
 * OpenAPI から UI を自動生成可能とします。
 
+### 責務
+
+* Playground / examples / test を統一設計すること。
+* 実行可能サンプルを提供すること。
+* UI ドキュメント連携を定義すること。
+
+### 非責務
+
+* 本番 UI
+* デザイン仕様
+* アクセス制御
+
 ### 非対象 (Out of Scope)
 
 * 本番 UI の提供
