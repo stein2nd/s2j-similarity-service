@@ -121,6 +121,50 @@ await strategy.embed(text, {
 * クライアント (browser) で直接保持しません。
 * 必要に応じて、プロキシ経由で利用します。
 
+## 非同期 API 設計
+
+### 設計意図 (ゴール)
+
+非同期 I/O と同期計算を、統一された API で扱います。
+
+### 設計方針 (規約)
+
+* SDK の公開 API は、async とします。
+* 内部で async → sync を橋渡しします。
+
+### 責務
+
+* 非同期と同期の橋渡しをすること。
+* 一貫した API を提供すること。
+
+### 非責務
+
+* 低レベル I/O
+* 計算ロジック
+
+### API 例
+
+```ts id="sdk_async"
+async function similarity(
+  a: string,
+  b: string
+): Promise<number>
+```
+
+### 内部処理
+
+```plaintext id="async_flow"
+1. embed(a) → async
+2. embed(b) → async
+3. cosineSimilarity → sync
+```
+
+### ルール
+
+* 外部 I/O は、すべて async で統一します。
+* 計算は、sync で統一します。
+* API は、async で統一します。
+
 ## ApiClient 仕様 (型安全インターフェース)
 
 本セクションでは、外部 API との通信を担う `ApiClient` の仕様を定義します。

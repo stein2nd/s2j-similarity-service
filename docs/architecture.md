@@ -270,6 +270,23 @@ flowchart TD
 * Core / Application は、runtime を知りません。
 * Interfaces は、抽象のみを扱います。
 
+## 非同期境界の分離
+
+### 構造
+
+```mermaid id="async_arch"
+flowchart TD
+  A["Infrastructure (async I/O)"] --> B["Interfaces (async API)"]
+  B --> C["Application (sync)"]
+  C --> D["Core (sync)"]
+```
+
+### ルール
+
+* 非同期は、Infrastructure に閉じ込めます。
+* Core は、完全同期。
+* Interfaces が境界となります。
+
 ## 副作用 (External API) の扱い
 
 ### 設計意図 (ゴール)

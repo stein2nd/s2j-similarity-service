@@ -182,7 +182,7 @@ export interface EmbeddingStrategyInterface {
 | 正規化 | API によって未実施 |
 | レスポンス形式 | JSON 構造が異なる |
 
-## バッチ Embedding
+## バッチ版 Embedding
 
 ### 設計意図 (ゴール)
 
@@ -208,6 +208,38 @@ export interface EmbeddingStrategyInterface {
 |----------|--------|
 | OpenAI | 対応 |
 | 他 | 未対応の場合あり |
+
+## 非同期性 (Embedding)
+
+### 設計意図 (ゴール)
+
+外部 API コールを前提とした、非同期処理を明確化します。
+
+### 設計方針 (規約)
+
+* Embedding 取得は、必ず非同期とします。
+* Promise を返します。
+
+### 責務
+
+* Embedding を取得すること。
+
+### 非責務
+
+* 類似度計算
+* 同期処理
+
+### インターフェース
+
+```ts id="embedding_async"
+embed(text: string): Promise<Embedding>
+```
+
+### 理由
+
+* 外部 API コール
+* ネットワーク I/O
+* レイテンシが存在
 
 ## バリデーション
 
