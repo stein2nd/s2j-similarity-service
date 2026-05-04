@@ -178,18 +178,18 @@ score = (cosine_similarity + 1) / 2
 ### 非責務
 
 * Embedding 取得
-* 並列実行制御
+* 並列実行の制御
 * 外部 API 制約
 
 ### 対応パターン
 
-#### 1 × N (単一対複数)
+#### `1×N` (単一対複数)
 
 ```plaintext id="batch_1n"
 query × candidates[]
 ```
 
-#### N × N (全組み合わせ)
+#### `N×N` (全組み合わせ)
 
 ```plaintext id="batch_nn"
 matrix[i][j] = similarity(v_i, v_j)
@@ -202,13 +202,13 @@ matrix[i][j] = similarity(v_i, v_j)
 
 ### 出力仕様
 
-* 1×N (単一対複数) → score 配列
-* N×N (全組み合わせ) → 対称行列
+* `1×N` (単一対複数) → score 配列
+* `N×N` (全組み合わせ) → 対称行列
 
 ### 計算量 O
 
-* 1×N (単一対複数) → O(N)
-* N×N (全組み合わせ) → O(N²)
+* `1×N` (単一対複数) → `O = (N)`
+* `N×N` (全組み合わせ) → `O = (N²)`
 
 ## 正規化ルール
 
