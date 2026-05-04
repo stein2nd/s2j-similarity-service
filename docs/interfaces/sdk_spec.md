@@ -130,7 +130,7 @@ await strategy.embed(text, {
 ### 設計方針 (規約)
 
 * SDK の公開 API は、async とします。
-* 内部で async → sync を橋渡しします。
+* 内部で async → sync の橋渡しをします。
 
 ### 責務
 
