@@ -795,3 +795,19 @@ jobs:
 ```bash id="ci_turbo"
 pnpm turbo run build --parallel
 ```
+
+## Codegen 整合性チェック
+
+### 設計意図 (ゴール)
+
+生成物と OpenAPI のズレを CI 上で検出し、破綻を防ぎます。
+
+### 設計方針 (規約)
+
+* CI で codegen を再実行します。
+* 差分がある場合は、build を失敗させます。
+
+### 責務
+
+* 開発者の手動ミスを防ぐこと。
+* 生成物の一貫性を保証すること。

@@ -394,3 +394,66 @@ cp examples/basic.ts playground/main.ts
 ### 推奨ツール
 
 * openapi-cli / spectral など
+
+## Codegen 再生成タイミング
+
+### 設計意図 (ゴール)
+
+生成物と Source of Truth (OpenAPI) の不整合を防ぎ、常に同期された状態を維持します。
+
+### 設計方針 (規約)
+
+* OpenAPI 変更時は必ず codegen を実行します。
+* 生成物は常に最新状態であることを保証します。
+* 手動更新は禁止します。
+
+### 責務
+
+* codegen 実行タイミングを定義すること。
+* 生成物の整合性を維持すること。
+
+### 非責務
+
+* codegen ツールの選定
+* SDK の設計
+* OpenAPI の内容定義
+
+### 再生成トリガー
+
+| トリガー | 必須 |
+|----------|------|
+| `schema/openapi.yaml` 変更 | 必須 |
+| contracts 変更 | 必須 |
+| 生成スクリプト変更 | 必須 |
+
+### ローカル開発ルール
+
+* 開発者は、schema 変更後に `scripts/generate/all` を実行します。
+* 生成差分は、必ずコミットします。
+
+### pre-commit チェック
+
+#### 方針
+
+* 生成物と schema の差分を検出します。
+* 不整合がある場合は、警告を出します。
+
+### CI 検証
+
+#### 方針
+
+* CI 上で codegen を再実行します。
+* 差分が存在する場合は、ビルドを失敗させます。
+
+```plaintext id="ci_rule"
+if git diff --exit-code generated/; then
+  pass
+else
+  fail
+fi
+```
+
+### 禁止事項
+
+* generated ディレクトリを手動で編集しない。
+* schema と生成物の不整合状態でマージしない。
