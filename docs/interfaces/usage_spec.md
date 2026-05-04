@@ -154,6 +154,16 @@ $provider = new OpenAIEmbeddingProvider([
 ]);
 ```
 
+## API キーの設定
+
+API キーは、アプリケーション側で管理し、Strategy に渡します。
+
+```ts id="usage_api_key"
+const strategy = new OpenAIEmbeddingStrategy({
+  apiKey: process.env.OPENAI_API_KEY
+})
+```
+
 ## エラーハンドリング
 
 ApiClient は、例外モデルを採用しているため、try/catch により処理します。
