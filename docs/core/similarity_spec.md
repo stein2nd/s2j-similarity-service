@@ -245,6 +245,34 @@ matrix[i][j] = similarity(v_i, v_j)
 function cosineSimilarity(a: number[], b: number[]): number
 ```
 
+## ベクトル次元の整合性
+
+### 設計意図 (ゴール)
+
+異なる次元の Embedding による誤計算を防止します。
+
+### 設計方針 (規約)
+
+* 異なる次元のベクトルは計算不可とします。
+* 実行時に検証し、例外を投げます。
+
+### 責務
+
+* 入力整合性をチェックすること。
+
+### 非責務
+
+* 自動補完
+* パディング処理
+
+### 仕様
+
+```ts
+if (a.length !== b.length) {
+  throw new DimensionMismatchError()
+}
+```
+
 ## 正規化ルール
 
 ### 設計意図 (ゴール)
