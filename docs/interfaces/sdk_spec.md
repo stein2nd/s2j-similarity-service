@@ -542,6 +542,35 @@ const service = new SimilarityService({
 })
 ```
 
+## Logger、Tracer の注入
+
+### 設計意図 (ゴール)
+
+ログ出力を、外部から制御可能にします。
+
+### 設計方針 (規約)
+
+* SDK は、logger を保持するが実装しません。
+* ログ出力は、DI により制御します。
+
+### インターフェース
+
+```ts id="logger_interface"
+export interface Logger {
+  info(message: string, meta?: Record<string, unknown>): void
+  error(message: string, meta?: Record<string, unknown>): void
+}
+```
+
+### 利用例
+
+```ts id="logger_usage"
+new ApiClient({
+  httpClient,
+  logger
+})
+```
+
 ## エラーハンドリングモデル
 
 ### 設計意図 (ゴール)

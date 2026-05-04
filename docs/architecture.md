@@ -236,6 +236,23 @@ flowchart TD
 * タイムアウトは、ApiClient に持たせない。
 * サーキットブレーカーは、HttpClient の責務とする。
 
+## Observability の責務分離
+
+### 構造
+
+```plaintext id="obs_arch"
+Core        → ログなし
+Application → 軽量ログ
+Interfaces  → 主要イベント
+Infra       → 詳細ログ
+```
+
+### ルール
+
+* Core は、ログ出力を行いません。
+* Application / Interfaces で emit します。
+* Infrastructure は、詳細ログを出してよい
+
 ## Runtime 依存の分離
 
 ### 構造
