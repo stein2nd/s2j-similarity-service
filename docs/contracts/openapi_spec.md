@@ -69,7 +69,7 @@ OpenAPI 定義から、以下を生成します。
 * Zod スキーマ (runtime validation)
 * API クライアント
 
-## 型定義ルール (`nullable`、`optional`、`enum`)
+## 型定義ルール (`nullable`、`required`、`enum`)
 
 ### 設計意図 (ゴール)
 
