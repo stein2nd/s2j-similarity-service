@@ -380,3 +380,27 @@ export class UnknownError extends Error {
 | Zod 失敗 | ValidationError |
 | HTTP `4xx`/`5xx` | ApiError |
 | その他 | UnknownError |
+
+## `nullable`、`undefined` の意味
+
+### 設計意図 (ゴール)
+
+フィールドの欠如と null 値の意味を明確に区別します。
+
+### 定義
+
+* `undefined`: フィールド自体が存在しない
+* `nullable`: フィールドは存在し、値として null を許容する
+
+### 例
+
+```ts id="ts_example"
+type Example = {
+  name: string
+  description?: string | null
+}
+```
+
+### 注意
+
+`nullable`、`undefined` の使い分けは、[OpenAPI 契約の統合仕様](./openapi_spec.md) に従います。

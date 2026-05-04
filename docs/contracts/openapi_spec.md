@@ -69,6 +69,93 @@ OpenAPI 定義から、以下を生成します。
 * Zod スキーマ (runtime validation)
 * API クライアント
 
+## 型定義ルール (`nullable`、`optional`、`enum`)
+
+### 設計意図 (ゴール)
+
+OpenAPI と各言語 (TypeScript、PHP) の型不整合を防ぎ、codegen の安定性を確保します。
+
+### 設計方針 (規約)
+
+* `required` によって、必須項目を明示します。
+* `null` と未定義 (`undefined`) を明確に区別します。
+* `enum` は、完全列挙とします。
+
+### 責務
+
+* OpenAPI 記述の厳密性を確保すること。
+* codegen の安定性を保証すること。
+
+### 非責務
+
+* DTO の利用方法
+* 実行時バリデーション
+* UI 表現
+
+### `required` のルール
+
+* `required` に含まれるフィールドは、必須とします。
+* `required` に含まれない場合、そのフィールドは `optional` とします。
+
+```yaml id="required_example"
+type: object
+required:
+  - text
+properties:
+  text:
+    type: string
+  metadata:
+    type: string
+```
+
+### `nullable` のルール
+
+* `nullable` は、「値として null を許容する」ことを意味します。
+* `undefined` (未定義) とは別概念とします。
+
+```yaml id="nullable_example"
+type: object
+properties:
+  description:
+    type: string
+    nullable: true
+```
+
+### `enum` のルール
+
+* `enum` は、すべての許容値を列挙します。
+* 不明な値は、許容しません。
+
+```yaml id="enum_example"
+type: string
+enum:
+  - openai
+  - claude
+  - gemini
+```
+
+### TypeScript へのマッピング
+
+| OpenAPI | TypeScript |
+|--------|-----------|
+| `required` | 必須プロパティ |
+| `optional` | `?` |
+| `nullable` | `\| null` |
+
+### PHP へのマッピング
+
+| OpenAPI | PHP |
+|--------|-----|
+| `required` | non-null |
+| `optional` | `?Type` または未設定 |
+| `nullable` | `?Type` |
+
+### 禁止事項
+
+* `nullable` と `required` の意味を混同すること。
+* `enum` を省略する (string で逃げる) こと。
+* `optional` + `nullable` を無秩序に併用すること。
+
 ## バリデーション
 
 * runtime validation は、Zod により実施します。
