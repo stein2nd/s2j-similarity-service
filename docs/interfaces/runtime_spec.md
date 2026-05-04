@@ -22,6 +22,18 @@
 * 自動検出は行いません。
 * conditional exports を使用します。
 
+### 責務
+
+* runtime (node / edge / browser) 差異を定義すること。
+* build の出し分け戦略を定義すること。
+* package exports を設計すること。
+
+### 非責務
+
+* API クライアント設計
+* business logic
+* CI/CD
+
 ### 非対象 (Out of Scope)
 
 * runtime 判定ロジック
