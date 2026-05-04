@@ -262,7 +262,7 @@ flowchart TD
 ### 設計方針 (規約)
 
 * Embedding API は Infrastructure に閉じ込めます。
-* Application 経由でのみ呼び出します。
+* Application 経由でのみコールします。
 * 例外は、ドメインエラーに変換します。
 
 ## 外部 API 連携の設計 (Strategy + Adapter)
