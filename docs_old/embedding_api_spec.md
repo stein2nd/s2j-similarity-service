@@ -25,7 +25,7 @@
 | `model` | string | モデル名 (例: `text-embedding-3-small`) |
 | `input` | string | ベクトル化するテキスト本文 |
 
-本ライブラリでは、`language` / `locale` は API に送っていません (インターフェイス上は呼び出し側の都合で保持)。
+本ライブラリでは、`language` / `locale` は API に送っていません (インターフェイス上はコール側の都合で保持)。
 
 ## レスポンス (成功時)
 
@@ -52,7 +52,7 @@
 | HTTP ステータス≠200 | `Exception` をスロー。メッセージにステータスコードと、可能なら `error.message` を含める。 |
 | レスポンス JSON の解析失敗、または `data[0].embedding` が存在しない | 空配列 `[]` を返す実装とするか、同様に `Exception` とする (現状実装は `?? []`)。 |
 
-※ 共通ライブラリでは **API キーを保持しない**。呼び出し側で環境変数 (例: `OPENAI_API_KEY`) や WordPress 設定で管理すること。
+※ 共通ライブラリでは **API キーを保持しない**。コール側で環境変数 (例: `OPENAI_API_KEY`) や WordPress 設定で管理すること。
 
 ## 対応する実装
 
