@@ -213,3 +213,77 @@ export type SimilarityResponse = {
   }
 }
 ```
+
+## エラー型 (DomainError) 統一
+
+ApiClient では、すべてのエラーを DomainError に正規化します。
+
+### 設計意図 (ゴール)
+
+* エラー処理を一貫させます。
+* UI、Application 層での分岐を、単純化します。
+* 外部 API 依存を、隠蔽します。
+
+### 設計方針 (規約)
+
+* 外部エラーは、直接投げません。
+* 必ず DomainError に変換します。
+* 型で分類可能にします。
+
+### 責務
+
+* エラーを分類することと標準化すること。
+* 「型安全なエラーハンドリング」を提供すること。
+
+### 非責務
+
+* UI 表示ロジック
+* ログフォーマット
+
+### エラー型定義
+
+```ts
+export type DomainError =
+  | NetworkError
+  | TimeoutError
+  | ValidationError
+  | ApiError
+  | UnknownError;
+```
+
+### 各エラー
+
+```ts
+export class NetworkError extends Error {
+  readonly type = "NetworkError";
+}
+
+export class TimeoutError extends Error {
+  readonly type = "TimeoutError";
+}
+
+export class ValidationError extends Error {
+  readonly type = "ValidationError";
+}
+
+export class ApiError extends Error {
+  readonly type = "ApiError";
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
+
+export class UnknownError extends Error {
+  readonly type = "UnknownError";
+}
+```
+
+### 変換ルール
+
+| 元エラー | DomainError |
+| ------------ | --------------- |
+| fetch 失敗 | NetworkError |
+| AbortError | TimeoutError |
+| Zod 失敗 | ValidationError |
+| HTTP `4xx`/`5xx` | ApiError |
+| その他 | UnknownError |
