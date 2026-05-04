@@ -1,0 +1,1143 @@
+<!-- 
+ SDK 設計
+ -->
+
+# S2J Similarity Service - 型安全な SDK 設計
+
+## 概要
+
+本仕様は、型安全な SDK の設計および API クライアントの構成を定義します。
+
+## 設計意図、設計方針、非対象
+
+### 設計意図 (ゴール)
+
+型安全な API クライアントを提供します。
+
+* 型安全な API コールを目指します。
+* ユーザーの実装負担を軽減します。
+* API 変更に追従します。
+
+### 設計方針 (規約)
+
+* generated client を内部利用します。
+* HttpClient を抽象化します。
+* DI による拡張性を確保します。
+
+* fetch abstraction
+* retry / timeout
+* DI 可能
+
+### 非対象 (Out of Scope)
+
+* UI 提供
+* サーバー実装
+* 認証基盤
+
+### 構成
+
+* ApiClient
+* HttpClient (Decorator)
+* Error (DomainError)
+
+### 依存
+
+* generated client を内部利用
+
+## ApiClient 仕様 (型安全インターフェース)
+
+本セクションでは、外部 API との通信を担う `ApiClient` の仕様を定義します。
+本クライアントは、OpenAPI から生成された型 (TypeScript、Zod) を利用し、型安全な API コールを提供します。
+
+* ApiClient は、Interfaces 層に属します。
+* Application 層は、ApiClient のみを依存対象とします。
+* 実装は、DI により差し替え可能とします。
+
+### 設計意図 (ゴール)
+
+* API コールを、型安全にします。
+* 契約 (OpenAPI) と実装の、乖離を防ぎます。
+* エラーハンドリングとリトライを、統一します。
+
+### 設計方針 (規約)
+
+* OpenAPI から生成された型のみを使用します。
+* raw client (generated/api) は、直接使用しません。
+* ApiClient が、唯一の外部 API 窓口となります。
+* 入出力は、すべて型で保証します。
+
+### エラーハンドリング方針
+
+* `4xx`: ValidationError
+* `5xx`: ServerError
+* Network: Retry 対象
+
+### 責務
+
+| 項目 | 内容 |
+| ------- | -------------------------- |
+| 認証 | API キーを付与すること。 |
+| 通信 | HTTP リクエストを実行すること。 |
+| バリデーション | Zod による runtime validation を実行すること。 |
+| エラー処理 | HTTP エラーの統一処理を実行すること。 |
+
+### 非責務
+
+| 項目 | 内容 |
+| ------- | --------------------- |
+| DTO 定義 | generated に委譲 |
+| 類似度計算 | Core に委譲 |
+| プロバイダ処理 | EmbeddingStrategy に委譲 |
+
+### rawClient との関係
+
+* generated/api の raw client は、低レベル API です。
+* ApiClient は、これをラップします。
+* raw client の直接使用は、禁止します。
+
+### インターフェース定義
+
+```ts
+import { SimilarityRequest, SimilarityResponse } from "@s2j/similarity-client";
+
+export interface ApiClient {
+  calculateSimilarity(
+    request: SimilarityRequest
+  ): Promise<SimilarityResponse>;
+
+  generateEmbedding(
+    request: EmbeddingRequest
+  ): Promise<EmbeddingResponse>;
+}
+```
+
+### 実装例 (fetch ベース)
+
+```ts
+import { z } from "zod";
+import {
+  SimilarityRequest,
+  SimilarityResponse,
+} from "@s2j/similarity-client";
+import { SimilarityResponseSchema } from "@s2j/similarity-client";
+
+export class DefaultApiClient implements ApiClient {
+  constructor(
+    private readonly baseUrl: string,
+    private readonly apiKey?: string
+  ) {}
+
+  async calculateSimilarity(
+    request: SimilarityRequest
+  ): Promise<SimilarityResponse> {
+    const res = await fetch(`${this.baseUrl}/v1/similarity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(this.apiKey && { Authorization: `Bearer ${this.apiKey}` }),
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    // runtime validation (Zod)
+    return SimilarityResponseSchema.parse(json);
+  }
+}
+```
+
+### エラーのロギング戦略
+
+ApiClient は、エラー発生時にログを出力するが、ログ処理は、抽象化された Logger インターフェースを通じて行います。
+
+#### 設計意図 (ゴール)
+
+* ログ出力先は、差し替え (console、Datadog、Sentry) 可能にします。
+* エラー観測性を向上させます。
+* ドメインロジックとログ処理を分離します。
+
+#### 設計方針 (規約)
+
+* ログは、Logger インターフェース経由で出力します。
+* DomainError を、そのままログに出しません (整形します)。
+* 個人情報 (PII) は、ログに含めません。
+
+#### 責務
+
+* エラーの観測性を向上すること。
+* ログ出力を統一すること。
+
+#### 非責務
+
+* ログ保存先の管理
+* アラート設定
+
+#### ログポリシー
+
+| 項目 | 内容 |
+| --------- | ----- |
+| エラー内容 | 必須 |
+| HTTP ステータス | 必須 |
+| リクエストボディ | 原則非出力 |
+| 個人情報 | 出力禁止 |
+
+#### Logger インターフェース
+
+```ts id="logger_if"
+export interface Logger {
+  error(message: string, meta?: Record<string, unknown>): void;
+  warn(message: string, meta?: Record<string, unknown>): void;
+  info(message: string, meta?: Record<string, unknown>): void;
+}
+```
+
+#### デフォルト実装
+
+```ts id="logger_console"
+export class ConsoleLogger implements Logger {
+  error(msg: string, meta?: any) {
+    console.error(msg, meta);
+  }
+  warn(msg: string, meta?: any) {
+    console.warn(msg, meta);
+  }
+  info(msg: string, meta?: any) {
+    console.info(msg, meta);
+  }
+}
+```
+
+#### ApiClient 内での利用
+
+```ts id="logger_use"
+try {
+  return await this.http.request(...);
+} catch (err) {
+  this.logger.error("API request failed", {
+    errorType: err?.type,
+    message: err?.message,
+  });
+  throw err;
+}
+```
+
+### OpenAPI Error Schema の拡張
+
+OpenAPI にエラー用スキーマを定義し、DomainError との対応関係を明確化します。
+
+#### 設計意図 (ゴール)
+
+* API エラーの構造を統一します。
+* クライアント側で型安全に扱います。
+* エラーハンドリングの一貫性を確保します。
+
+#### 設計方針 (規約)
+
+* すべてのエラーは、共通フォーマットで返します。
+* `error.code` によって、分類可能とします。
+* OpenAPI に、明示的に定義します。
+
+#### 責務
+
+* エラー構造を標準化すること。
+* API 契約との整合性を確保すること。
+
+#### 非責務
+
+* エラー表示のデザイン
+* メッセージ翻訳
+
+#### OpenAPI 例
+
+```yaml id="error_schema"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: INVALID_INPUT
+        message:
+          type: string
+        details:
+          type: object
+          nullable: true
+```
+
+#### ステータス別レスポンス
+
+```yaml id="error_response"
+responses:
+  '400':
+    description: Validation Error
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
+```
+
+#### DomainError との対応
+
+| error.code | DomainError |
+| -------------- | --------------- |
+| INVALID_INPUT | ValidationError |
+| UNAUTHORIZED | ApiError |
+| RATE_LIMIT | ApiError |
+| INTERNAL_ERROR | ApiError |
+
+#### マッピング実装例
+
+```ts id="error_map2"
+function mapErrorResponse(body: any): DomainError {
+  switch (body.code) {
+    case "INVALID_INPUT":
+      return new ValidationError(body.message);
+    default:
+      return new ApiError(500, body.message);
+  }
+}
+```
+
+#### 拡張ポイント
+
+* エラーコードの、列挙型化 (enum)
+* i18n 対応
+* フロント UI との連携
+
+## ApiClient の DI (Dependency Injection) 設計
+
+ApiClient は、依存性注入 (DI) により、構築されます。
+これにより、通信実装・設定・ポリシーを柔軟に差し替え可能とします。
+
+### 設計意図 (ゴール)
+
+* テスト容易性を向上します (モック可能)。
+* 環境ごとの差し替え (開発、本番) を可能とします。
+* 通信ポリシー (Retry、Timeout) を外部化します。
+
+### 設計方針 (規約)
+
+* ApiClient は、具象 HttpClient に依存しません。
+* 依存は、すべてコンストラクタで注入します。
+* デフォルト構成を、ファクトリで提供します。
+
+### 責務
+
+* 依存関係を明示化すること。
+* 「実装の差し替え性」を確保すること。
+
+### 非責務
+
+* 設定値の管理 (環境変数など)
+* インスタンスのグローバル管理
+
+### コンストラクタ定義
+
+```ts id="di_ctor"
+export class DefaultApiClient implements ApiClient {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly baseUrl: string,
+    private readonly apiKey?: string
+  ) {}
+}
+```
+
+### ファクトリ (推奨)
+
+```ts id="di_factory"
+export function createApiClient(config: {
+  baseUrl: string;
+  apiKey?: string;
+  timeoutMs?: number;
+  retryCount?: number;
+}): ApiClient {
+  const base = new FetchHttpClient();
+
+  const http =
+    new RetryHttpClient(
+      new TimeoutHttpClient(
+        base,
+        config.timeoutMs ?? 5000
+      ),
+      config.retryCount ?? 2
+    );
+
+  return new DefaultApiClient(http, config.baseUrl, config.apiKey);
+}
+```
+
+### テスト時の差し替え
+
+```ts id="di_mock"
+const mockHttpClient: HttpClient = {
+  request: async () => ({ similarityScore: 0.9 })
+};
+
+const client = new DefaultApiClient(mockHttpClient, "http://test");
+```
+
+## HttpClient 実装 (Decorator パターン)
+
+本プロジェクトでは、HttpClient に対する機能拡張を、デコレータパターンで実現します。
+
+### 設計意図 (ゴール)
+
+* Retry、Timeout、Circuit Breaker を、疎結合に追加します。
+* 機能の組み合わせを柔軟にします。
+* 単一責務を維持します。
+
+### 設計方針 (規約)
+
+* HttpClient は、最小インターフェースとします。
+* 機能は、すべてデコレータとして実装します。
+* デコレータは、HttpClient をラップします。
+
+### 責務
+
+* 各デコレータは、単一の通信機能を提供すること。
+* 合成によって、機能を拡張すること。
+
+### 非責務
+
+* API 仕様の解釈 (ApiClient)
+* DTO の検証 (Zod)
+
+### インターフェース
+
+```ts
+export interface HttpClient {
+  request<TResponse>(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<TResponse>;
+}
+```
+
+### ベース実装
+
+```ts
+export class FetchHttpClient implements HttpClient {
+  async request<TResponse>(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<TResponse> {
+    const res = await fetch(input, init);
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status}`);
+    }
+
+    return res.json() as Promise<TResponse>;
+  }
+}
+```
+
+### デコレータ例
+
+#### RetryHttpClient
+
+```ts
+export class RetryHttpClient implements HttpClient {
+  constructor(
+    private readonly inner: HttpClient,
+    private readonly maxRetries = 2
+  ) {}
+
+  async request<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
+    let lastError;
+
+    for (let i = 0; i <= this.maxRetries; i++) {
+      try {
+        return await this.inner.request<T>(input, init);
+      } catch (e) {
+        lastError = e;
+      }
+    }
+
+    throw lastError;
+  }
+}
+```
+
+#### TimeoutHttpClient
+
+```ts
+export class TimeoutHttpClient implements HttpClient {
+  constructor(
+    private readonly inner: HttpClient,
+    private readonly timeoutMs = 5000
+  ) {}
+
+  async request<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      return await this.inner.request<T>(input, {
+        ...init,
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(id);
+    }
+  }
+}
+```
+
+### 構成例
+
+```ts
+const httpClient =
+  new RetryHttpClient(
+    new TimeoutHttpClient(
+      new FetchHttpClient()
+    )
+  );
+```
+
+### 通信制御 (Retry、Timeout、Circuit Breaker)
+
+ApiClient は、外部 API コールにおける信頼性を確保するため、以下の通信制御を提供します。
+
+#### 設計意図 (ゴール)
+
+* 一時的なネットワーク障害から回復すること。
+* API の応答遅延による、処理停止を防止すること。
+* 外部サービス障害時の、システム全体への影響を抑制すること。
+
+#### 設計方針 (規約)
+
+* 設定値は、コンストラクタ経由で注入可能とします。
+* リトライ対象は、「安全な再実行が可能なリクエスト」のみとします。
+* タイムアウトは、全リクエストに適用します。
+* サーキットブレーカーは、外部 API 単位で管理します。
+
+#### 責務
+
+* 「通信の信頼性」を確保すること。
+* エラーを分類すること、制御すること。
+
+#### 非責務
+
+* ビジネスロジックのリトライ判断 (Application 側)
+* API 仕様変更への対応 (Contracts 側)
+
+## エラー分類との関係 (Retry、Circuit Breaker)
+
+| エラー種別 | Retry | Circuit Breaker |
+| ------------ | ----- | --------------- |
+| NetworkError | 可 | 可 |
+| `5xx` | 可 | 可 |
+| `4xx` | 不可 | 不可 |
+
+### Circuit Breaker
+
+#### 状態
+
+* `CLOSED`: 通常動作
+* `OPEN`: リクエスト遮断
+* `HALF-OPEN`: 試験的に1リクエスト許可
+
+#### 遷移条件
+
+| 条件 | 動作 |
+| -------- | --------- |
+| 連続失敗の回数超過 | OPEN |
+| 一定時間の経過 | HALF-OPEN |
+| 成功 | CLOSED |
+| 再失敗 | OPEN |
+
+#### デフォルト設定
+
+| 項目 | 値 |
+| ---- | --- |
+| 失敗閾値 | 5回 |
+| 回復時間 | 30秒 |
+
+### Retry
+
+#### ポリシー
+
+* 対象
+  * ネットワークエラー
+  * `5xx` レスポンス
+* 非対象
+  * `4xx` (バリデーションエラー等)
+
+#### デフォルト設定
+
+| 項目 | 値 |
+| -------- | ----------- |
+| 最大リトライ回数 | 2 |
+| バックオフ | exponential |
+| 初期の待機時間 | 100ms |
+
+### Timeout
+
+#### ポリシー
+
+* 全リクエストに適用します。
+* fetch の AbortController を使用します。
+
+#### デフォルト設定
+
+| 項目 | 値 |
+| ------ | ------ |
+| タイムアウト | 5000ms |
+
+## Fetch Abstraction (通信レイヤ抽象化)
+
+ApiClient は、HTTP 通信を直接扱わず、抽象化された Fetch インターフェースを経由して実行します。
+
+### 設計意図 (ゴール)
+
+* 通信実装 (fetch、axios、node-fetch) の差し替えを可能にします。
+* テスト容易性を向上させます (Mock 可能)。
+* 通信制御 (Retry、Timeout、Circuit Breaker) を一元化します。
+
+### 設計方針 (規約)
+
+* ApiClient は、Fetch 実装に依存しません。
+* Fetch 実装は、DI (依存性注入) で渡します。
+* 通信制御は、Fetch 層に集約します。
+
+### 責務
+
+* 通信を抽象化すること。
+* 実装差し替えを提供すること。
+* テスト容易性を確保すること。
+
+### 非責務
+
+* API 仕様の管理 (OpenAPI)
+* DTO 定義 (generated)
+
+### インターフェース定義
+
+```ts
+export interface HttpClient {
+  request<TResponse>(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<TResponse>;
+}
+```
+
+### 実装構成
+
+```mermaid
+flowchart TD
+  A["ApiClient"] --> B["HttpClient (抽象)"]
+  B --> C["FetchHttpClient (実装)"]
+  C --> D["fetch、axios"]
+```
+
+### デフォルト実装 (FetchHttpClient)
+
+```ts
+export class FetchHttpClient implements HttpClient {
+  async request<TResponse>(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<TResponse> {
+    const res = await fetch(input, init);
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error: ${res.status}`);
+    }
+
+    return res.json() as Promise<TResponse>;
+  }
+}
+```
+
+### ApiClient との統合
+
+```ts
+export class DefaultApiClient implements ApiClient {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly baseUrl: string
+  ) {}
+
+  async calculateSimilarity(request: SimilarityRequest) {
+    return this.http.request<SimilarityResponse>(
+      `${this.baseUrl}/v1/similarity`,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+```
+
+### 拡張ポイント
+
+* RetryHttpClient (デコレータ)
+* TimeoutHttpClient (デコレータ)
+* CircuitBreakerHttpClient (デコレータ)
+
+### デコレータ構成例
+
+```mermaid
+flowchart TD
+  A["ApiClient"] --> B["RetryHttpClient"]
+  B --> C["TimeoutHttpClient"]
+  C --> D["FetchHttpClient"]
+```
+
+## SDK 配布戦略
+
+本プロジェクトは、OpenAPI を起点として複数言語向け SDK を生成・配布します。
+
+### 設計意図 (ゴール)
+
+* フロントエンドとバックエンド間の契約を共有します。
+* ユーザーの実装コストを削減します。
+* 型安全な API 利用を促進します。
+
+### 設計方針 (規約)
+
+* OpenAPI を、唯一の契約とします。
+* SDK は、すべて codegen により生成します。
+* 手動実装の SDK は、提供しません。
+
+### 責務
+
+* 契約を配布すること。
+* 型安全な利用を提供すること。
+
+### 非責務
+
+* 実装ロジックの提供
+* アプリケーション固有処理
+
+### 配布対象
+
+| SDK | 配布方法 |
+| ---------- | -------- |
+| TypeScript | npm |
+| PHP | Composer |
+
+### 非配布対象
+
+* ApiClient (実装)
+* HttpClient (通信層)
+* Strategy (Embedding)
+
+### バージョン整合性
+
+* OpenAPI version と SDK version を同期させます。
+* Git tag を基準とします。
+
+### リリースフロー
+
+```mermaid id="sdk_release"
+flowchart TD
+  A["`openapi.yaml` 更新"] --> B["generate 実行"]
+  B --> C["CI 検証"]
+  C --> D["version 更新"]
+  D --> E["`npm publish`"]
+  D --> F["`composer publish`"]
+```
+
+### TypeScript SDK
+
+#### パッケージ
+
+```plaintext id="sdk_ts_pkg"
+@s2j/similarity-client
+```
+
+#### 内容
+
+* TypeScript 型
+* Zod スキーマ
+* (任意) raw API client
+
+#### 公開対象
+
+```plaintext id="sdk_ts_files"
+dist/
+  index.js
+  index.d.ts
+```
+
+#### バージョニング
+
+* OpenAPI の変更に追従します。
+* 破壊的変更 → major
+* 互換追加 → minor
+* 修正 → patch
+
+### PHP SDK
+
+#### パッケージ
+
+```plaintext id="sdk_php_pkg"
+s2j/similarity-client
+```
+
+#### 内容
+
+* DTO (`Contracts/DTO`)
+
+#### 配布方法
+
+* Packagist
+* GitHub リポジトリ
+
+## SDK の分割戦略 (client と core の分離)
+
+本プロジェクトでは、SDK を責務ごとに分割し、疎結合な構成とします。
+
+### 設計意図 (ゴール)
+
+* 依存関係を最小化します。
+* ユーザーの選択肢を拡張します。
+* 再利用性を向上させます。
+
+### 設計方針 (規約)
+
+* 契約 (Contracts) と実装 (Client) を、分離します。
+* Core ロジックは、独立パッケージとします。
+* 各パッケージは、単一責務を持ちます。
+
+### 責務
+
+* SDK の構造を設計すること。
+* 依存関係を明確化すること。
+
+### 非責務
+
+* アプリケーション統合
+* UI 層の設計
+
+### 利点
+
+* 軽量利用 (型のみ)
+* 高度利用 (フル SDK)
+* テスト容易性向上
+
+### 注意点
+
+* 過剰分割を避けてください。
+* バージョン整合性を維持してください。
+
+### パッケージ構成
+
+```plaintext id="sdk_split"
+packages/
+  ts-client/   ← 契約 (型、Zod)
+  core/        ← 類似度ロジック
+  client/      ← ApiClient 実装
+```
+
+### 各パッケージの責務
+
+#### ts-client (Contracts)
+
+* OpenAPI 由来の型
+* Zod スキーマ
+* raw API client (任意)
+
+#### core (Domain)
+
+* 類似度計算ロジック
+* ベクトル操作
+* 外部依存なし
+
+#### client (Interfaces)
+
+* ApiClient 実装
+* HttpClient、Retry、Timeout
+* DomainError、Logger
+
+### 依存関係
+
+```mermaid id="sdk_dep"
+flowchart TD
+  A["client"] --> B["ts-client (独立)"]
+  A --> C["core (独立、任意)"]
+```
+
+### 配布戦略
+
+| パッケージ | 配布 |
+| --------- | --- |
+| ts-client | npm |
+| core | npm |
+| client | npm |
+
+### 利用例
+
+#### 最小利用 (型のみ)
+
+```ts id="sdk_use1"
+import { SimilarityRequest } from "@s2j/similarity-client";
+```
+
+#### フル利用 (API コール)
+
+```ts id="sdk_use2"
+import { createApiClient } from "@s2j/similarity-client-client";
+```
+
+#### コアのみ利用
+
+```ts id="sdk_use3"
+import { cosineSimilarity } from "@s2j/similarity-core";
+```
+
+## SDK のマルチバージョン管理
+
+本プロジェクトでは、複数バージョンの SDK を並行して維持可能とします。
+
+### 設計意図 (ゴール)
+
+* 既存クライアントの、互換性を維持します。
+* 段階的なアップグレードを、可能にします。
+* breaking change の影響を、局所化します。
+
+### 設計方針 (規約)
+
+* SemVer に従います。
+* major バージョンは、互換性を持ちません。
+* 過去バージョンも、一定期間サポートします。
+
+### 責務
+
+* SDK を長期運用すること。
+* 互換性を維持すること。
+
+### 非責務
+
+* バージョン間の自動移行
+* データのマイグレーション
+
+### OpenAPI との対応
+
+* OpenAPI version と SDK version を同期。
+* breaking change は、major とします。
+
+### バージョニングモデル
+
+| バージョン | 意味 |
+| ----- | ------------------ |
+| v1.x | 安定版 |
+| v2.x | breaking change 含む |
+| v3.x | 新仕様 |
+
+### リリース戦略
+
+```mermaid id="multi_release"
+flowchart TD
+  A["v1: 保守"] --> B["v2: 開発"]
+  B --> C["v3: 実験"]
+```
+
+### 互換性ポリシー
+
+| 変更 | 対応 |
+| ------- | ----- |
+| フィールド追加 | minor |
+| フィールド削除 | major |
+| 型変更 | major |
+
+### 廃止 (Deprecation)
+
+* deprecated フラグを OpenAPI に付与
+* SDK に警告を出す
+
+### npm (TypeScript SDK)
+
+* major ごとに、共存可能とします。
+* import は、バージョン固定します。
+
+```ts id="sdk_import"
+import { SimilarityRequest } from "@s2j/similarity-client@1";
+```
+
+### Composer (PHP)
+
+* バージョン制約で管理します。
+
+```json id="composer_req"
+{
+  "require": {
+    "s2j/similarity-client": "^1.0"
+  }
+}
+```
+
+## default パッケージ設計 (入口統一)
+
+本プロジェクトでは、複数の runtime 向けパッケージが存在する中で、ユーザーが迷わないように「標準入口 (default package)」を定義します。
+
+### 設計意図 (ゴール)
+
+* 初学者・ユーザーの迷いを排除します。
+* ドキュメントと実装の入口を統一します。
+* ユースケースの80%を簡単にします。
+
+### 設計方針 (規約)
+
+* default は、最も一般的な環境 (Node.js) を指します。
+* 他 runtime は、明示的に選択させます。
+* default は、薄いラッパーとして実装します。
+
+### 責務
+
+* SDK の入口を統一すること。
+* 利用体験を簡素化すること。
+
+### 非責務
+
+* runtime の自動判定
+* 最適化の判断
+
+### 利点
+
+* 学習コストが低減できること。
+* 導入が簡易化できること。
+* 一貫した利用方法であること。
+
+### 注意点
+
+* default の責務を肥大化させないでください。
+* runtime 固有ロジックを含めないでください。
+
+### ドキュメント方針
+
+* 基本例は、default を使用します。
+* runtime 別は、応用として説明します。
+
+### 実装方針
+
+default パッケージは、内部的に node 実装に委譲します。
+
+```ts id="default_impl"
+export * from "@s2j/similarity-client-node";
+```
+
+### パッケージ構成
+
+```plaintext id="default_pkg"
+@s2j/similarity-client         ← default (Node)
+@s2j/similarity-client-node
+@s2j/similarity-client-edge
+@s2j/similarity-client-browser
+```
+
+### 利用例
+
+```ts id="default_use"
+import { createClient } from "@s2j/similarity-client";
+```
+
+### 明示利用 (上級者)
+
+```ts id="explicit_use"
+import { createClient } from "@s2j/similarity-client-edge";
+```
+
+## SDK 命名規則
+
+本プロジェクトでは、長期運用と可読性を確保するため、パッケージおよびモジュールの命名規則を統一します。
+
+### 設計意図 (ゴール)
+
+* パッケージの役割を、名前から即座に理解できるようにします。
+* モノレポ運用での混乱を防ぎます。
+* 将来的な拡張に対応します。
+
+### 設計方針 (規約)
+
+* `@s2j/` 接頭辞を統一します。
+* `<domain>-<role>-<runtime>` の構造を採用します。
+* role は、固定語彙を使用します。
+
+### 責務
+
+* 命名を統一すること。
+* 構造を明確化すること。
+
+### 非責務
+
+* 実装内容を保証すること。
+* バージョンを管理すること。
+
+### 利点
+
+* 可読性を向上できること。
+* 一貫性を確保できること。
+* 拡張の容易性を期待できること。
+
+### 注意点
+
+* 命名変更は、breaking change としてください。
+* 初期設計で固定してください。
+
+### 禁止事項
+
+* (utils、lib など) あいまいな名前にしないでください。
+* runtime を省略した、特殊パッケージにしないでください。
+* role が不明確な命名をしないでください。
+
+### 命名フォーマット
+
+```plaintext id="naming_format"
+@s2j/<domain>-<role>-<runtime>
+```
+
+### 例
+
+```plaintext id="naming_examples"
+@s2j/similarity-client          ← default
+@s2j/similarity-client-node
+@s2j/similarity-client-edge
+@s2j/similarity-client-browser
+@s2j/similarity-core
+@s2j/similarity-contracts
+```
+
+### role 定義
+
+| role | 意味 |
+| --------- | --------- |
+| client | API クライアント |
+| core | ドメインロジック |
+| contracts | 型・スキーマ |
+
+### runtime 定義
+
+| runtime | 意味 |
+| ------- | ------------ |
+| node | Node.js |
+| edge | Edge runtime |
+| browser | Browser |
+
+### import 一貫性
+
+```ts id="naming_import"
+import { createClient } from "@s2j/similarity-client-node";
+```
+
+### 将来拡張
+
+```plaintext id="naming_future"
+@s2j/similarity-client-deno
+@s2j/similarity-client-worker
+```
