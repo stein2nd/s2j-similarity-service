@@ -1630,3 +1630,25 @@ import { createClient } from "@s2j/similarity-client-node";
 @s2j/similarity-client-deno
 @s2j/similarity-client-worker
 ```
+
+## SDK と API バージョン
+
+### 設計意図 (ゴール)
+
+SDK と API の互換性を、明確にします。
+
+### 設計方針 (規約)
+
+* SDK は、特定の API バージョンに対応します。
+* breaking change 時は、SDK もメジャーアップします。
+
+### 例
+
+```plaintext id="sdk_version"
+API v1 ↔ SDK v1.x
+API v2 ↔ SDK v2.x
+```
+
+### 注意
+
+SDK は、複数 API バージョンを同時サポートしません。

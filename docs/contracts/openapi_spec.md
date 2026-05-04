@@ -69,7 +69,7 @@ OpenAPI 定義から、以下を生成します。
 * Zod スキーマ (runtime validation)
 * API クライアント
 
-## 型定義ルール (`nullable`、`required`、`enum`)
+## 型定義ルール (`required`、`nullable`、`enum`)
 
 ### 設計意図 (ゴール)
 
@@ -160,3 +160,24 @@ enum:
 
 * runtime validation は、Zod により実施します。
 * スキーマは、OpenAPI から生成します。
+
+## OpenAPI におけるバージョン
+
+### 設計方針 (規約)
+
+* `info.version` に API バージョンを記載します。
+* `servers` に `versioned path` を含めます。
+
+### 例
+
+```yaml id="openapi_version"
+info:
+  version: "1.0.0"
+
+servers:
+  - url: https://api.example.com/v1
+```
+
+### 注意
+
+URL パスのバージョンと、整合性を保つこと。

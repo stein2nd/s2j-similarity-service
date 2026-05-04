@@ -188,6 +188,18 @@ jobs:
       - run: npx semantic-release
 ```
 
+## バージョン更新ルール
+
+### 設計方針 (規約)
+
+* OpenAPI に breaking change がある場合
+  * API のメジャーバージョンを更新します。
+  * SDK のメジャーバージョンも更新します。
+
+### CI 連携
+
+* breaking change 検出時に警告または fail します。
+
 ## Vite、build 最適化
 
 本プロジェクトでは、ビルドの高速化と配布物の最適化のために Vite を採用します。
