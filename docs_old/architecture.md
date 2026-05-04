@@ -44,7 +44,7 @@ s2j-similarity-service/
 |--------|------|-------------------|
 | **SimilarityService** | 2つの文章の意味的な類似度を計算するメインサービス。Strategy を注入し、Embedding 取得 → コサイン類似度計算 → 返却までを統括。 | [data_contract_spec.md](data_contract_spec.md), [similarity_spec.md](similarity_spec.md) |
 | **EmbeddingStrategyInterface** | 埋め込みベクトル生成を抽象化する Strategy のインターフェイス。 | [embedding_api_spec.md](embedding_api_spec.md), [data_contract_spec.md](data_contract_spec.md) |
-| **OpenAIEmbeddingStrategy** | OpenAI Embeddings API を呼び出し、ベクトルを返す実装。 | [embedding_api_spec.md](embedding_api_spec.md) |
+| **OpenAIEmbeddingStrategy** | OpenAI Embeddings API をコールし、ベクトルを返す実装。 | [embedding_api_spec.md](embedding_api_spec.md) |
 | **VectorMath** | 2つのベクトル間のコサイン類似度を計算するユーティリティ。 | [similarity_spec.md](similarity_spec.md) |
 
 ## 設計パターン
@@ -64,7 +64,7 @@ OpenAIEmbeddingStrategy
   → 外部: OpenAI API
 ```
 
-* 共通ライブラリは「外部 API キー」に依存せず、呼び出し側がキーを渡す設計。
+* 共通ライブラリは「外部 API キー」に依存せず、コール側がキーを渡す設計。
 
 ## 開発環境・技術スタック
 
