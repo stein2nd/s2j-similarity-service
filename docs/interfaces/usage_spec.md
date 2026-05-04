@@ -612,7 +612,7 @@ Diff Viewer
 
 ```mermaid id="workflow_flow"
 flowchart TD
-  A["API 呼び出し"] --> B["Workflow trigger"]
+  A["API コール"] --> B["Workflow trigger"]
   B --> C["処理実行 (外部)"]
   C --> D["結果取得"]
 ```
