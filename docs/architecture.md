@@ -437,6 +437,21 @@ flowchart TD
   C --> D["Response"]
 ```
 
+## キャッシュの配置
+
+### 構造
+
+```mermaid id="cache_arch"
+flowchart TD
+  A["EmbeddingStrategy"] --> B["CacheDecorator"]
+  B --> C["External API"]
+```
+
+### ルール
+
+* キャッシュは、Infrastructure 層に配置します。
+* Core / Application は、キャッシュを認識しません。
+
 ## 冪等性 (べきとうせい)
 
 ### 設計意図 (ゴール)

@@ -277,6 +277,25 @@ export interface EmbeddingStrategyInterface {
 * 最大リトライ回数を設定します。
 * Exponential Backoff を推奨します。
 
+## キャッシュ対象
+
+### 設計意図 (ゴール)
+
+どのデータをキャッシュ対象とするかを、明確化します。
+
+### 対象
+
+* Embedding (vector)
+
+### 非対象
+
+* 類似度スコア  
+* API レスポンス全体  
+
+### 注意
+
+Embedding は、同一入力に対して deterministic であることを、前提とします。
+
 ## キャッシュ戦略 (参考)
 
 ### 設計意図 (ゴール)

@@ -1027,7 +1027,7 @@ similarityMatrix(
 embedBatch(texts: string[]): Promise<Embedding[]>
 ```
 
-### 並列実行制御
+### 並列実行の制御
 
 #### 設計方針 (規約)
 
@@ -1044,6 +1044,75 @@ embedBatch(texts: string[]): Promise<Embedding[]>
 
 * 外部 API のレート制限を超えません。
 * retry と組み合わせて制御します。
+
+## キャッシュ戦略 (Embedding)
+
+### 設計意図 (ゴール)
+
+Embedding API のコストとレイテンシを削減するため、再利用可能な結果をキャッシュします。
+
+### 設計方針 (規約)
+
+* キャッシュは、オプションとします。
+* SDK は、キャッシュを内包せず、DI により注入します。
+* キャッシュキーは、入力テキストにもとづいて決定します。
+
+### 責務
+
+* キャッシュ利用のルールを定義すること。
+* キーと TTL を標準化すること。
+
+### 非責務
+
+* キャッシュストレージ実装 (Redis 等)
+* キャッシュインフラ管理
+* 永続化戦略
+
+### キャッシュキー
+
+```plaintext id="cache_key"
+key = hash(text)
+```
+
+### 注意
+
+* 正規化 (trim / lowercase 等) を適用します。
+* 同一意味でも異なる文字列は、別キーとなります。
+
+### TTL (Time To Live)
+
+```plaintext id="cache_ttl"
+デフォルト: 24時間 (推奨)
+```
+
+#### 設計方針 (規約)
+
+* プロバイダ変更時は、キャッシュを無効化します。
+* モデル変更時も、同様に、キャッシュを無効化します。
+
+### インターフェース
+
+```ts id="cache_interface"
+export interface Cache {
+  get(key: string): Promise<Embedding | null>
+  set(key: string, value: Embedding, ttl?: number): Promise<void>
+}
+```
+
+### 利用例 (Decorator)
+
+```mermaid id="cache_decorator"
+flowchart TD
+  A["EmbeddingStrategy"] --> B["CachedEmbeddingStrategy"]
+  B --> C["External API"]
+```
+
+#### 挙動
+
+1. `cache.get(key)`
+2. 存在すれば、返却
+3. なければ API コール
+4. `cache.set`
 
 ## SDK 配布戦略
 
