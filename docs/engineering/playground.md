@@ -20,7 +20,7 @@
 
 * examples を単一ソースとして利用します。
 * Playground / Storybook / Test を連動させます。
-* OpenAPI から UI を自動生成可能とします。
+* OpenAPI から UI を自動的に生成可能とします。
 
 ### 責務
 
