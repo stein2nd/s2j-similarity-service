@@ -747,7 +747,7 @@ failed
 | 変数 | strategy | `$strategy` |
 | サービス | SimilarityService | `$service` |
 
-### PHP 使用例 (正)
+### PHP 使用例
 
 ```php id="usage_php_correct"
 $strategy = new OpenAIEmbeddingStrategy($apiKey);
@@ -757,7 +757,7 @@ $service = new SimilarityService($strategy);
 $score = $service->similarity($textA, $textB, $model);
 ```
 
-### TypeScript 使用例 (正)
+### TypeScript 使用例
 
 ```ts id="usage_ts_correct"
 const strategy = new OpenAIEmbeddingStrategy(apiKey);
