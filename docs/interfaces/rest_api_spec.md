@@ -116,6 +116,17 @@ Authorization: Bearer {token}
 | `429` | レート制限 |
 | `500` | サーバーエラー |
 
+## 命名整合性
+
+### 設計方針 (規約)
+
+* REST と SDK の命名は、一致させます。
+
+```plaintext
+POST /v1/similarity
+service->similarity()
+```
+
 ## API バージョニング戦略
 
 ### 設計意図 (ゴール)
