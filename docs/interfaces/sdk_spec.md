@@ -1172,6 +1172,25 @@ embedBatch(texts: string[]): Promise<Embedding[]>
 results[i] corresponds to inputs[i]
 ```
 
+## リトライ可否
+
+### 設計意図 (ゴール)
+
+不要な再試行を防ぎます。
+
+### 設計方針 (規約)
+
+* リトライ可否は、エラー種別で判断します。
+
+### 分類
+
+| エラー | リトライ |
+|--------|------|
+| `NetworkError` | ⭕ |
+| `TimeoutError` | ⭕ |
+| `ApiError(5xx)` | ⭕ |
+| `ValidationError` | ❌ |
+
 ## 再試行と再現性
 
 ### 設計方針 (規約)
