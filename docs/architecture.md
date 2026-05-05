@@ -406,32 +406,38 @@ interface EmbeddingStrategyInterface {
 
 ### 設計意図 (ゴール)
 
-ドメインロジックを外部 API 依存から分離します。
+外部 Embedding API への依存を分離し、ドメインロジックの純粋性を維持します。
 
 ### 責務
 
-* 依存方向を制御すること。
-* 抽象化を維持すること。
+* 依存方向を明確化すること。
+* レイヤ分離を保証すること。
 
 ### 非責務
 
-* API 仕様定義
-* 型定義
+* Strategy の具体仕様
+* 外部 API 設計
 
-### 構成
+### 依存構造
 
-```mermaid
+```mermaid id="dep_structure"
 flowchart TD
-  A["SimilarityService"] --> B["EmbeddingStrategyInterface"]
-  B --> C["Provider Adapter"]
-  C --> D["External API"]
+  A["Infrastructure (API 実装)"] --> B["Application (Strategy 依存)"]
+  B --> C["Core (純粋関数)"]
 ```
 
 ### 依存ルール
 
-* Core は EmbeddingStrategyInterface のみに依存する
-* Adapter は Infrastructure 層に配置する
-* 外部 API は Adapter 以外から直接呼ばない
+* Core は、外部依存を持たない (インターフェースにも依存しない)
+* Application が、EmbeddingStrategyInterface に依存する
+* Infrastructure が、その実装を提供する
+
+### ルール
+
+* Core は、純粋計算のみを担当します。
+* Embedding 取得は、Application 層で行います。
+* Core は、EmbeddingStrategyInterface を参照してはなりません。
+
 
 ## 権限設計
 
