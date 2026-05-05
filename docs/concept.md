@@ -75,6 +75,21 @@ Embedding の取得は、I/O であり、Core に含めません。
 * テスト時に、Mock 実装が利用可能になります。
 * 外部 API の変更影響を、局所化できます。
 
+## Strategy + Adapter パターン (補足)
+
+### 設計意図
+
+外部 API 差異を吸収します。
+
+### 構成
+
+* Strategy: EmbeddingStrategyInterface
+* Adapter: 各プロバイダ実装
+
+### 注意
+
+Strategy と Provider は、同一概念として扱います (命名を分離しない)。
+
 ## 想定ユースケース
 
 本ライブラリは、以下のような用途での利用を想定します。
