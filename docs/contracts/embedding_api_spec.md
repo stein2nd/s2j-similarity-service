@@ -134,6 +134,43 @@ Embedding プロバイダやモデルの変更に対して、**コール側の�
 
 ## 抽象インターフェース
 
+### 設計意図 (ゴール)
+
+外部 Embedding API プロバイダを差し替え可能にします。
+
+### 設計方針 (規約)
+
+* プロバイダ差異を吸収する単一契約とします。
+* model は、optional とすします。
+* 戻り値は、正規化済みベクトルとします。
+
+### 責務
+
+* Embedding 取得を抽象化すること。
+
+### 非責務
+
+* API キー管理
+* リトライ制御
+* キャッシュ
+
+### インターフェース
+
+```php id="emb_interface"
+interface EmbeddingStrategyInterface
+{
+    public function embed(
+        string $text,
+        ?string $model = null
+    ): array;
+}
+```
+
+### 注意
+
+* EmbeddingProvider という別名は、定義しません。
+* 本インターフェースを唯一の契約とします。
+
 ### PHP
 
 ```php id="php_interface"
