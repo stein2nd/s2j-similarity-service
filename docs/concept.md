@@ -21,6 +21,20 @@
 * PHP (Composer) および Node.js (npm) 環境で利用可能です。
 * 特定のフレームワーク (たとえば、WordPress) には依存しません。
 
+## 責務分離 (補足)
+
+### 設計原則
+
+本プロジェクトでは、以下の責務分離を採用します。
+
+* Core: 純粋な計算 (副作用なし)
+* Application: ユースケース制御 (外部依存あり)
+* Infrastructure: 外部I/O
+
+### 意図
+
+Embedding の取得は、I/O であり、Core に含めません。
+
 ## 外部 Embedding API の取り扱い方針
 
 本ライブラリは、差し替え可能な形で外部 Embedding API プロバイダー (たとえば、OpenAI、Claude、Gemini 等) の利用を前提とします。
