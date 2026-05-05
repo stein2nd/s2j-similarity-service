@@ -259,7 +259,7 @@ ApiClient の責務は、下記の通りです。
 packages/php/
   src/
     Contracts/
-      DTO/        ← codegen（OpenAPI）
+      DTO/        ← codegen (OpenAPI)
     Domain/
       Model/
       ValueObject/
