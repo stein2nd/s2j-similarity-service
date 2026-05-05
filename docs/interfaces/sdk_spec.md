@@ -2008,3 +2008,126 @@ $service->similarityMatrix(...)
 
 * calculate / execute 等のあいまいな名称
 * 同一機能に複数名称を持たせる
+
+## 生成物の公開範囲 (Public Surface)
+
+### 設計意図 (ゴール)
+
+SDK の公開範囲を明確に定義し、ユーザーにとって安定した API と拡張性のバランスを提供します。
+
+### 設計方針 (規約)
+
+* 公開対象は、`contracts / core / client` の3層に分離します。
+* ユーザーは、原則 `client (高レベル API)` のみを使用します。
+* `contracts` は、型共有のために公開します。
+* `core` は、低レベルユーザー向けに公開します (準公開扱い)。
+* `raw client` は、デフォルトでは非公開とします。
+* 低レベルアクセスは、明示的な opt-in とします。
+
+### 非対象 (Out of Scope)
+
+* バンドラ固有の最適化 (tree-shaking 詳細)
+* 各言語 (PHP/TS) の細かな export 差異
+* CDN 配布時の entry ポイント
+
+### 責務
+
+* SDK の公開範囲を定義すること。
+* 破壊的変更の影響範囲を最小化すること。
+* ユーザーの選択肢 (高レベル / 低レベル) を提供すること。
+
+### 非責務
+
+* raw client の具体実装
+* 各 API エンドポイントの仕様
+* 内部モジュール分割の詳細
+
+### export 戦略
+
+```json id="sdk_exports"
+{
+  "exports": {
+    ".": "./client/index.js",
+    "./core": "./core/index.js",
+    "./contracts": "./contracts/index.js",
+    "./raw": "./raw/index.js"
+  }
+}
+```
+
+### 設計上の原則
+
+```plaintext id="sdk_principle"
+client   = 安定API (推奨)
+core     = 拡張API (上級者向け)
+contracts= 型共有
+raw      = 非安定API (opt-in)
+```
+
+### 一貫性ルール
+
+* README / Usage / Playground は、client を使用します。
+* テストでは、core / contracts の直接利用を許可します。
+* raw client は、ドキュメント上で明示的に「非推奨」扱いとします。
+
+### ルール
+
+* デフォルト import は、client のみ
+* raw は、明示的 import のみ許可
+
+### 公開範囲の定義
+
+#### 1. contracts (公開)
+
+* DTO (codegen)
+* 型定義
+* エラー型 (DomainError など)
+
+##### 用途
+
+* 型安全な連携
+* 外部 SDK との境界
+
+#### 2. core (公開・低レベル)
+
+* 類似度計算 (CosineSimilarity 等)
+* 純粋関数群
+
+##### 用途
+
+* カスタム実装
+* テスト用途
+
+#### 3. client (公開・推奨)
+
+* SimilarityService
+* 高レベル API
+
+##### 用途
+
+* 通常利用
+* 最小のコードで機能利用
+
+#### 4. raw client (非公開・限定公開)
+
+##### 設計方針 (規約)
+
+* デフォルトでは公開しません。
+* 上級者向けに限定的に公開可能とします。
+
+##### 用途
+
+* REST レベルの直接操作
+* デバッグ・検証
+* カスタムラッパー実装
+
+##### 公開方法 (例)
+
+```plaintext id="sdk_raw"
+import { RawClient } from "sdk/raw"   // 明示的import
+```
+
+##### 注意
+
+* 破壊的変更の対象となる可能性があります。
+* 安定 API としては、保証しません。

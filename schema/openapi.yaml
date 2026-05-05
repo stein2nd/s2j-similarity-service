@@ -8,9 +8,25 @@ info:
     - TypeScript types
     - Zod schemas
     - PHP DTOs
+  license:
+    name: GNU General Public License v2.0 only
+    url: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 servers:
-  - url: http://localhost
+  - url: '{scheme}://{host}'
+    description: API origin (path prefixes `/v1/...` are defined under paths).
+    variables:
+      scheme:
+        enum:
+          - http
+          - https
+        default: https
+      host:
+        default: localhost:8080
+        description: Hostname and port for your deployment.
+
+security:
+  - bearerAuth: []
 
 paths:
   /v1/similarity:
@@ -110,6 +126,13 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token as described in docs/interfaces/rest_api_spec.md.
+
   schemas:
     SimilarityRequest:
       type: object
@@ -119,16 +142,37 @@ components:
       properties:
         textA:
           type: string
-          description: Input text A
+          minLength: 1
+          description: Input text A (must not be empty).
         textB:
           type: string
-          description: Input text B
+          minLength: 1
+          description: Input text B (must not be empty).
         model:
           type: string
           nullable: true
-          description: Optional embedding model
+          description: Optional embedding model identifier.
 
-    SimilarityResponse:
+    EmbeddingRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          minLength: 1
+          description: Input text (must not be empty).
+        model:
+          type: string
+          nullable: true
+          description: Optional embedding model identifier.
+
+    ResponseMeta:
+      type: object
+      description: Response metadata (may be an empty object).
+      additionalProperties: true
+
+    SimilarityResultData:
       type: object
       required:
         - similarityScore
@@ -138,19 +182,9 @@ components:
           format: float
           minimum: 0
           maximum: 1
+          description: Semantic similarity in the range 0..1.
 
-    EmbeddingRequest:
-      type: object
-      required:
-        - text
-      properties:
-        text:
-          type: string
-        model:
-          type: string
-          nullable: true
-
-    EmbeddingResponse:
+    EmbeddingResultData:
       type: object
       required:
         - vector
@@ -160,8 +194,38 @@ components:
           type: array
           items:
             type: number
+            format: float
+          description: Embedding vector components.
         dimension:
           type: integer
+          minimum: 1
+          description: Length of the embedding vector.
+
+    SimilarityResponse:
+      type: object
+      description: >
+        HTTP success body for POST /v1/similarity (docs/interfaces/rest_api_spec.md).
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/SimilarityResultData'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+
+    EmbeddingResponse:
+      type: object
+      description: >
+        HTTP success body for POST /v1/embedding (docs/interfaces/rest_api_spec.md).
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/EmbeddingResultData'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
 
     ErrorResponse:
       type: object
@@ -179,11 +243,26 @@ components:
       properties:
         type:
           type: string
-          description: Domain error type (e.g. ValidationError, ProviderError)
-          example: ValidationError
+          description: >
+            Stable machine-readable error category (snake_case).
+            Aligns with docs/interfaces/rest_api_spec.md (e.g. validation_error, auth_error).
+          enum:
+            - validation_error
+            - auth_error
+            - permission_error
+            - not_found
+            - timeout
+            - rate_limit
+            - internal_error
+            - provider_error
+            - network_error
+          example: validation_error
         message:
           type: string
-          example: text must not be empty.
+          description: Human-readable error message.
+          example: Invalid input
         details:
           type: object
           nullable: true
+          description: Optional structured context (field hints, provider payloads, etc.).
+          additionalProperties: true
