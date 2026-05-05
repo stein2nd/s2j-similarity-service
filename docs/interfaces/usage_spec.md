@@ -79,8 +79,7 @@ use App\Infrastructure\OpenAIEmbeddingStrategy;
 use App\Application\SimilarityService;
 
 $strategy = new OpenAIEmbeddingStrategy($apiKey);
-
-$service = new SimilarityService($provider);
+$service = new SimilarityService($strategy);
 ```
 
 ### 2. 類似度算出
@@ -89,7 +88,11 @@ $service = new SimilarityService($provider);
 $textA = "WordPress プラグイン開発";
 $textB = "WP plugin development";
 
-$score = $service->similarity($textA, $textB);
+$score = $service->similarity(
+    $textA,
+    $textB,
+    $model // optional
+);
 
 echo $score; // 0.0 - 1.0
 ```
@@ -105,8 +108,8 @@ $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 
 ### 補足
 
-* `$model` は、optional
-* 未指定時は、Strategy のデフォルトモデルを使用
+* `$model` は、省略可能。
+* 未指定時は、Strategy のデフォルトモデルが使用される
 
 ## JavaScript 使用例
 
@@ -117,7 +120,7 @@ import { OpenAIEmbeddingStrategy } from "./infrastructure";
 import { SimilarityService } from "./application";
 
 const strategy = new OpenAIEmbeddingStrategy(apiKey);
-const service = new SimilarityService(provider);
+const service = new SimilarityService(strategy);
 ```
 
 ### 2. 類似度算出
@@ -126,7 +129,7 @@ const service = new SimilarityService(provider);
 const textA = "WordPress プラグイン開発";
 const textB = "WP plugin development";
 
-const score = await service.calculate(textA, textB);
+const score = await service.similarity(textA, textB);
 
 console.log(score);
 ```
