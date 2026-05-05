@@ -89,7 +89,7 @@ $strategy = new OpenAIEmbeddingStrategy();
 $service = new SimilarityService($strategy);
 
 // 類似度を計算
-$result = $service->compare(
+$result = $service->similarity(
     'OpenAI の API キー',
     'text-embedding-3-small',
     'en',
