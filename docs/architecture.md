@@ -406,7 +406,7 @@ interface EmbeddingStrategyInterface {
 
 ### 設計意図 (ゴール)
 
-外部 Embedding API への依存を分離し、ドメインロジックの純粋性を維持します。
+外部 Embedding API への依存を分離し、ドメインロジックの純粋性を維持し、差し替え可能な構造を提供します。
 
 ### 責務
 
@@ -426,11 +426,22 @@ flowchart TD
   B --> C["Core (純粋関数)"]
 ```
 
+```mermaid id="emb_arch"
+flowchart TD
+  A["Application"] --> B["EmbeddingStrategyInterface"]
+  B --> C["OpenAIEmbeddingStrategy"]
+  B --> D["ClaudeEmbeddingStrategy"]
+  B --> E["GeminiEmbeddingStrategy"]
+```
+
 ### 依存ルール
 
 * Core は、外部依存を持たない (インターフェースにも依存しない)
 * Application が、EmbeddingStrategyInterface に依存する
 * Infrastructure が、その実装を提供する
+
+* EmbeddingStrategyInterface を唯一の抽象とします。
+* 各プロバイダは、Strategy + Adapter として実装します。
 
 ### ルール
 
@@ -438,6 +449,8 @@ flowchart TD
 * Embedding 取得は、Application 層で行います。
 * Core は、EmbeddingStrategyInterface を参照してはなりません。
 
+* Provider という別インターフェースは、定義しません。
+* Strategy が、その役割を兼ねます。
 
 ## 権限設計
 
