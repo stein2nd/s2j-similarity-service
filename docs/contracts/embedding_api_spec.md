@@ -136,13 +136,17 @@ Embedding プロバイダやモデルの変更に対して、**コール側の�
 
 ### 設計意図 (ゴール)
 
-外部 Embedding API プロバイダを差し替え可能にします。
+外部 Embedding API プロバイダを差し替え可能にする、唯一の抽象契約を定義します。
 
 ### 設計方針 (規約)
 
 * プロバイダ差異を吸収する単一契約とします。
-* model は、optional とすします。
+* model は、optional とします。
 * 戻り値は、正規化済みベクトルとします。
+
+* 抽象は、EmbeddingStrategyInterface のみとします。
+* 旧称 EmbeddingProvider は、廃止し、使用しません。
+* すべてのプロバイダ実装は、本インターフェースを実装します。
 
 ### 責務
 
@@ -154,11 +158,16 @@ Embedding プロバイダやモデルの変更に対して、**コール側の�
 * リトライ制御
 * キャッシュ
 
-### インターフェース
+### インターフェース (唯一の契約)
 
 ```php id="emb_interface"
+namespace S2J\Similarity\Contracts;
+
 interface EmbeddingStrategyInterface
 {
+    /**
+     * @return float[] 正規化済みベクトル
+     */
     public function embed(
         string $text,
         ?string $model = null
@@ -166,29 +175,23 @@ interface EmbeddingStrategyInterface
 }
 ```
 
+### 配置ルール (重要)
+
+* 本インターフェースは **手書きコードとして Contracts に配置** します。
+* DTO (codegen) とは別ディレクトリに分離します。
+
+```plaintext
+src/
+  Contracts/
+    EmbeddingStrategyInterface.php   ← 手書き (本契約)
+    DTO/                             ← codegen (OpenAPI)
+```
+
 ### 注意
 
-* EmbeddingProvider という別名は、定義しません。
-* 本インターフェースを唯一の契約とします。
-
-### PHP
-
-```php id="php_interface"
-interface EmbeddingProvider {
-    /**
-     * @throws EmbeddingException
-     */
-    public function embed(string $text, ?string $model = null): array;
-}
-```
-
-### TypeScript
-
-```ts id="ts_interface"
-export interface EmbeddingProvider {
-  embed(text: string, model?: string): Promise<number[]>;
-}
-```
+* 旧来の `EmbeddingProvider` という名称は、使用しません。
+* ドキュメント・実装ともに本インターフェースへ統一します。
+* DTO は、外部入出力の表現。本インターフェースは、振る舞い契約。両者は、責務が異なるため、混在させてはなりません。
 
 ## Embedding Strategy / Adapter
 
