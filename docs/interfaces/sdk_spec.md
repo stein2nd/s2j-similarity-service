@@ -670,6 +670,24 @@ $service = new SimilarityService(
 );
 ```
 
+## Embedding コール (オプション引数)
+
+### 設計意図 (ゴール)
+
+モデル指定を柔軟に扱います。
+
+### 設計方針 (規約)
+
+* model は、オプション引数として指定可能です。
+* 未指定時は、Strategy 内のデフォルトを使用します。
+
+### 例
+
+```php id="v3w9je"
+$vector = $strategy->embed($text);           // デフォルトモデル
+$vector = $strategy->embed($text, $model);   // 明示指定
+```
+
 ## Logger、Tracer の注入
 
 ### 設計意図 (ゴール)
