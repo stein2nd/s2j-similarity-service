@@ -222,6 +222,60 @@ ApiClient の責務は、下記の通りです。
 * Contracts は、概念仕様です。
 * Interfaces は、OpenAPI 由来のスキーマで runtime validation を実施します。
 
+## PHP パッケージの責務分離
+
+### 設計意図 (ゴール)
+
+生成コード (DTO) とドメインロジックを分離し、変更耐性と保守性を確保します。
+
+### 設計方針 (規約)
+
+* PHP パッケージは、DTO とドメインロジックを分離します。
+* 生成コード (DTO) は、契約境界に限定します。
+* ドメインロジックは、手書き実装とします。
+
+### 責務
+
+* レイヤ分離を定義すること。
+* PHP 実装の構造を決定すること。
+
+### 非責務
+
+* DTO の生成方法
+* API 仕様の定義
+
+### DTO の位置づけ
+
+* 外部 API との入出力専用です。
+* 内部ロジックでは、直接使用しません。
+
+### 構成
+
+```plaintext id="php_structure"
+packages/php/
+  src/
+    Contracts/
+      DTO/        ← codegen（OpenAPI）
+    Domain/
+      Model/
+      ValueObject/
+    Application/
+      SimilarityService
+    Infrastructure/
+      Embedding/
+```
+
+### データ変換
+
+```plaintext id="php_mapping"
+DTO → Domain Model → 計算 → Domain Model → DTO
+```
+
+### 禁止事項
+
+* DTO をドメインモデルとして使用する。
+* DTO をそのままビジネスロジックに渡す。
+
 ## 通信レイヤの責務分離
 
 ```mermaid id="net_layer"
