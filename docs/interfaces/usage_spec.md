@@ -769,7 +769,7 @@ const score = await service.similarity(textA, textB, model);
 
 ### 用語整理
 
-* Provider (プロバイダ)
+* Provider
   * 外部 API の概念 (OpenAI / Claude / Gemini)
   * **命名としては使用しません**
 * Strategy
