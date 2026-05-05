@@ -106,6 +106,11 @@ $vectorB = $strategy->embed($textB);
 $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 ```
 
+### ルール
+
+* DI 対象は、常に `strategy` と命名します。
+* `provider` という変数名は、使用しません。
+
 ### 補足
 
 * `$model` は、省略可能。
