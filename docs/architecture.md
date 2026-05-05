@@ -406,6 +406,82 @@ interface EmbeddingStrategyInterface {
 * Mock 実装が容易になります。
 * 外部 API の変更影響を局所化できます。
 
+## Embedding 実装 (Strategy + Adapter)
+
+### 設計意図 (ゴール)
+
+外部 Embedding API の差異を吸収し、ドメインロジックを純粋に保ちます。
+
+### Strategy の責務
+
+* 外部 API をコールすること (HTTP / SDK)。
+* レスポンスを取得すること。
+
+### Adapter の責務 (Strategy 内に内包)
+
+* JSON → float[] に変換すること。
+* 正規化 (L2) すること。
+* 次元整合を保証すること。
+
+### 構成
+
+```mermaid id="infra_structure"
+flowchart TD
+  A["Application"] --> B["EmbeddingStrategyInterface"]
+  B --> C["[Decorator] CachedEmbeddingStrategy (任意)"]
+  C --> D["OpenAIEmbeddingStrategy"]
+  C --> E["ClaudeEmbeddingStrategy"]
+  C --> F["GeminiEmbeddingStrategy"]
+```
+
+### ルール
+
+* Adapter は、独立クラスに分離しなくてもよい
+* Strategy 内部に実装してよい
+
+## API キーの扱い
+
+### 方針
+
+* API キーは、Strategy に注入します。
+* ライブラリは、永続保持しません。
+
+### 例
+
+```plaintext id="infra_apikey"
+new OpenAIEmbeddingStrategy({ apiKey })
+```
+
+## キャッシュ (Decorator)
+
+### 設計意図 (ゴール)
+
+Embedding API のコストを削減し、性能を改善します。
+
+### 責務
+
+* 外部 API 依存を吸収すること。
+* データを変換すること。
+* 拡張 (cache 等) を受け入れること。
+
+### 非責務
+
+* 類似度計算
+* ビジネスロジック
+
+### 構造
+
+```mermaid id="infra_cache"
+flowchart TD
+  A["EmbeddingStrategyInterface"] --> B["CachedEmbeddingStrategy"]
+  B --> C["Inner Strategy (OpenAI 等)"]
+```
+
+### ルール
+
+* キャッシュは、Infrastructure 層に配置
+* Strategy をラップします。
+
 ## Embedding 抽象化レイヤー
 
 ### 設計意図 (ゴール)
