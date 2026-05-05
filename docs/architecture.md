@@ -381,10 +381,19 @@ flowchart TD
 ### インターフェース定義 (概念)
 
 ```php
-interface EmbeddingStrategyInterface {
-    public function embed(string $text): array;
+interface EmbeddingStrategyInterface
+{
+    public function embed(
+        string $text,
+        ?string $model = null
+    ): array;
 }
 ```
+
+#### ルール
+
+* 概念コードも [外部 API 仕様](./contracts/embedding_api_spec.md) に完全追従します。 
+* 省略シグネチャを許可しません。
 
 ### 実装責務
 
