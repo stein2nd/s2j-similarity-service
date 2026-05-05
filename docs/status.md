@@ -2,91 +2,40 @@
 目的：「実装状況サマリー、Backlog、品質レポート、まとめ」の明文化
 -->
 
-# S2J Similarity Service - 実装状況
+## S2J Similarity Service - 実装状況
 
-## 実装済み
+本ページは、現状の実装状況を「機能単位」で一覧化し、**実装を100%にするために仕様書で何を明確化すべきか** を示します。
 
-* Core: ベクトル演算・類似度算出（正規化スコア、バッチ計算含む）
-* 80%
-	* PHP
+### 仕様書 (参照元)
 
-* Contracts: EmbeddingStrategyInterface（Provider差し替え前提）
-* 80%
-	* PHP
+- `README.md` (利用者向けの利用仕様)
+- `docs/core/similarity_spec.md` (類似度算出の仕様)
+- `docs/interfaces/usage_spec.md` (使用方法仕様)
+- `docs/interfaces/rest_api_spec.md` (REST API 仕様)
+- `docs/interfaces/sdk_spec.md` (型安全 SDK 設計)
+- `schema/openapi.yaml` (OpenAPI: API 契約の起点)
 
-* Domain: Embedding / SimilarityRequest / SimilarityResponse（ドメインモデル）
-* 60%
-	* PHP
+※ `docs_old/` 配下は「仕様執筆の参考資料」であり、**実装状況の評価・完了条件の根拠には使用しません。**
 
-* Application: SimilarityService（single / 1×N / N×N）
-* 70%
-	* PHP
+### 機能一覧 (実装状況サマリー)
 
-* Application: EmbeddingService（vector + model + provider の統一取り扱い）
-* 60%
-	* PHP
+| 機能名 | 実装済み/未実装 | 実装％ | 完了条件 (実装％を100にする為に仕様書で明確化すべき点) |
+|---|---:|---:|---|
+| 類似度算出 (2文)`SimilarityService::similarity()` | 実装済み | 100 | - **docs/core/similarity_spec.md**: cosine + 0..1 正規化 + clamp の整合。追加の明確化なし |
+| 類似度算出 (1×N)`SimilarityService::similarityOneToMany()` | 実装済み | 100 | - **docs/core/similarity_spec.md**: 出力の順序保証 (入力順維持) の整合。追加の明確化なし |
+| 類似度算出 (N×N 行列)`SimilarityService::similarityMatrix()` | 実装済み | 100 | - **docs/core/similarity_spec.md**: 行列定義 (対称/対角) の整合。追加の明確化なし |
+| Embedding 生成 (単発)`EmbeddingService::embed()` | 実装済み | 100 | - **docs/interfaces/usage_spec.md**: 利用例の名前空間/入口クラスを現行 `S2J\Similarity\...` に統一 (仕様として確定) |
+| Embedding 生成 (バッチ)`EmbeddingService::embedBatch()` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: 「出力は入力順を維持」の整合。追加の明確化なし |
+| OpenAI Embeddings 連携 `OpenAIEmbeddingStrategy` | 実装済み | 100 | - **docs/interfaces/usage_spec.md**: endpoint/timeout 等の設定可能項目を仕様として明記 (README とも整合させる) |
+| ベクトル正規化 (L2正規化) | 実装済み | 100 | - **docs/core/similarity_spec.md**: 「入力は正規化済み」前提を、Strategy 側で担保する方針として明文化 (現実装と一致)。追加の明確化なし |
+| キャッシュ (Embedding Decorator)`CachedEmbeddingStrategy` + `InMemoryCache` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: キャッシュキー (text+model+provider+normalized) と TTL 既定値 (24h) の整合。追加の明確化なし |
+| エラー型 (DomainError 系) | 実装済み | 80 | - **docs/interfaces/rest_api_spec.md**: REST の `error.type/message/details` と PHP の `DomainError` 派生 (Validation/Provider/Network/Timeout/RateLimit 等) の対応表を確定<br>- **schema/openapi.yaml**: `ErrorResponse` を定義し、各エンドポイントの 4xx/5xx を OpenAPI に明記 |
+| REST API (`POST /v1/similarity`, `POST /v1/embedding`) | 未実装 | 0 | - **docs/interfaces/rest_api_spec.md**: 提供形態 (どのランタイム/フレームワークでホストするか) を確定<br>- **docs/interfaces/rest_api_spec.md**: 認証 (Bearer token) の検証方法・権限モデルを確定<br>- **docs/interfaces/rest_api_spec.md**: レート制限の具体値 (単位/上限/Retry-After) を確定<br>- **schema/openapi.yaml**: 仕様書の成功レスポンス (`{data, meta}`) と OpenAPI のレスポンス形状を統一 (どちらを正にするか決定) |
+| OpenAPI を Single Source にした codegen (TS types/Zod/PHP DTO) | 未実装 | 10 | - **schema/openapi.yaml**: 契約として成立する YAML 構造に整備 (components/schemas を正しい YAML にする)<br>- **docs/interfaces/sdk_spec.md**: 生成物の公開範囲 (contracts/core/client) と「raw client を公開するか」を確定 |
+| TypeScript SDK (ApiClient/HttpClient/Retry/Timeout 等) | 未実装 | 0 | - **docs/interfaces/sdk_spec.md**: 最小実装スコープ (ApiClientのみ vs Retry/Timeout まで) を確定<br>- **docs/interfaces/sdk_spec.md**: エラー型 (DomainError) を TS 側でどう表現するか (enum/union/class) を確定 |
+| README / 使用方法ドキュメントの整合 (命名・例コード) | 未実装 | 60 | - **docs/interfaces/usage_spec.md**: 例コードの用語/命名 (provider/strategy 等) と実装の整合を仕様として確定<br>- **README.md**: ライブラリの「入口」を `SimilarityService` に統一するか、`EmbeddingService` も正式に案内するか方針決め |
 
-* Infrastructure: OpenAIEmbeddingStrategy（APIコール + 正規化 + エラー分類）
-* 75%
-	* PHP
+### 補足 (現行コードから見える前提)
 
-* Infrastructure: CachedEmbeddingStrategy（Decorator）+ InMemoryCache
-* 80%
-	* PHP
-
-* Contracts/Application: Embedding バッチ（未対応プロバイダは逐次フォールバック）
-* 70%
-	* PHP
-
-* Error: DomainError 体系（Validation / InvalidArgument / Calculation / Network / Timeout / RateLimit / Provider）
-* 70%
-	* PHP
-
-## 未実装
-
-* Provider 追加（Claude / Gemini 等）
-* 完了条件
-	* `docs/contracts/embedding_api_spec.md`
-		* 対象Providerごとの「最小要件」（認証/エンドポイント/レスポンス差異/制限）の明記
-		* バッチ対応可否とフォールバック条件の明記
-
-* 通信ポリシー（Retry / Retry-After / Backoff / Timeout / Circuit Breaker）
-* 完了条件
-	* `docs/interfaces/sdk_spec.md`
-		* Retry対象・回数・backoff（指数）・Retry-After優先の確定
-		* timeout と circuit breaker のデフォルト値と責務境界の確定
-	* `docs/contracts/embedding_api_spec.md`
-		* エラー分類とリトライ可否の対応表の確定
-
-* provider/model 制約の強制（同一provider + 同一model のみ比較可能）
-* 完了条件
-	* `docs/contracts/data_contract_spec.md`
-		* 制約違反時の挙動（例外種別/メッセージ/詳細）を確定
-		* Embedding（model/provider）の必須性と受け渡し経路を確定
-
-* 正規化責務の一本化（L2正規化の実施箇所）
-* 完了条件
-	* `docs/core/similarity_spec.md`
-		* Coreが「正規化を実施する/しない」の最終決定（他層での二重正規化禁止ルール）
-	* `docs/contracts/embedding_api_spec.md`
-		* Strategy側の正規化要件（必須/任意）と、未正規化入力を許容するかの確定
-
-* OpenAPI / codegen 連動（DTO生成と手書き領域の境界）
-* 完了条件
-	* `docs/contracts/codegen_spec.md`
-		* PHP DTO の生成範囲・配置・編集禁止ルールの確定
-	* `docs/contracts/openapi_spec.md`
-		* エラーSchema（ErrorResponse等）とDomainError対応の確定
-
-* キャッシュ仕様の確定（キー/TTL/無効化条件）
-* 完了条件
-	* `docs/interfaces/sdk_spec.md`
-		* TTLデフォルトと、provider/model変更時の無効化条件の確定
-		* cache interface の最終I/F（同期/非同期、型）を確定
-	* `docs/contracts/embedding_api_spec.md`
-		* キャッシュキーに含める属性（text/model/provider/normalized）の確定
-
-* バッチの失敗方針（fail-fast / partial-result）
-* 完了条件
-	* `docs/interfaces/sdk_spec.md`
-		* 部分成功を採用するか（将来拡張か）を明記し、デフォルト挙動を確定
+- 本リポジトリは **「純粋な PHP ライブラリ」**としては主要機能が実装済み (類似度計算・Embedding・バッチ・キャッシュ・基本エラー)。
+- `docs/interfaces/rest_api_spec.md` と `schema/openapi.yaml` は存在するものの、**HTTP サーバ実装 (ルーティング/コントローラ) は見当たらない**ため、REST API は未実装扱いです。
