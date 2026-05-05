@@ -80,6 +80,7 @@ use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
 require_once __DIR__ . '/vendor/autoload.php';
 
 use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Application\EmbeddingService;
 use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
 
 // Strategy をインスタンス化
@@ -99,6 +100,37 @@ $score = $service->similarity(
 );
 
 echo $score; // 0.82 など (0.0〜1.0)
+```
+
+### Embedding のみを生成する (`EmbeddingService`)
+
+類似度計算ではなく、Embedding ベクトル (および `model/provider/dimension` メタデータ) を取得したい場合は `EmbeddingService` を使用します。
+
+```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use S2J\Similarity\Application\EmbeddingService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
+$strategy = new OpenAIEmbeddingStrategy(
+    apiKey: getenv('OPENAI_API_KEY'),
+    defaultModel: 'text-embedding-3-small'
+);
+
+$embeddingService = new EmbeddingService(
+    strategy: $strategy,
+    provider: 'openai',
+    defaultModel: 'text-embedding-3-small'
+);
+
+$embedding = $embeddingService->embed('文章の内容');
+
+// Embedding (Domain Model)
+// - $embedding->vector (float[])
+// - $embedding->dimension (int)
+// - $embedding->model (string)
+// - $embedding->provider (string)
 ```
 
 ### キャッシュを有効化する例 (Decorator)

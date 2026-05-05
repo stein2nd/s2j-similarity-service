@@ -705,3 +705,78 @@ failed
 <!-- 小見出し「データレジデンシー対応」は、docs/governance/data_governance.md に移動 -->
 
 <!-- 小見出し「内部統制 (SOX)」は、docs/governance/compliance.md に移動 -->
+
+## 用語・命名規則 (Usage / サンプルコード)
+
+### 設計意図 (ゴール)
+
+ドキュメント上の用語・命名と実装コードを完全一致させ、ユーザー・実装者の認知負荷と誤解を排除します。
+
+### 設計方針 (規約)
+
+* サンプルコードの命名は、実装と完全一致させます。
+* 抽象インターフェースは、`EmbeddingStrategyInterface` のみを使用します。
+* DI されるインスタンスは、`strategy` と命名します。
+* `provider` という用語は、使用しません (概念としてのみ存在し、命名には使わない)。
+* 実装クラスは、`*EmbeddingStrategy` 形式で統一します。
+
+### 非対象 (Out of Scope)
+
+* README の文章表現の細かな文言
+* UI / CLI における表示用ラベル
+* 外部ドキュメントとの命名整合
+
+### 責務
+
+* ドキュメントと実装の命名を一致させること。
+* サンプルコードの正確性を保証すること。
+* ユーザーが迷わない命名体系を提供すること。
+
+### 非責務
+
+* 内部実装の詳細命名 (private 変数など)
+* 外部ライブラリの命名規則
+* IDE 補完やコード生成ツールの挙動
+
+### 標準命名
+
+| 概念 | 正式名称 | 使用例 |
+|------|----------|--------|
+| 抽象 | EmbeddingStrategyInterface | 型ヒント |
+| 実装 | OpenAIEmbeddingStrategy | クラス名 |
+| 変数 | strategy | `$strategy` |
+| サービス | SimilarityService | `$service` |
+
+### PHP 使用例 (正)
+
+```php id="usage_php_correct"
+$strategy = new OpenAIEmbeddingStrategy($apiKey);
+
+$service = new SimilarityService($strategy);
+
+$score = $service->similarity($textA, $textB, $model);
+```
+
+### TypeScript 使用例 (正)
+
+```ts id="usage_ts_correct"
+const strategy = new OpenAIEmbeddingStrategy(apiKey);
+
+const service = new SimilarityService(strategy);
+
+const score = await service.similarity(textA, textB, model);
+```
+
+### 用語整理
+
+* Provider (プロバイダ)
+  * 外部 API の概念 (OpenAI / Claude / Gemini)
+  * **命名としては使用しません**
+* Strategy
+  * 実装上の抽象および具象クラスの名称として使用します。
+
+### 禁止事項
+
+* `provider` という変数名の使用
+* `EmbeddingProvider` という型・クラス名の使用
+* インターフェース名をクラス名として使用すること (たとえば、`OpenAIEmbeddingStrategyInterface`)
