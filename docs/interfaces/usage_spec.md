@@ -75,10 +75,10 @@ flowchart TD
 ### 1. 初期化
 
 ```php id="php_init"
-use App\Infrastructure\OpenAIEmbeddingStrategyInterface;
+use App\Infrastructure\OpenAIEmbeddingStrategy;
 use App\Application\SimilarityService;
 
-$provider = new OpenAIEmbeddingStrategyInterface($apiKey);
+$strategy = new OpenAIEmbeddingStrategy($apiKey);
 
 $service = new SimilarityService($provider);
 ```
@@ -97,21 +97,26 @@ echo $score; // 0.0 - 1.0
 ### 3. 低レベル利用 (Embedding + Core)
 
 ```php id="php_low"
-$vectorA = $provider->embed($textA);
-$vectorB = $provider->embed($textB);
+$vectorA = $strategy->embed($textA);
+$vectorB = $strategy->embed($textB);
 
 $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 ```
+
+### 補足
+
+* `$model` は、optional
+* 未指定時は、Strategy のデフォルトモデルを使用
 
 ## JavaScript 使用例
 
 ### 1. 初期化
 
 ```ts id="ts_init"
-import { OpenAIEmbeddingStrategyInterface } from "./infrastructure";
+import { OpenAIEmbeddingStrategy } from "./infrastructure";
 import { SimilarityService } from "./application";
 
-const provider = new OpenAIEmbeddingStrategyInterface(apiKey);
+const strategy = new OpenAIEmbeddingStrategy(apiKey);
 const service = new SimilarityService(provider);
 ```
 
@@ -148,7 +153,7 @@ const score = calculateSimilarity(vectorA, vectorB);
 ### 例 - PHP
 
 ```php id="php_config"
-$provider = new OpenAIEmbeddingStrategyInterface([
+$strategy = new OpenAIEmbeddingStrategy([
     'apiKey' => 'xxx',
     'model' => 'text-embedding-3-small',
 ]);
