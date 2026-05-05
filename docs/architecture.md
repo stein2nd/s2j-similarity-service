@@ -586,5 +586,5 @@ flowchart TD
 
 ```php id="sample_e2e"
 $service = new SimilarityService($config);
-$score = $service->calculate($textA, $textB);
+$score = $service->similarity($textA, $textB);
 ```
