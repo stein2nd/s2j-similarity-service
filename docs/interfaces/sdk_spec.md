@@ -165,6 +165,46 @@ async function similarity(
 * 計算は、sync で統一します。
 * API は、async で統一します。
 
+## SimilarityService (公開 API)
+
+### 設計意図 (ゴール)
+
+ユーザーに対して、シンプルで一貫した類似度計算 API を提供します。
+
+### 設計方針 (規約)
+
+* SDK の最上位 API は、本メソッドとします。
+* EmbeddingStrategyInterface の model 引数を透過します。
+* model 未指定時は、Strategy のデフォルトを使用します。
+
+### 責務
+
+* ユースケースを提供すること。
+* Strategy コールを調整すること。
+
+### 非責務
+
+* Embedding 生成ロジック
+* 外部 API コール
+
+### メソッド定義
+
+```php
+public function similarity(
+    string $a,
+    string $b,
+    ?string $model = null
+): float
+```
+
+### 内部フロー
+
+```plaintext
+1. embed(a, model)
+2. embed(b, model)
+3. cosineSimilarity
+```
+
 ## 並列制御のスコープ
 
 ### 設計意図 (ゴール)
