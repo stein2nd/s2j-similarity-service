@@ -140,6 +140,18 @@ flowchart TD
 * Contracts に、ビジネスロジックを持たない。
 * Interfaces に、ドメインロジックを持たない。
 
+## 依存禁止ルール (補足)
+
+### Core の制約
+
+* Core は、完全に純粋関数で構成します。
+* 外部依存だけでなく、インターフェース依存も持ちません。
+
+### Application の役割
+
+* 外部との接続 (Embedding 取得) を担います。
+* Core と Infrastructure の橋渡しを行います。
+
 ## Source of Truth (SoT)
 
 * API 契約は、**[OpenAPI](./contracts/openapi_spec.md)** に集約します。
