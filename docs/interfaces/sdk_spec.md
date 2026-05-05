@@ -1237,6 +1237,28 @@ flowchart TD
 3. なければ API コール
 4. `cache.set`
 
+## キャッシュキー詳細仕様
+
+### 設計意図 (ゴール)
+
+キャッシュの衝突と不整合を防ぎます。
+
+### 定義
+
+```plaintext
+key = hash({
+  text,
+  model,
+  provider,
+  normalized: true
+})
+```
+
+### 注意
+
+* text のみでキーを作成してはなりません。
+* モデル差異は、必ず区別します。
+
 ## SDK 配布戦略
 
 本プロジェクトは、OpenAPI を起点として複数言語向け SDK を生成・配布します。
