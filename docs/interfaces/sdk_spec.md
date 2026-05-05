@@ -601,6 +601,75 @@ const service = new SimilarityService({
 })
 ```
 
+## Dependency Injection (Embedding)
+
+### 設計意図 (ゴール)
+
+Embedding の実装を差し替え可能にします。
+
+### 設計方針 (規約)
+
+* SimilarityService は、EmbeddingStrategyInterface のみを受け取ります。
+
+### 例
+
+```php
+final class SimilarityService
+{
+    public function __construct(
+        private EmbeddingStrategyInterface $strategy
+    ) {}
+}
+```
+
+### 禁止事項
+
+* 具象クラスへの依存
+* EmbeddingProvider の使用
+
+## Embedding 実装クラス
+
+### 設計意図 (ゴール)
+
+プロバイダ差異を Strategy として吸収します。
+
+### 命名規則
+
+* *EmbeddingStrategy を使用します。
+
+### 例
+
+```plaintext
+OpenAIEmbeddingStrategy
+ClaudeEmbeddingStrategy
+GeminiEmbeddingStrategy
+```
+
+### ルール
+
+* すべて EmbeddingStrategyInterface を実装します。
+* Provider という名称は、使用しません。
+
+## EmbeddingStrategy の注入
+
+### 設計意図 (ゴール)
+
+プロバイダ切替を可能にします。
+
+### 設計方針 (規約)
+
+* Strategy は、外部から注入します。
+
+### 例
+
+```php id="infra_di"
+$service = new SimilarityService(
+    new CachedEmbeddingStrategy(
+        new OpenAIEmbeddingStrategy($apiKey)
+    )
+);
+```
+
 ## Logger、Tracer の注入
 
 ### 設計意図 (ゴール)
