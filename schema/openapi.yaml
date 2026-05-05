@@ -1,110 +1,189 @@
 openapi: 3.0.3
 
 info:
-title: S2J Similarity Service API
-version: 1.0.0
-description: |
-Single Source of Truth for:
-- TypeScript types
-- Zod schemas
-- PHP DTOs
+  title: S2J Similarity Service API
+  version: 1.0.0
+  description: |
+    Single Source of Truth for:
+    - TypeScript types
+    - Zod schemas
+    - PHP DTOs
 
 servers:
-
-* url: http://localhost
+  - url: http://localhost
 
 paths:
+  /v1/similarity:
+    post:
+      operationId: calculateSimilarity
+      summary: Calculate semantic similarity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimilarityRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimilarityResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-/v1/similarity:
-post:
-operationId: calculateSimilarity
-summary: Calculate semantic similarity
-requestBody:
-required: true
-content:
-application/json:
-schema:
-$ref: '#/components/schemas/SimilarityRequest'
-responses:
-'200':
-description: Success
-content:
-application/json:
-schema:
-$ref: '#/components/schemas/SimilarityResponse'
-
-/v1/embedding:
-post:
-operationId: generateEmbedding
-summary: Generate embedding vector
-requestBody:
-required: true
-content:
-application/json:
-schema:
-$ref: '#/components/schemas/EmbeddingRequest'
-responses:
-'200':
-description: Success
-content:
-application/json:
-schema:
-$ref: '#/components/schemas/EmbeddingResponse'
+  /v1/embedding:
+    post:
+      operationId: generateEmbedding
+      summary: Generate embedding vector
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmbeddingRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
+  schemas:
+    SimilarityRequest:
+      type: object
+      required:
+        - textA
+        - textB
+      properties:
+        textA:
+          type: string
+          description: Input text A
+        textB:
+          type: string
+          description: Input text B
+        model:
+          type: string
+          nullable: true
+          description: Optional embedding model
 
-schemas:
+    SimilarityResponse:
+      type: object
+      required:
+        - similarityScore
+      properties:
+        similarityScore:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
 
-```
-SimilarityRequest:
-  type: object
-  required:
-    - textA
-    - textB
-  properties:
-    textA:
-      type: string
-      description: Input text A
-    textB:
-      type: string
-      description: Input text B
-    model:
-      type: string
-      nullable: true
-      description: Optional embedding model
+    EmbeddingRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+        model:
+          type: string
+          nullable: true
 
-SimilarityResponse:
-  type: object
-  required:
-    - similarityScore
-  properties:
-    similarityScore:
-      type: number
-      format: float
-      minimum: 0
-      maximum: 1
+    EmbeddingResponse:
+      type: object
+      required:
+        - vector
+        - dimension
+      properties:
+        vector:
+          type: array
+          items:
+            type: number
+        dimension:
+          type: integer
 
-EmbeddingRequest:
-  type: object
-  required:
-    - text
-  properties:
-    text:
-      type: string
-    model:
-      type: string
-      nullable: true
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorObject'
 
-EmbeddingResponse:
-  type: object
-  required:
-    - vector
-    - dimension
-  properties:
-    vector:
-      type: array
-      items:
-        type: number
-    dimension:
-      type: integer
-```
+    ErrorObject:
+      type: object
+      required:
+        - type
+        - message
+      properties:
+        type:
+          type: string
+          description: Domain error type (e.g. ValidationError, ProviderError)
+          example: ValidationError
+        message:
+          type: string
+          example: text must not be empty.
+        details:
+          type: object
+          nullable: true

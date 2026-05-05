@@ -338,3 +338,110 @@ flowchart TD
 
 * network / timeout のみ、自動リトライします。
 * validation エラーは、リトライ不可とします。
+
+## エラー仕様 (REST ↔ DomainError 対応)
+
+### 設計意図 (ゴール)
+
+REST API と PHP SDK のエラー表現を統一し、コール側が一貫した方法でエラー処理できるようにします。
+
+### 設計方針 (規約)
+
+* REST のエラーレスポンスは、共通フォーマットを使用します。
+* `error.type` を唯一の分類キーとします。
+* PHP 側では、`DomainError` 派生クラスにマッピングします。
+* エラー分類は、安定した値 (enum 的) とし、文字列の揺れを許しません。
+* HTTP ステータスコードと `error.type` は、対応関係を持ちます。
+
+### 非対象 (Out of Scope)
+
+* `i18n` (多言語エラーメッセージ)
+* UI 表示フォーマット
+* エラー文言のローカライズ
+
+### 責務
+
+* REST と SDK のエラー表現を、統一すること。
+* エラー分類の安定性を、保証すること。
+* コール側の分岐処理を、容易にすること。
+
+### 非責務
+
+* エラーの表示方法
+* ログ収集・可視化
+* 再試行戦略 (リトライポリシーは、別仕様)
+
+### REST エラーフォーマット
+
+```json id="error_format"
+{
+  "error": {
+    "type": "validation_error",
+    "message": "Invalid input",
+    "details": {
+      "field": "text"
+    }
+  }
+}
+```
+
+### エラー対応表 (REST → PHP)
+
+| HTTP | error.type | PHP クラス | 説明 |
+|------|------------------|------------------------|------|
+| 400 | validation_error | ValidationError | 入力不正 |
+| 401 | auth_error | AuthenticationError | 認証失敗 |
+| 403 | permission_error | AuthorizationError | 権限不足 |
+| 404 | not_found | NotFoundError | リソースなし |
+| 408 | timeout | TimeoutError | タイムアウト |
+| 429 | rate_limit | RateLimitError | レート制限 |
+| 500 | internal_error | InternalError | サーバー内部 |
+| 502/503 | provider_error | ProviderError | 外部 API 障害 |
+| - | network_error | NetworkError | 通信エラー |
+
+### マッピングルール
+
+* REST レスポンス受信時
+  * `error.type` をもとに DomainError を生成します。
+* SDK 内部例外
+  * DomainError を REST 形式に変換可能とします。
+* `details` は、構造化データとして保持します。
+
+### PHP 側設計
+
+```php id="error_php"
+abstract class DomainError extends \Exception {}
+
+class ValidationError extends DomainError {}
+class AuthenticationError extends DomainError {}
+class AuthorizationError extends DomainError {}
+class NotFoundError extends DomainError {}
+class TimeoutError extends DomainError {}
+class RateLimitError extends DomainError {}
+class ProviderError extends DomainError {}
+class NetworkError extends DomainError {}
+class InternalError extends DomainError {}
+```
+
+### エラー変換フロー
+
+```mermaid id="error_flow"
+flowchart TD
+  A["HTTP Response"] --> B["error.type 判定"]
+  B --> C["DomainError 生成"]
+  C --> D["アプリケーションに伝播"]
+```
+
+### details の扱い
+
+* 任意の構造を許可します (JSON オブジェクト)。
+* フィールドエラーなどを含めます。
+
+例:
+
+```json id="error_details"
+{
+  "field": "text",
+  "reason": "empty"
+}
+```
