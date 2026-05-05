@@ -1793,3 +1793,41 @@ API v2 ↔ SDK v2.x
 ### 注意
 
 SDK は、複数 API バージョンを同時サポートしません。
+
+## メソッド命名規則
+
+### 設計意図 (ゴール)
+
+SDK の公開 API を一貫した命名で統一し、利用者の理解コストを下げます。
+
+### 設計方針 (規約)
+
+* ドメイン用語を優先します。
+* REST API と命名をそろえます。
+* 汎用的すぎる名前 (calculate 等) は使用しません。
+
+### 責務
+
+* SDK API の命名を統一すること。
+
+### 非責務
+
+* REST エンドポイント定義
+
+### 標準メソッド
+
+```php
+$result = $service->similarity($textA, $textB);
+```
+
+### 拡張例
+
+```php
+$service->similarityBatch(...)
+$service->similarityMatrix(...)
+```
+
+### 禁止事項
+
+* calculate / execute 等のあいまいな名称
+* 同一機能に複数名称を持たせる
