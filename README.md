@@ -67,8 +67,8 @@ composer require s2j/similarity-service
 // Composer のオートローダーを読み込む
 require_once __DIR__ . '/vendor/autoload.php';
 
-use S2J\SimilarityService\SimilarityService;
-use S2J\SimilarityService\OpenAIEmbeddingStrategy;
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
 ```
 
 ## Usage
@@ -79,57 +79,89 @@ use S2J\SimilarityService\OpenAIEmbeddingStrategy;
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
-use S2J\SimilarityService\SimilarityService;
-use S2J\SimilarityService\OpenAIEmbeddingStrategy;
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
 
 // Strategy をインスタンス化
-$strategy = new OpenAIEmbeddingStrategy();
+$strategy = new OpenAIEmbeddingStrategy(
+    apiKey: getenv('OPENAI_API_KEY'),
+    defaultModel: 'text-embedding-3-small'
+);
 
 // SimilarityService をインスタンス化
 $service = new SimilarityService($strategy);
 
 // 類似度を計算
-$result = $service->similarity(
-    'OpenAI の API キー',
-    'text-embedding-3-small',
-    'en',
-    'en_US',
+$score = $service->similarity(
     '文章 A の内容',
-    '文章 B の内容'
+    '文章 B の内容',
+    'text-embedding-3-small' // optional (未指定時は Strategy の defaultModel)
 );
 
-echo $result['similarity']; // 0.82 など
-echo $result['model'];      // text-embedding-3-small
-echo $result['language'];   // en
+echo $score; // 0.82 など (0.0〜1.0)
+```
+
+### キャッシュを有効化する例 (Decorator)
+
+```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Cache\InMemoryCache;
+use S2J\Similarity\Infrastructure\Embedding\CachedEmbeddingStrategy;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
+$inner = new OpenAIEmbeddingStrategy(
+    apiKey: getenv('OPENAI_API_KEY'),
+    defaultModel: 'text-embedding-3-small'
+);
+
+$strategy = new CachedEmbeddingStrategy(
+    cache: new InMemoryCache(),
+    inner: $inner,
+    provider: 'openai'
+);
+
+$service = new SimilarityService($strategy);
+$score = $service->similarity('文章 A', '文章 B');
+echo $score;
+```
+
+### バッチ計算
+
+```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
+$strategy = new OpenAIEmbeddingStrategy(apiKey: getenv('OPENAI_API_KEY'));
+$service = new SimilarityService($strategy);
+
+$scores = $service->similarityOneToMany('query', ['a', 'b', 'c']);
+$matrix = $service->similarityMatrix(['a', 'b', 'c']);
 ```
 
 ### パラメータ
 
 | パラメータ | 型 | 説明 |
 |---|---|---|
-| apiKey | string | OpenAI API Key |
-| model | string | モデル名 (例: text-embedding-3-small) |
-| language | string | 言語コード (例: ja、en、fr) |
-| locale | string | ロケール (例: ja_JP、en_US、fr_FR) |
-| baseText | string | 基準テキスト本文 |
-| targetText | string | 検証テキスト本文 |
+| a | string | テキスト A |
+| b | string | テキスト B |
+| model | string \| null | モデル名 (例: text-embedding-3-small)。未指定時は Strategy の default |
 
 ### API キー管理
 
-* 共通ライブラリでは、**キーを保持できません**。
-* コール側で、環境変数または WordPress 設定画面を通じて管理してください。
+* API キーは、コール側で管理し、Strategy のコンストラクタに注入します。
+* グローバル変数での保持やログ出力は避け、環境変数等で管理してください。
 * 例:
   * `OPENAI_API_KEY` (OpenAI Embeddings)
 
 ### 戻り値
 
-```php
-[
-    'similarity' => float,  // 0.0〜1.0 の類似度スコア
-    'model' => string,      // 使用したモデル名
-    'language' => string    // 使用した言語コード
-]
-```
+* `float` (0.0〜1.0 の類似度スコア)
 
 ## FAQ
 
@@ -185,17 +217,12 @@ s2j-similarity-service/
 ├── composer.json  # Composer パッケージ定義
 ├── .gitignore
 ├── phpunit.xml  # PHPUnit 設定ファイル
-├┬─ docs/
-│└─ SPEC.md  # ライブラリ固有仕様
-├┬─ examples/  # サンプルスクリプト
-│└─ test_similarity.php  # CLI 手動テスト用サンプル
-├┬─ tests/  # 単体テスト
-│└─ SimilarityTest.php  # PHPUnit テストケース
 └┬─ src/  # ソースコード (PSR-4 準拠)
-　├─ SimilarityService.php  # 同一言語内の文章類似度を判定する、サービス・クラス
-　├─ VectorMath.php  # ベクトル化された2文字列間のコサイン類似度を計算する、ユーティリティ・クラス
-　├─ EmbeddingStrategyInterface.php  # 任意の Embedding モデルを抽象化
-　└─ OpenAIEmbeddingStrategy.php  # OpenAI Embeddings API を利用して埋め込みベクトルを生成する Strategy
+　├─ Application/
+　├─ Contracts/
+　├─ Core/
+　├─ Domain/
+　└─ Infrastructure/
 ```
 
 ### 開発環境のセットアップ
