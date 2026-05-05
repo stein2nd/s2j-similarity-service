@@ -158,6 +158,25 @@ flowchart TD
 * 生成物 (`generated`) は、派生物とし、直接編集を禁止します。
 * すべての型・DTO・SDK は、OpenAPI から生成されます。
 
+## 用語統一ルール
+
+### 設計意図 (ゴール)
+
+ドキュメントと実装の乖離を防ぎます。
+
+### ルール
+
+* EmbeddingStrategyInterface を正式名称とします。
+* EmbeddingProvider という名称は、使用しません。
+
+### 運用
+
+```plaintext
+grep -R "EmbeddingProvider" docs src
+```
+
+検出された場合は、修正します。
+
 ## 補足
 
 * 各仕様は、「責務・非責務」により、境界が定義されます。
