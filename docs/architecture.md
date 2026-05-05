@@ -719,3 +719,10 @@ flowchart TD
 $service = new SimilarityService($config);
 $score = $service->similarity($textA, $textB);
 ```
+
+```plaintext
+1. similarity(textA, textB, model)
+2. embed(textA, model)
+3. embed(textB, model)
+4. cosineSimilarity
+```
