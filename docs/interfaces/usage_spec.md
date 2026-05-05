@@ -14,7 +14,7 @@
 * テキストから Embedding を生成します。
 * 2つのテキストの、類似度を算出します。
 
-ユーザーは、EmbeddingProvider を注入し、SimilarityService を利用します。
+ユーザーは、EmbeddingStrategyInterface を注入し、SimilarityService を利用します。
 
 * Contracts 層の変更は、本仕様に影響します。
 * Provider は、差し替え可能です。
@@ -42,7 +42,7 @@
 
 ```mermaid id="usage_structure"
 flowchart TD
-  A["EmbeddingProvider (外部API)"] --> B["SimilarityService (アプリケーション)"]
+  A["EmbeddingStrategyInterface (外部 API)"] --> B["SimilarityService (アプリケーション)"]
   B --> C["結果 (SimilarityScore)"]
 ```
 
@@ -50,7 +50,7 @@ flowchart TD
 
 ```mermaid id="e2e_flow"
 flowchart TD
-  A["textA、textB"] --> B["EmbeddingProvider"]
+  A["textA、textB"] --> B["EmbeddingStrategyInterface"]
   B --> C["EmbeddingVector"]
   C --> D["SimilarityCalculator"]
   D --> E["SimilarityScore"]
@@ -75,10 +75,10 @@ flowchart TD
 ### 1. 初期化
 
 ```php id="php_init"
-use App\Infrastructure\OpenAIEmbeddingProvider;
+use App\Infrastructure\OpenAIEmbeddingStrategyInterface;
 use App\Application\SimilarityService;
 
-$provider = new OpenAIEmbeddingProvider($apiKey);
+$provider = new OpenAIEmbeddingStrategyInterface($apiKey);
 
 $service = new SimilarityService($provider);
 ```
@@ -108,10 +108,10 @@ $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 ### 1. 初期化
 
 ```ts id="ts_init"
-import { OpenAIEmbeddingProvider } from "./infrastructure";
+import { OpenAIEmbeddingStrategyInterface } from "./infrastructure";
 import { SimilarityService } from "./application";
 
-const provider = new OpenAIEmbeddingProvider(apiKey);
+const provider = new OpenAIEmbeddingStrategyInterface(apiKey);
 const service = new SimilarityService(provider);
 ```
 
@@ -148,7 +148,7 @@ const score = calculateSimilarity(vectorA, vectorB);
 ### 例 - PHP
 
 ```php id="php_config"
-$provider = new OpenAIEmbeddingProvider([
+$provider = new OpenAIEmbeddingStrategyInterface([
     'apiKey' => 'xxx',
     'model' => 'text-embedding-3-small',
 ]);
