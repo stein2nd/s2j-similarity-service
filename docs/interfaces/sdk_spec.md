@@ -1172,6 +1172,20 @@ embedBatch(texts: string[]): Promise<Embedding[]>
 results[i] corresponds to inputs[i]
 ```
 
+## 部分成功
+
+### 設計意図 (ゴール)
+
+バッチ処理の柔軟性を確保します。
+
+### 設計方針 (規約)
+
+* 一部失敗時は、全体を失敗とします (fail-fast)。
+
+### 将来拡張
+
+* partial result モードは、optional とします。
+
 ## リトライ可否
 
 ### 設計意図 (ゴール)
