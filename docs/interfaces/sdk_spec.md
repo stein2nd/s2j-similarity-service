@@ -1369,7 +1369,7 @@ Embedding API のコストとレイテンシを削減するため、再利用可
 ### キャッシュキー
 
 ```plaintext id="cache_key"
-key = hash(text)
+key = hash(text, model, provider, true)
 ```
 
 ### 注意
