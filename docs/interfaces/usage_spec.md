@@ -89,7 +89,7 @@ $service = new SimilarityService($provider);
 $textA = "WordPress プラグイン開発";
 $textB = "WP plugin development";
 
-$score = $service->calculate($textA, $textB);
+$score = $service->similarity($textA, $textB);
 
 echo $score; // 0.0 - 1.0
 ```
@@ -185,7 +185,7 @@ try {
 
 ```php id="php_error"
 try {
-    $score = $service->calculate($textA, $textB);
+    $score = $service->similarity($textA, $textB);
 } catch (ValidationException $e) {
     // 入力エラー
 } catch (ProviderException $e) {
