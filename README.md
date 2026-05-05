@@ -161,7 +161,7 @@ $matrix = $service->similarityMatrix(['a', 'b', 'c']);
 
 ### 戻り値
 
-* `float` (0.0〜1.0 の類似度スコア)
+* `float` (0.0〜1.0の類似度スコア)
 
 ## FAQ
 
