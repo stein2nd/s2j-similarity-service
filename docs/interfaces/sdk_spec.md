@@ -1328,6 +1328,37 @@ $result = $service->similarity($textA, $textB);
 
 ユーザーは、DTO を意識しません。
 
+## Embedding Strategy の利用
+
+### 設計意図 (ゴール)
+
+SDK 利用時の、型安全性と命名一貫性を確保します。
+
+### 設計方針 (規約)
+
+* 型ヒントは、常に EmbeddingStrategyInterface を使用します。
+* 実装クラスは、Strategy 命名とします。
+
+### 例
+
+```php
+function __construct(
+    EmbeddingStrategyInterface $strategy
+) {}
+```
+
+### 実装例
+
+```php
+class OpenAIEmbeddingStrategy implements EmbeddingStrategyInterface {}
+class ClaudeEmbeddingStrategy implements EmbeddingStrategyInterface {}
+```
+
+### 禁止事項
+
+* EmbeddingProvider という名称の使用
+* 複数の抽象インターフェース定義
+
 ## SDK 配布戦略
 
 本プロジェクトは、OpenAPI を起点として複数言語向け SDK を生成・配布します。
