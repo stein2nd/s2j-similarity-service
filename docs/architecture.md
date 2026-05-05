@@ -156,9 +156,13 @@ s2j-similarity-service/
 本サービスの責務は、下記の通りです。
 
 * テキスト入力を受け取ること。
-* EmbeddingProvider を用いて、ベクトルを取得すること。
+* EmbeddingStrategyInterface を用いて、ベクトルを取得すること。
 * Core に委譲して、類似度スコアを算出すること。
 
+#### 補足
+
+* Application 層は、EmbeddingStrategyInterface にのみ依存します。
+* 具体実装 (OpenAI / Claude / Gemini) は、Infrastructure 層で提供されます。
 ### Interfaces
 
 #### 設計意図 (ゴール)
@@ -493,6 +497,35 @@ flowchart TD
 * 上位層は、Interface のみを参照します。
 * 実装は、外部から注入します。
 * Service 内で依存を生成しません。
+
+## Contracts 層の構成 (補足)
+
+### 設計意図 (ゴール)
+
+生成コードと手書き契約を明確に分離します。
+
+### 構成
+
+```plaintext
+src/
+  Contracts/
+    EmbeddingStrategyInterface.php   ← 手書き契約
+    DTO/                             ← codegen (OpenAPI)
+```
+
+### 依存関係
+
+```mermaid id="auth_flow"
+flowchart TD
+  A["Application"] --> B["EmbeddingStrategyInterface (Contracts)"]
+  B --> C["Infrastructure (Strategy 実装)"]
+```
+
+### ルール
+
+* Contracts は、「抽象契約」と「DTO」を含みます。
+* DTO は、生成物として扱う (編集禁止) します。
+* 抽象インターフェースは、手書きで管理します。
 
 ## Runtime Validation
 
