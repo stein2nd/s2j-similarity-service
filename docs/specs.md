@@ -85,7 +85,7 @@
 |--------------|------|
 | [REST API エンドポイント仕様](./interfaces/rest_api_spec.md) | REST API エンドポイント仕様 |
 | [型安全な SDK 設計](./interfaces/sdk_spec.md) | SDK / ApiClient 設計 |
-| [Runtime 仕様](./interfaces/runtime_spec.md) | runtime（node / edge / browser）設計 |
+| [Runtime 仕様](./interfaces/runtime_spec.md) | runtime (node / edge / browser) 設計 |
 | [使用方法](./interfaces/usage_spec.md) | 使用方法 (PHP、JavaScript) |
 
 ### エンジニアリング (開発基盤)
