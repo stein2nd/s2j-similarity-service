@@ -8,12 +8,12 @@
 
 ### 仕様書 (参照元)
 
-- `README.md` (利用者向けの利用仕様)
-- `docs/core/similarity_spec.md` (類似度算出の仕様)
-- `docs/interfaces/usage_spec.md` (使用方法仕様)
-- `docs/interfaces/rest_api_spec.md` (REST API 仕様)
-- `docs/interfaces/sdk_spec.md` (型安全 SDK 設計)
-- `schema/openapi.yaml` (OpenAPI: API 契約の起点)
+* `README.md` (ユーザー向けの利用仕様)
+* `docs/core/similarity_spec.md` (類似度算出の仕様)
+* `docs/interfaces/usage_spec.md` (使用方法仕様)
+* `docs/interfaces/rest_api_spec.md` (REST API 仕様)
+* `docs/interfaces/sdk_spec.md` (型安全 SDK 設計)
+* `schema/openapi.yaml` (OpenAPI: API 契約の起点)
 
 ※ `docs_old/` 配下は「仕様執筆の参考資料」であり、**実装状況の評価・完了条件の根拠には使用しません。**
 
@@ -30,12 +30,12 @@
 | ベクトル正規化 (L2正規化) | 実装済み | 100 | - **docs/core/similarity_spec.md**: 「入力は正規化済み」前提を、Strategy 側で担保する方針として明文化 (現実装と一致)。追加の明確化なし |
 | キャッシュ (Embedding Decorator)`CachedEmbeddingStrategy` + `InMemoryCache` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: キャッシュキー (text+model+provider+normalized) と TTL 既定値 (24h) の整合。追加の明確化なし |
 | エラー型 (DomainError 系) | 実装済み | 80 | - **docs/interfaces/rest_api_spec.md**: REST の `error.type/message/details` と PHP の `DomainError` 派生 (Validation/Provider/Network/Timeout/RateLimit 等) の対応表を確定<br>- **schema/openapi.yaml**: `ErrorResponse` を定義し、各エンドポイントの 4xx/5xx を OpenAPI に明記 |
-| REST API (`POST /v1/similarity`, `POST /v1/embedding`) | 未実装 | 0 | - **docs/interfaces/rest_api_spec.md**: 提供形態 (どのランタイム/フレームワークでホストするか) を確定<br>- **docs/interfaces/rest_api_spec.md**: 認証 (Bearer token) の検証方法・権限モデルを確定<br>- **docs/interfaces/rest_api_spec.md**: レート制限の具体値 (単位/上限/Retry-After) を確定<br>- **schema/openapi.yaml**: 仕様書の成功レスポンス (`{data, meta}`) と OpenAPI のレスポンス形状を統一 (どちらを正にするか決定) |
+| REST API (`POST /v1/similarity`, `POST /v1/embedding`) | 未実装 | 0 | - **docs/interfaces/rest_api_spec.md**: 提供形態 (どのランタイム/フレームワークでホストするか) を確定<br>- **docs/interfaces/rest_api_spec.md**: 認証 (Bearer token) の検証方法・権限モデルを確定<br>- **docs/interfaces/rest_api_spec.md**: レート制限の具体値 (単位/上限/Retry-After) を確定 |
 | OpenAPI を Single Source にした codegen (TS types/Zod/PHP DTO) | 未実装 | 10 | - **schema/openapi.yaml**: 契約として成立する YAML 構造に整備 (components/schemas を正しい YAML にする)<br>- **docs/interfaces/sdk_spec.md**: 生成物の公開範囲 (contracts/core/client) と「raw client を公開するか」を確定 |
 | TypeScript SDK (ApiClient/HttpClient/Retry/Timeout 等) | 未実装 | 0 | - **docs/interfaces/sdk_spec.md**: 最小実装スコープ (ApiClientのみ vs Retry/Timeout まで) を確定<br>- **docs/interfaces/sdk_spec.md**: エラー型 (DomainError) を TS 側でどう表現するか (enum/union/class) を確定 |
 | README / 使用方法ドキュメントの整合 (命名・例コード) | 未実装 | 60 | - **docs/interfaces/usage_spec.md**: 例コードの用語/命名 (provider/strategy 等) と実装の整合を仕様として確定<br>- **README.md**: ライブラリの「入口」を `SimilarityService` に統一するか、`EmbeddingService` も正式に案内するか方針決め |
 
 ### 補足 (現行コードから見える前提)
 
-- 本リポジトリは **「純粋な PHP ライブラリ」**としては主要機能が実装済み (類似度計算・Embedding・バッチ・キャッシュ・基本エラー)。
-- `docs/interfaces/rest_api_spec.md` と `schema/openapi.yaml` は存在するものの、**HTTP サーバ実装 (ルーティング/コントローラ) は見当たらない**ため、REST API は未実装扱いです。
+* 本リポジトリは **「純粋な PHP ライブラリ」**としては主要機能が実装済み (類似度計算・Embedding・バッチ・キャッシュ・基本エラー)。
+* `docs/interfaces/rest_api_spec.md` と `schema/openapi.yaml` は存在するものの、**HTTP サーバ実装 (ルーティング/コントローラ) は見当たらない**ため、REST API は未実装扱いです。
