@@ -2132,6 +2132,256 @@ import { RawClient } from "sdk/raw"   // 明示的import
 * 破壊的変更の対象となる可能性があります。
 * 安定 API としては、保証しません。
 
+## OpenAPI Codegen と公開範囲 (Public Surface)
+
+### 設計意図 (ゴール)
+
+OpenAPI schema を source of truth とし、codegen による型安全な SDK 生成と、安定した公開 API (Public Surface) を提供します。
+
+### 設計原則
+
+```plaintext id="codegen_principle"
+契約は、生成
+ロジックは、手書き
+入口は、client
+raw は、裏口
+```
+
+### 設計方針 (規約)
+
+* OpenAPI schema を唯一の契約定義とします。
+* DTO / contracts は、codegen により生成します。
+* Application / core は、手書き実装とします。
+* codegen 出力物は、contracts 層へ配置します。
+* SDK の公開範囲を、contracts / core / client に分離します。
+* raw client は、opt-in の限定公開とします。
+
+### 非対象 (Out of Scope)
+
+* GraphQL codegen
+* O/R マッパ codegen
+* DB migration generation
+* IDE plugin integration
+* Swagger UI hosting
+
+### 責務
+
+* OpenAPI と SDK の整合を保証すること。
+* codegen の境界を定義すること。
+* 公開 API の範囲を定義すること。
+
+### 非責務
+
+* OpenAPI authoring UI
+* release automation
+* package publishing
+* runtime hosting
+
+### OpenAPI → Codegen パイプライン
+
+#### Source of Truth
+
+```plaintext id="codegen_sot"
+schema/openapi.yaml
+```
+
+#### 生成対象
+
+##### contracts
+
+* Request DTO
+* Response DTO
+* ErrorResponse
+* enum / literal types
+
+##### TypeScript
+
+```plaintext id="codegen_ts"
+packages/ts-sdk/src/contracts/generated/
+```
+
+##### PHP
+
+```plaintext id="codegen_php"
+packages/php-sdk/src/Contracts/DTO/Generated/
+```
+
+#### 非生成対象
+
+```plaintext id="codegen_manual"
+* SimilarityService
+* EmbeddingService
+* Strategy
+* Retry
+* Timeout
+* HttpClient
+```
+
+#### codegen 実行基盤
+
+##### 推奨ツール
+
+| 言語 | ツール |
+|------|--------|
+| TypeScript | `openapi-typescript` |
+| PHP | JanePHP or OpenAPI Generator |
+
+#### 実行タイミング
+
+##### 必須
+
+```plaintext id="codegen_trigger"
+* schema/openapi.yaml 更新時
+* CI
+* release build
+```
+
+##### 推奨
+
+```plaintext id="codegen_optional"
+* pre-commit check
+* local generate script
+```
+
+#### CI ルール
+
+##### 必須
+
+```plaintext id="codegen_ci"
+1. codegen 実行
+2. 差分検出
+3. 未コミット生成物が存在したら fail
+```
+
+#### package scripts
+
+##### 例
+
+```json id="codegen_scripts"
+{
+  "scripts": {
+    "generate": "pnpm generate:ts && pnpm generate:php",
+    "generate:ts": "...",
+    "generate:php": "..."
+  }
+}
+```
+
+### SDK 公開範囲 (Public Surface)
+
+#### 1. contracts (公開)
+
+##### 内容
+
+* generated DTO
+* generated schema types
+* ErrorResponse types
+
+##### 用途
+
+* 型共有
+* 外部統合
+* serialization
+
+#### 2. core (公開・低レベル)
+
+##### 内容
+
+* cosine similarity
+* vector utilities
+* pure functions
+
+##### 方針
+
+* framework 非依存とします。
+* runtime 非依存とします。
+
+#### 3. client (公開・推奨)
+
+##### 内容
+
+* SimilarityService
+* EmbeddingService
+* ApiClient
+
+##### 方針
+
+* 通常ユーザーの正式入口とします。
+* README / Playground は、client を使用します。
+
+#### 4. raw client (限定公開)
+
+##### 方針
+
+* opt-in のみとします。
+* default export しません。
+* 安定 API として保証しません。
+
+##### export 例
+
+```json id="codegen_exports"
+{
+  "exports": {
+    ".": "./client/index.js",
+    "./contracts": "./contracts/index.js",
+    "./core": "./core/index.js",
+    "./raw": "./raw/index.js"
+  }
+}
+```
+
+#### raw client の責務
+
+* REST endpoint を直接コールすること。
+* low-level debugging をすること。
+* custom transport をすること。
+
+#### raw client を推奨しない理由
+
+```plaintext id="codegen_raw_reason"
+* retry 責務が漏れる
+* error mapping が崩れる
+* runtime 差異が露出する
+```
+
+### 生成物と手書きコードの境界
+
+| 領域 | 生成 | 手書き |
+|------|------|--------|
+| DTO | ✔ | ✖ |
+| OpenAPI types | ✔ | ✖ |
+| Service | ✖ | ✔ |
+| Strategy | ✖ | ✔ |
+| Retry | ✖ | ✔ |
+| Error mapping | ✖ | ✔ |
+
+### ディレクトリ方針
+
+```plaintext id="codegen_dirs"
+contracts/generated/ = codegen only
+core/                = handwritten
+client/              = handwritten
+```
+
+### 編集禁止ルール
+
+#### generated 配下
+
+```plaintext id="codegen_no_edit"
+手編集禁止
+```
+
+### 理由
+
+* regenerate 時に消失するため
+
+#### README / Playground
+
+##### 方針
+
+* contracts を直接説明しません。
+* client API を主入口とします。
+
 ## TypeScript SDK の最小実装スコープ
 
 ### 設計意図 (ゴール)
