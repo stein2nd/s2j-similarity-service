@@ -161,7 +161,7 @@ $strategy = new OpenAIEmbeddingStrategy();
 $service = new SimilarityService($strategy);
 
 // 類似度を計算
-$result = $service->compare(
+$result = $service->similarity(
     'OpenAI の API キー',
     'text-embedding-3-small',
     'en',
@@ -220,7 +220,7 @@ echo $result['language'];   // en
 **主要メソッド**:
 
 * `__construct(EmbeddingStrategyInterface $strategy)`: Strategy を注入
-* `compare(string $apiKey, string $model, string $language, string $locale, string $baseText, string $targetText): array`: 類似度を計算して返却
+* `similarity(string $apiKey, string $model, string $language, string $locale, string $baseText, string $targetText): array`: 類似度を計算して返却
 
 **戻り値**:
 
@@ -238,7 +238,7 @@ echo $result['language'];   // en
 
 **主要メソッド**:
 
-* `getEmbedding(string $apiKey, string $model, string $text, string $language, ?string $locale = null): array`: テキストから埋め込みベクトルを生成
+* `embed(string $apiKey, string $model, string $text, string $language, ?string $locale = null): array`: テキストから埋め込みベクトルを生成
 
 ### 7.3. OpenAIEmbeddingStrategy
 
