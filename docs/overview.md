@@ -86,7 +86,7 @@ WordPress を runtime として利用する
 ビジネスロジックは、WordPress 非依存に保つ
 ```
 
-### 非対象（Out of Scope）
+### 非対象 (Out of Scope)
 
 * 独立 HTTP サーバとしての提供
 * Slim / Laravel 同梱
@@ -106,7 +106,7 @@ WordPress を runtime として利用する
 
 * 認証すること。
 * 権限を判定すること。
-* Rate limiting を判定すること（必要に応じて）。
+* Rate limiting を判定すること (必要に応じて)。
 
 ### 採用理由
 
@@ -166,7 +166,7 @@ HTTP 層は、WordPress の規約に寄せます。
 
 #### 方針
 
-* `register_rest_route` の callback / permission_callback を、REST Adapter（Controller）として扱います。
+* `register_rest_route` の callback / permission_callback を、REST Adapter (Controller) として扱います。
 
 #### 構成
 
