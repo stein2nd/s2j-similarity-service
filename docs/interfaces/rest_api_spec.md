@@ -994,3 +994,171 @@ flowchart TD
 
 * OpenAPI contract test
 * schema validation
+
+## エラー種別の命名規則 (error.type)
+
+### 設計意図 (ゴール)
+
+REST API、OpenAPI、PHP SDK、TypeScript SDK 間で、一貫したエラー識別子を提供し、変換コストと命名揺れを排除します。
+
+### 設計方針 (規約)
+
+* `error.type` は、snake_case を正式仕様とします。
+* OpenAPI schema は、snake_case を source of truth とします。
+* PHP `DomainError::$type` も、snake_case を使用します。
+* PHP のクラス名のみ、PascalCase を使用します。
+* TypeScript SDK は、string literal union に snake_case を使用します。
+
+### 設計原則
+
+```plaintext id="error_principle"
+識別子は、snake_case
+クラス名は、PascalCase
+JSON は、言語非依存
+```
+
+### 非対象 (Out of Scope)
+
+* i18n エラーメッセージ
+* UI 表示用ラベル
+* stack trace 標準化
+* GraphQL error extensions
+
+### 責務
+
+* エラー識別子を統一すること。
+* OpenAPI / SDK 間の整合を保証すること。
+* runtime 間の変換を容易にすること。
+
+### 非責務
+
+* エラー文言の翻訳
+* ログフォーマット
+* APM 製品との統合
+
+### 正式命名
+
+| 概念 | 命名 |
+|------|------|
+| REST error.type | snake_case |
+| OpenAPI enum | snake_case |
+| PHP `DomainError::$type` | snake_case |
+| PHP class 名 | PascalCase |
+| TS literal type | snake_case |
+
+### 正式一覧
+
+| error.type | PHP Class |
+|------------|-----------|
+| validation_error | ValidationError |
+| auth_error | AuthenticationError |
+| permission_error | AuthorizationError |
+| not_found | NotFoundError |
+| timeout | TimeoutError |
+| rate_limit | RateLimitError |
+| provider_error | ProviderError |
+| network_error | NetworkError |
+| internal_error | InternalError |
+
+### REST 例
+
+```json id="error_rest_example"
+{
+  "error": {
+    "type": "validation_error",
+    "message": "Invalid input",
+    "details": {
+      "field": "text"
+    }
+  }
+}
+```
+
+### PHP 例
+
+```php id="error_php_example"
+abstract class DomainError extends \Exception
+{
+    public string $type;
+}
+
+class ValidationError extends DomainError
+{
+    public string $type = 'validation_error';
+}
+```
+
+### TypeScript 例
+
+```ts id="error_ts_example"
+type ErrorType =
+  | 'validation_error'
+  | 'rate_limit'
+  | 'provider_error'
+```
+
+### OpenAPI 例
+
+```yaml id="error_openapi_example"
+type:
+  type: string
+  enum:
+    - validation_error
+    - auth_error
+    - rate_limit
+```
+
+### PascalCase を使用しない理由
+
+* JSON / REST と整合しない
+* TypeScript literal と不整合
+* OpenAPI enum に不向き
+* 言語依存が強い
+
+### PascalCase の利用範囲
+
+#### 許可対象
+
+```plaintext id="error_pascal"
+PHP class 名
+TypeScript class 名
+```
+
+#### 禁止対象
+
+```plaintext id="error_no_pascal"
+REST error.type
+OpenAPI enum
+JSON payload
+```
+
+### migration 方針
+
+#### 旧
+
+```plaintext id="error_old"
+ValidationError
+ProviderError
+```
+
+#### 新
+
+```plaintext id="error_new"
+validation_error
+provider_error
+```
+
+### ErrorMapper
+
+#### 設計方針 (規約)
+
+* REST ↔ DomainError 変換を提供します。
+* snake_case を唯一の識別子とします。
+
+#### 変換フロー
+
+```mermaid id="error_mapping"
+flowchart TD
+  A["HTTP error.type"] --> B["DomainError::$type"]
+  B --> C["PHP / TS error handling"]
+```
