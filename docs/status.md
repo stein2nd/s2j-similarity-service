@@ -29,7 +29,7 @@
 | OpenAI Embeddings 連携 `OpenAIEmbeddingStrategy` | 実装済み | 100 | - **docs/interfaces/usage_spec.md**: endpoint/timeout 等の設定可能項目を仕様として明記 (README とも整合させる) |
 | ベクトル正規化 (L2正規化) | 実装済み | 100 | - **docs/core/similarity_spec.md**: 「入力は正規化済み」前提を、Strategy 側で担保する方針として明文化 (現実装と一致)。追加の明確化なし |
 | キャッシュ (Embedding Decorator)`CachedEmbeddingStrategy` + `InMemoryCache` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: キャッシュキーは正規化テキスト (trim + lower) + model (未指定は `__default__`) + provider + normalized=true を JSON 化し sha256。TTL 既定値は 24h。追加の明確化なし |
-| エラー型 (DomainError 系) | 実装済み | 90 | - **docs/interfaces/rest_api_spec.md**: REST の `error.type/message/details` と PHP の `DomainError::$type` (現行は `ValidationError` 等の PascalCase 文字列) の対応を確定<br>- **schema/openapi.yaml**: error.type の命名 (snake_case vs PascalCase) を契約として統一 |
+| エラー型 (DomainError 系) | 実装済み | 100 | - **docs/interfaces/rest_api_spec.md** の命名規則どおり、`error.type` / OpenAPI enum / PHP `DomainError::$type` は snake_case に統一済み。追加の明確化なし |
 | 旧 API (`S2J\\SimilarityService\\...`) の削除 | 実装済み | 100 | - **docs/interfaces/usage_spec.md** の方針どおり、旧 API の namespace / compare() / getEmbedding() を削除済み。追加の明確化なし |
 | REST API (`POST /v1/similarity`, `POST /v1/embedding`) | 未実装 | 0 | - **docs/interfaces/rest_api_spec.md**: 提供形態 (どのランタイム/フレームワークでホストするか) を確定<br>- **docs/interfaces/rest_api_spec.md**: 認証 (Bearer token) の検証方法・権限モデルを確定<br>- **docs/interfaces/rest_api_spec.md**: レート制限の具体値 (単位/上限/Retry-After) を確定 |
 | OpenAPI を Single Source にした codegen (TS types/Zod/PHP DTO) | 未実装 | 10 | - **schema/openapi.yaml**: `components/schemas` は定義済み。codegen 実行基盤 (生成ツール/出力先/CI) を確定<br>- **docs/interfaces/sdk_spec.md**: 生成物の公開範囲 (contracts/core/client) と「raw client を公開するか」を確定 |
@@ -40,4 +40,5 @@
 
 * 本リポジトリは **「純粋な PHP ライブラリ」** としては主要機能が実装済み (類似度計算・Embedding・バッチ・キャッシュ・基本エラー)。
 * 公開 API は `S2J\Similarity\...` に統一され、`S2J\SimilarityService\...` (旧 API) は削除済みです。
+* `error.type` は `schema/openapi.yaml` と `DomainError::$type` とで snake_case に統一済みです。
 * `docs/interfaces/rest_api_spec.md` と `schema/openapi.yaml` は存在し、OpenAPI には `ErrorResponse` まで定義済みですが、**HTTP サーバ実装 (ルーティング/コントローラ) は見当たらない** ため、REST API は、未実装扱いです。
