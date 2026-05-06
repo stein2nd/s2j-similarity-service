@@ -2131,3 +2131,355 @@ import { RawClient } from "sdk/raw"   // 明示的import
 
 * 破壊的変更の対象となる可能性があります。
 * 安定 API としては、保証しません。
+
+## TypeScript SDK の最小実装スコープ
+
+### 設計意図 (ゴール)
+
+TypeScript SDK において、「最低限必要な通信機能」と「利用者側へ委譲する責務」の境界を明確化します。
+
+### 設計原則
+
+```plaintext id="sdk_scope_principle"
+SDK は、軽量に
+Retry は、最小限に
+高度制御は、ホストへ委譲
+```
+
+### 設計方針 (規約)
+
+* SDK は、軽量な API Client を提供します。
+* 最低限の信頼性機能 (Retry / Timeout) は、SDK に含めます。
+* 高度な可用性制御 (Circuit Breaker 等) は、含めません。
+* HttpClient は、抽象化し、runtime 差異を吸収します。
+* Retry / Timeout は、Adapter 層の責務とします。
+
+### 非対象 (Out of Scope)
+
+* Circuit Breaker
+* Service Discovery
+* Queue / Worker 管理
+* 分散トレーシング基盤
+* HTTP/3最適化
+
+### 責務
+
+* TypeScript SDK の最小責務を定義すること。
+* runtime 差異を吸収すること。
+* 軽量な信頼性機能を提供すること。
+
+### 責務分離
+
+| 層 | 責務 |
+|----|------|
+| ApiClient | 高レベル API |
+| HttpClient | 通信抽象 |
+| Retry | 一時的な障害耐性 |
+| Timeout | 時間制御 |
+| Application | ビジネスロジック |
+
+### 非責務
+
+* 高度な可用性制御
+* インフラレベルのリトライ
+* 分散システム管理
+
+### 推奨構成
+
+```mermaid id="sdk_scope_structure"
+flowchart TD
+  A["ApiClient"] --> B["RetryHttpClient"]
+  B --> C["TimeoutHttpClient"]
+  C --> D["FetchHttpClient"]
+```
+
+### Decorator パターン
+
+#### 方針
+
+* リトライ/タイムアウトは、Decorator として実装します。
+* HttpClient をラップする形を採用します。
+
+#### 例
+
+```ts id="sdk_scope_decorator"
+const client = new RetryHttpClient(
+  new TimeoutHttpClient(
+    new FetchHttpClient(fetch)
+  )
+)
+```
+
+### runtime 別 fetch
+
+| runtime | 実装 |
+|---------|------|
+| Node.js | undici |
+| Browser | native fetch |
+| Edge | global fetch |
+
+### 実装対象 (Included)
+
+#### 1. ApiClient
+
+高レベル API を提供します。
+
+##### 例
+
+```ts id="sdk_scope_api"
+await client.similarity(textA, textB, model)
+```
+
+#### 2. HttpClient abstraction
+
+runtime 差異を吸収します。
+
+##### 例
+
+```ts id="sdk_scope_http"
+interface HttpClient {
+  fetch(input: RequestInfo, init?: RequestInit): Promise<Response>
+}
+```
+
+#### 3. Timeout
+
+リクエスト単位の timeout を提供します。
+
+##### 例
+
+```ts id="sdk_scope_timeout"
+timeoutMs?: number
+```
+
+#### 4. Retry (軽量)
+
+一時的失敗に対する再試行を提供します。
+
+##### 対象例
+
+```plaintext id="sdk_scope_retry_targets"
+* network error
+* timeout
+* HTTP 429
+* HTTP 503
+```
+
+#### Retry 方針
+
+* exponential backoff を推奨します。
+* retry 回数は、小さく保ちます (たとえば `max: 3`)。
+* idempotent な request のみ対象とします。
+
+### 実装対象外 (Excluded)
+
+#### Circuit Breaker
+
+実装対象外とする理由は、下記のとおりです。
+
+* SDK レイヤには過剰
+* ホスト環境で制御すべき
+
+#### Queue / Batch orchestration
+
+実装対象外とする理由は、下記のとおりです。
+
+* アプリケーション責務
+* runtime ごとの差異が大きい
+
+#### 自動キャッシュ
+
+実装対象外とする理由は、下記のとおりです。
+
+* キャッシュ戦略は、ユーザー依存
+* 保存先 (memory / Redis 等) が未定義
+
+## TypeScript SDK のエラー型 (DomainError)
+
+### 設計意図 (ゴール)
+
+REST API、OpenAPI、PHP SDK と整合した、型安全かつ判定容易な TypeScript エラー表現を提供します。
+
+### 設計原則
+
+```plaintext id="ts_error_principle"
+識別は、literal
+型安全は、union
+runtime 利便性は、class
+```
+
+### 設計方針 (規約)
+
+* エラー識別は、`error.type` を基準とします。
+* TypeScript 側では discriminated union を採用します。
+* runtime 利便性のため Error class を併用します。
+* enum は、使用せず、string literal union を使用します。
+* REST の `error.type` と1対1対応を維持します。
+
+### 非対象 (Out of Scope)
+
+* i18n エラーメッセージ
+* React ErrorBoundary 統合
+* GraphQL エラー互換
+* stack trace 標準化
+
+### 責務
+
+* TS SDK のエラー表現を統一すること。
+* REST / PHP と整合した型体系を提供すること。
+* リトライ判定可能な分類を保証すること。
+
+### 非責務
+
+* UI 表示
+* ログ収集
+* エラー監視基盤
+* circuit breaker 制御
+
+### 基本構造
+
+#### Error Type (string literal)
+
+```ts id="ts_error_type"
+type ErrorType =
+  | 'validation_error'
+  | 'auth_error'
+  | 'permission_error'
+  | 'not_found'
+  | 'timeout'
+  | 'rate_limit'
+  | 'provider_error'
+  | 'network_error'
+  | 'internal_error'
+```
+
+#### DomainError (共通構造)
+
+```ts id="ts_error_base"
+interface DomainError {
+  type: ErrorType
+  message: string
+  details?: unknown
+}
+```
+
+#### Discriminated Union
+
+```ts id="ts_error_union"
+type SDKError =
+  | ValidationError
+  | AuthenticationError
+  | AuthorizationError
+  | TimeoutError
+  | RateLimitError
+  | ProviderError
+  | NetworkError
+  | InternalError
+```
+
+#### 具体型
+
+```ts id="ts_error_validation"
+interface ValidationError extends DomainError {
+  type: 'validation_error'
+  details?: {
+    field?: string
+    reason?: string
+  }
+}
+```
+
+### Error Class (runtime 補助)
+
+#### 設計方針 (規約)
+
+* `instanceof` 判定を可能にするため class を提供します。
+* 型安全の正本は union とします。
+
+#### 例
+
+```ts id="ts_error_class"
+class SDKErrorBase extends Error {
+  constructor(
+    public type: ErrorType,
+    message: string,
+    public details?: unknown
+  ) {
+    super(message)
+  }
+}
+```
+
+### 判定方法
+
+#### 推奨
+
+```ts id="ts_error_check"
+if (error.type === 'rate_limit') {
+  // retry
+}
+```
+
+#### 補助
+
+```ts id="ts_error_instanceof"
+if (error instanceof RateLimitError) {
+  // optional
+}
+```
+
+### enum を使用しない理由
+
+* OpenAPI / JSON と整合しにくい
+* tree-shaking に不利
+* ESM / bundler 環境差異を増やす
+
+### 採用方針
+
+```ts id="ts_error_literal"
+type ErrorType = 'timeout' | 'network_error'
+```
+
+### REST との整合
+
+| REST error.type | TS type |
+|----------------|---------|
+| validation_error | ValidationError |
+| timeout | TimeoutError |
+| rate_limit | RateLimitError |
+| provider_error | ProviderError |
+
+### throw モデル
+
+#### 設計方針 (規約)
+
+* SDK は、throw モデルを採用します。
+
+```ts id="ts_error_throw"
+await client.similarity(...)
+```
+
+失敗時は、下記のように catch 句で補足されます。
+
+```ts id="ts_error_catch"
+try {
+  await client.similarity(...)
+} catch (error) {
+  if (isSDKError(error)) {
+    ...
+  }
+}
+```
+
+### Type Guard
+
+```ts id="ts_error_guard"
+function isSDKError(error: unknown): error is SDKError
+```
+
+### OpenAPI との関係
+
+#### 設計方針 (規約)
+
+* OpenAPI の error schema を source of truth とします。
+* TS 型は、codegen または mapping により生成可能とします。
