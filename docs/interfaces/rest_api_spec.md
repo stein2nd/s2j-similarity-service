@@ -848,3 +848,149 @@ X-RateLimit-Reset: 1710000000
 * テナント別制限
 * 動的スロットリング
 ```
+
+## HTTP サーバー実装 (Routing / Controller)
+
+### 設計意図 (ゴール)
+
+OpenAPI による REST 契約定義と、実際の HTTP サーバー実装 (routing / controller) を明確に分離し、実装状況と責務を正確に管理可能にします。
+
+### 設計原則
+
+```plaintext id="rest_impl_principle"
+OpenAPI は、契約
+HTTP runtime は、実装
+Controller は、Adapter
+```
+
+### 設計方針 (規約)
+
+* OpenAPI は、「HTTP 契約」の source of truth とします。
+* REST API の「実装完了」は、HTTP runtime 実装を含みます。
+* routing / controller が存在しない場合、REST API は未実装扱いとします。
+* HTTP 層は、Adapter として実装します。
+* Core / Application は、HTTP を認識しません。
+
+### 非対象 (Out of Scope)
+
+* Web UI
+* API Gateway 構築
+* Kubernetes ingress
+* CDN / WAF 設定
+* GraphQL endpoint
+
+### 責務
+
+* HTTP runtime 実装の成立条件を定義すること。
+* REST 契約と runtime の違いを明確化すること。
+* Controller / Routing の責務を定義すること。
+
+### Controller の責務
+
+* Request → DTO に変換すること。
+* DTO validation すること。
+* Application 呼び出しすること。
+* DomainError → ErrorResponse に変換すること。
+* HTTP status code を決定すること。
+
+### Routing の責務
+
+* endpoint パスを解決すること。
+* HTTP method を判定すること。
+* middleware を適用すること。
+
+### Adapter 層
+
+#### 方針
+
+* HTTP 層は、Adapter として扱います。
+* フレームワーク依存を隔離します。
+
+#### 例
+
+```plaintext id="rest_impl_adapter"
+adapters/http/
+  laravel/
+  slim/
+  express/
+  workers/
+```
+
+### 非責務
+
+* フレームワーク選定
+* デプロイ
+* インフラ構成
+* 認証基盤そのもの
+
+### OpenAPI の位置付け
+
+#### 方針
+
+* OpenAPI は、「契約」であり runtime ではありません。
+* schema 定義のみでは API 実装完了とは見なしません。
+
+### ErrorResponse との関係
+
+```mermaid id="rest_impl_error"
+flowchart TD
+  A["DomainError"] --> B["ErrorMapper"]
+  B --> C["ErrorResponse (OpenAPI)"]
+```
+
+### 現在の実装状況
+
+#### 実装済み
+
+```plaintext id="rest_impl_done"
+✔ OpenAPI schema
+✔ ErrorResponse
+✔ DTO codegen
+✔ SDK contracts
+```
+
+#### 未実装
+
+```plaintext id="rest_impl_todo"
+✖ HTTP routing
+✖ Controller / Handler
+✖ Request validation runtime
+✖ Response serialization
+✖ HTTP middleware
+```
+
+#### REST API の成立条件
+
+以下を満たした場合に「REST API 実装済み」とします。
+
+```plaintext id="rest_impl_requirements"
+1. OpenAPI schema 存在
+2. HTTP routing 実装
+3. Controller / Handler 実装
+4. Error mapping 実装
+5. Request validation 実装
+6. HTTP integration test
+```
+
+### 推奨構成
+
+```mermaid id="rest_impl_structure"
+flowchart TD
+  A["HTTP Request"] --> B["Router"]
+  B --> C["Controller / Handler"]
+  C --> D["SimilarityService"]
+  D --> E["EmbeddingStrategy"]
+```
+
+### テスト要件
+
+#### 必須
+
+* integration test
+* HTTP status assertion
+* ErrorResponse assertion
+
+#### 推奨
+
+* OpenAPI contract test
+* schema validation
