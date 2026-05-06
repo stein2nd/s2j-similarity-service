@@ -56,6 +56,6 @@
 
 ## 対応する実装
 
-* **インターフェイス**: `S2J\SimilarityService\EmbeddingStrategyInterface::getEmbedding()`
+* **インターフェイス**: `S2J\SimilarityService\EmbeddingStrategyInterface::embed()`
 * **OpenAI 実装**: `S2J\SimilarityService\OpenAIEmbeddingStrategy`
 * **設定**: タイムアウト30秒 (cURL の `CURLOPT_TIMEOUT`)
