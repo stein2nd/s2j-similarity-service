@@ -2,7 +2,6 @@
 
 namespace S2J\Similarity\Infrastructure\Embedding;
 
-use S2J\Similarity\Contracts\EmbeddingStrategyInterface;
 use S2J\Similarity\Contracts\BatchEmbeddingStrategyInterface;
 use S2J\Similarity\Contracts\Errors\NetworkError;
 use S2J\Similarity\Contracts\Errors\ProviderError;

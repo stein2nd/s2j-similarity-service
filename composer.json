@@ -6,7 +6,9 @@
     "autoload": {
       "psr-4": {
         "S2J\\SimilarityService\\": "src/",
-        "S2J\\Similarity\\": "src/"
+        "S2J\\Similarity\\": "src/",
+        "S2J\\Similarity\\Adapters\\": "adapters/",
+        "S2J\\Similarity\\Adapters\\Http\\WordPress\\": "adapters/http/wordpress/"
       }
     },
     "require": {
