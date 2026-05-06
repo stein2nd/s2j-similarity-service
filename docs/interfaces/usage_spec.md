@@ -781,11 +781,11 @@ const score = await service.similarity(textA, textB, model);
 * `EmbeddingProvider` という型・クラス名の使用
 * インターフェース名をクラス名として使用すること (たとえば、`OpenAIEmbeddingStrategyInterface`)
 
-## API 統合方針（旧 API 廃止）
+## API 統合方針 (旧 API 廃止)
 
-### 設計意図（ゴール）
+### 設計意図 (ゴール)
 
-SDK の公開 API を単一体系へ統合し、利用者・実装者・ドキュメント間の不整合を排除します。
+SDK の公開 API を単一の体系に統合し、ユーザー・実装者・ドキュメント間の不整合を排除します。
 
 ### 設計原則
 
@@ -795,7 +795,7 @@ SDK の公開 API を単一体系へ統合し、利用者・実装者・ドキ�
 責務は、1つ
 ```
 
-### 設計方針（規約）
+### 設計方針 (規約)
 
 * `S2J\Similarity\...` を唯一の正式 API とします。
 * `S2J\SimilarityService\...` は、旧 API として廃止します。
@@ -803,9 +803,9 @@ SDK の公開 API を単一体系へ統合し、利用者・実装者・ドキ�
 * README、examples、Playground、SDK は、新 API のみを使用します。
 * API 命名は、`similarity()`、`embed()` に統一します。
 
-### 非対象（Out of Scope）
+### 非対象 (Out of Scope)
 
-* 後方互換性維持
+* 後方互換性の維持
 * 旧 API ラッパー
 * 自動 migration tool
 * semantic alias
@@ -824,7 +824,7 @@ SDK の公開 API を単一体系へ統合し、利用者・実装者・ドキ�
 
 ### 現行 API
 
-#### 正式 API（採用）
+#### 正式 API (採用)
 
 ```plaintext id="api_new"
 S2J\Similarity\...
@@ -837,7 +837,7 @@ $service->similarity($textA, $textB)
 $strategy->embed($text)
 ```
 
-### 旧 API（削除対象）
+### 旧 API (削除対象)
 
 ```plaintext id="api_old"
 S2J\SimilarityService\...
@@ -854,7 +854,7 @@ $strategy->getEmbedding(...)
 
 #### 1. 責務重複
 
-* 新 API と旧 API が、実質同一機能を提供しています。
+* 新 API と旧 API が、実質同一の機能を提供しています。
 
 #### 2. 命名不整合
 
@@ -902,15 +902,13 @@ GeminiEmbeddingStrategy
 
 | 役割 | 正式名称 |
 |------|----------|
-| 類似度計算 | similarity() |
-| embedding 取得 | embed() |
-| 抽象 | EmbeddingStrategyInterface |
+| 類似度計算 | `similarity()` |
+| embedding 取得 | `embed()` |
+| 抽象 | `EmbeddingStrategyInterface` |
 
 ### 削除方針
 
-#### 方針
-
-* 旧 API は、段階的廃止を行いません。
+* 旧 API は、段階的な廃止ではなく、即時削除となります。
 * compatibility layer は、提供しません。
 * namespace ごと削除します。
 
