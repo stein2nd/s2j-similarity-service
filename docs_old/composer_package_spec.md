@@ -56,7 +56,7 @@ use S2J\SimilarityService\OpenAIEmbeddingStrategy;
 $strategy = new OpenAIEmbeddingStrategy();
 $service = new SimilarityService($strategy);
 
-$result = $service->compare(
+$result = $service->similarity(
     getenv('OPENAI_API_KEY'),
     'text-embedding-3-small',
     'en',
