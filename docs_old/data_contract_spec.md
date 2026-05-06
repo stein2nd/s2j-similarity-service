@@ -4,9 +4,9 @@
 
 # S2J Similarity Service - データ入出力の仕様
 
-## 入力パラメータ (compare の引数)
+## 入力パラメータ (similarity の引数)
 
-`SimilarityService::compare()` の引数は次のとおりです。
+`SimilarityService::similarity()` の引数は次のとおりです。
 
 | パラメータ | 型 | 説明 |
 |------------|-----|------|
@@ -19,7 +19,7 @@
 
 ※ `language` / `locale` は現状、OpenAI Embeddings のリクエストには含めていません。コール側の識別用として保持しています。
 
-## 戻り値 (compare の返却)
+## 戻り値 (similarity の返却)
 
 | キー | 型 | 説明 |
 |------|-----|------|
@@ -37,7 +37,7 @@
 ]
 ```
 
-## `EmbeddingStrategyInterface::getEmbedding` の入出力
+## `EmbeddingStrategyInterface::embed` の入出力
 
 | 種別 | 名前 | 型 | 説明 |
 |------|------|-----|------|
