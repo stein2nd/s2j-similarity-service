@@ -201,3 +201,190 @@ flowchart TD
 * WordPress のライフサイクル
 * WordPress の認証モデル
 * WordPress REST API
+
+## WordPress 前提の Codegen / SDK 配布方針
+
+### 概要
+
+本ライブラリは、WordPress プラグイン・テーマへ組み込まれることを主用途としています。そのため、下記ケースを前提に、codegen、SDK、配布方針を設計しています。
+
+* Node.js が本番環境に存在しない。
+* Composer のみで導入される。
+* shared hosting 上で動作する。
+
+### 設計原則
+
+```plaintext id="wp_sdk_principle"
+生成物は、内部に閉じ込め
+WordPress 利用者には、安定 API を公開する
+```
+
+### 非対象 (Out of Scope)
+
+* 本番環境での Node 実行
+* runtime codegen
+* generated client の直接利用推奨
+* standalone TS SDK 配布
+
+### SDK が吸収する責務
+
+#### 1. 安定メソッド名
+
+```plaintext id="wp_sdk_methods"
+similarity()
+embed()
+```
+
+#### 2. エラー変換
+
+```mermaid id="wp_sdk_error"
+flowchart TD
+  A["HTTP Error"] --> B["DomainError"]
+```
+
+#### 3. WordPress 向け通信設定
+
+下記を標準化します。
+
+* timeout
+* retry
+* authentication
+
+#### 4. ドメイン型への変換
+
+REST Response を、下記に変換します。
+
+* DTO
+* Domain 型
+
+### OpenAPI と Codegen
+
+#### Source of Truth
+
+OpenAPI schema を契約定義の source of truth とします。
+
+```plaintext id="wp_codegen_sot"
+schema/openapi.yaml
+```
+
+#### Codegen 実行タイミング
+
+##### 方針
+
+生成処理 (codegen) は、下記でのみ実行し、本番 WordPress 環境では実行しません。
+
+* 開発環境
+* CI
+* release build
+
+##### 理由
+
+WordPress 実運用では、下記ケースが多いためです。
+
+* Node.js が存在しない。
+* pnpm / npm が使用できない。
+* build step を前提にできない。
+
+### 配布方針
+
+#### PHP DTO
+
+生成済み PHP DTO は Composer 配布物に含めます。
+
+たとえば
+
+```plaintext id="wp_codegen_php"
+src/Contracts/DTO/Generated/
+```
+
+#### TypeScript / Zod
+
+TypeScript / Zod 生成物は、下記の様な開発用途に限定します。
+
+* 管理画面
+* Playground
+* block editor
+* build を伴う管理 UI
+
+#### 本番 WordPress
+
+PHP のみで動作可能であることを優先します。
+
+### SDK 公開方針
+
+#### 公開 API
+
+公開 API は、下記を中心に安定化します。
+
+* contracts
+* client
+
+#### contracts
+
+役割は、下記となり、OpenAPI codegen の成果物として安定提供します。
+
+* DTO
+* 型契約
+* ErrorResponse
+* Domain 型
+
+#### client
+
+役割は、下記となります。
+
+* WordPress ユーザー向けの、下記を特徴とする、高レベル API を提供します。
+	* 安定したメソッド名
+	* 安定した戻り値
+	* DomainError
+	* timeout / retry の吸収
+
+たとえば
+
+```php id="wp_sdk_client"
+$client->similarity(...)
+```
+
+#### raw client の扱い
+
+* raw client は、公開 API としません。
+* OpenAPI generated client は、内部実装として扱います。
+
+generated client を直接公開すると、下記に挙げる様なことがユーザーに漏出しやすいためです。
+
+* HTTP 差異
+* runtime 差異
+* エラー形式
+* retry 方針
+
+#### ClientInterface
+
+* ユーザーは、generated client ではなく、安定した ClientInterface を使用します。
+
+たとえば
+
+```php id="wp_sdk_interface"
+interface ClientInterface
+{
+    public function similarity(
+        string $a,
+        string $b,
+        ?string $model = null
+    ): float;
+}
+```
+
+### 補足
+
+本ライブラリでは、下記として責務分離を行います。
+
+```plaintext id="wp_sdk_boundary"
+OpenAPI = 契約
+generated = 内部実装
+client = 公開入口
+```
+
+これにより、下記を SDK 内部に閉じ込めることを目的とします。
+
+* WordPress 環境依存
+* runtime 差異
+* HTTP 実装差異
