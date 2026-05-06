@@ -28,14 +28,18 @@
 | Embedding 生成 (バッチ)`EmbeddingService::embedBatch()` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: 「出力は入力順を維持」の整合。追加の明確化なし |
 | OpenAI Embeddings 連携 `OpenAIEmbeddingStrategy` | 実装済み | 100 | - **docs/interfaces/usage_spec.md**: endpoint/timeout 等の設定可能項目を仕様として明記 (README とも整合させる) |
 | ベクトル正規化 (L2正規化) | 実装済み | 100 | - **docs/core/similarity_spec.md**: 「入力は正規化済み」前提を、Strategy 側で担保する方針として明文化 (現実装と一致)。追加の明確化なし |
-| キャッシュ (Embedding Decorator)`CachedEmbeddingStrategy` + `InMemoryCache` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: キャッシュキー (text+model+provider+normalized) と TTL 既定値 (24h) の整合。追加の明確化なし |
-| エラー型 (DomainError 系) | 実装済み | 80 | - **docs/interfaces/rest_api_spec.md**: REST の `error.type/message/details` と PHP の `DomainError` 派生 (Validation/Provider/Network/Timeout/RateLimit 等) の対応表を確定<br>- **schema/openapi.yaml**: `ErrorResponse` を定義し、各エンドポイントの 4xx/5xx を OpenAPI に明記 |
+| キャッシュ (Embedding Decorator)`CachedEmbeddingStrategy` + `InMemoryCache` | 実装済み | 100 | - **docs/interfaces/sdk_spec.md**: キャッシュキーは正規化テキスト (trim + lower) + model (未指定は `__default__`) + provider + normalized=true を JSON 化し sha256。TTL 既定値は 24h。追加の明確化なし |
+| エラー型 (DomainError 系) | 実装済み | 90 | - **docs/interfaces/rest_api_spec.md**: REST の `error.type/message/details` と PHP の `DomainError::$type` (現行は `ValidationError` 等の PascalCase 文字列) の対応を確定<br>- **schema/openapi.yaml**: error.type の命名 (snake_case vs PascalCase) を契約として統一 |
+| 旧API (互換レイヤ) `S2J\\SimilarityService\\SimilarityService::compare()` 等 | 実装済み | 70 | - **README.md** / **docs/interfaces/usage_spec.md**: 旧APIを「互換として残す/非推奨にする/削除する」方針を確定し、入口クラスを一本化 |
 | REST API (`POST /v1/similarity`, `POST /v1/embedding`) | 未実装 | 0 | - **docs/interfaces/rest_api_spec.md**: 提供形態 (どのランタイム/フレームワークでホストするか) を確定<br>- **docs/interfaces/rest_api_spec.md**: 認証 (Bearer token) の検証方法・権限モデルを確定<br>- **docs/interfaces/rest_api_spec.md**: レート制限の具体値 (単位/上限/Retry-After) を確定 |
-| OpenAPI を Single Source にした codegen (TS types/Zod/PHP DTO) | 未実装 | 10 | - **schema/openapi.yaml**: 契約として成立する YAML 構造に整備 (components/schemas を正しい YAML にする)<br>- **docs/interfaces/sdk_spec.md**: 生成物の公開範囲 (contracts/core/client) と「raw client を公開するか」を確定 |
+| OpenAPI を Single Source にした codegen (TS types/Zod/PHP DTO) | 未実装 | 10 | - **schema/openapi.yaml**: `components/schemas` は定義済み。codegen 実行基盤 (生成ツール/出力先/CI) を確定<br>- **docs/interfaces/sdk_spec.md**: 生成物の公開範囲 (contracts/core/client) と「raw client を公開するか」を確定 |
 | TypeScript SDK (ApiClient/HttpClient/Retry/Timeout 等) | 未実装 | 0 | - **docs/interfaces/sdk_spec.md**: 最小実装スコープ (ApiClientのみ vs Retry/Timeout まで) を確定<br>- **docs/interfaces/sdk_spec.md**: エラー型 (DomainError) を TS 側でどう表現するか (enum/union/class) を確定 |
 | README / 使用方法ドキュメントの整合 (命名・例コード) | 未実装 | 60 | - **docs/interfaces/usage_spec.md**: 例コードの用語/命名 (provider/strategy 等) と実装の整合を仕様として確定<br>- **README.md**: ライブラリの「入口」を `SimilarityService` に統一するか、`EmbeddingService` も正式に案内するか方針決め |
 
 ### 補足 (現行コードから見える前提)
 
-* 本リポジトリは **「純粋な PHP ライブラリ」**としては主要機能が実装済み (類似度計算・Embedding・バッチ・キャッシュ・基本エラー)。
-* `docs/interfaces/rest_api_spec.md` と `schema/openapi.yaml` は存在するものの、**HTTP サーバ実装 (ルーティング/コントローラ) は見当たらない**ため、REST API は未実装扱いです。
+* 本リポジトリは **「純粋な PHP ライブラリ」** としては主要機能が実装済み (類似度計算・Embedding・バッチ・キャッシュ・基本エラー)。
+* API は現状 **2系統が共存** しています。
+  * `S2J\Similarity\...` (新): `Application/` を中心に `SimilarityService::similarity()`、`EmbeddingService::embed()` などを提供。
+  * `S2J\SimilarityService\...` (旧): `SimilarityService::compare()`、`OpenAIEmbeddingStrategy::getEmbedding()` など、API key、language、locale を引数に持つインターフェースが残存。
+* `docs/interfaces/rest_api_spec.md` と `schema/openapi.yaml` は存在し、OpenAPI には `ErrorResponse` まで定義済みですが、**HTTP サーバ実装 (ルーティング/コントローラ) は見当たらない** ため、REST API は、未実装扱いです。
