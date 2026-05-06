@@ -41,4 +41,4 @@
 ## 対応する実装
 
 * **計算**: `S2J\SimilarityService\VectorMath::cosineSimilarity(array $vecA, array $vecB): float`
-* **利用箇所**: `S2J\SimilarityService\SimilarityService::compare()` 内で、2つの Embedding ベクトルに対して呼び出される。
+* **利用箇所**: `S2J\SimilarityService\SimilarityService::similarity()` 内で、2つの Embedding ベクトルに対して呼び出される。
