@@ -68,3 +68,136 @@
 * (WordPress 等の) 特定フレームワークへの直接依存
 * API キー管理や認証基盤の提供
 * 機械学習モデルの学習・チューニング
+
+## WordPress REST API を HTTP Runtime として利用
+
+### 概要
+
+本 Composer ライブラリは、単独の Web アプリケーションとして動作することよりも、下記に組み込まれることを主目的として設計しています。そのため、本ライブラリにおける HTTP runtime は、WordPress Core が提供する [WordPress REST API](https://ja.wordpress.org/team/handbook/plugin-development/rest-api/rest-api-overview/) (以降、`register_rest_route`) を前提とします。
+
+* WordPress プラグイン
+* WordPress テーマ
+* WordPress を基盤とする業務システム
+
+### 設計方針 (規約)
+
+```plaintext id="wp_runtime_principle"
+WordPress を runtime として利用する
+ビジネスロジックは、WordPress 非依存に保つ
+```
+
+### 非対象（Out of Scope）
+
+* 独立 HTTP サーバとしての提供
+* Slim / Laravel 同梱
+* WordPress 外での standalone runtime 提供
+* 独自 Router 実装
+
+### Adapter の責務
+
+#### callback
+
+* Request → DTO に変換すること。
+* Validation すること。
+* SimilarityService 呼び出しすること。
+* Response に変換すること。
+
+#### permission_callback
+
+* 認証すること。
+* 権限を判定すること。
+* Rate limiting を判定すること（必要に応じて）。
+
+### 採用理由
+
+#### 1. WordPress 自身が HTTP 基盤を提供している
+
+WordPress は、下記に相当する仕組みを、既に備えています。
+
+* Routing
+* Controller
+* Request / Response
+* Authentication
+* Permission
+* Error handling
+
+たとえば
+
+```php id="wp_runtime_route"
+register_rest_route(
+    's2j/v1',
+    '/similarity',
+    [
+        'methods'  => 'POST',
+        'callback' => [...],
+        'permission_callback' => [...],
+    ]
+);
+```
+
+#### 2. 二重 HTTP スタックを避ける
+
+本ライブラリでは、下記の様なサードパーティー製ツール等を同梱し、WordPress 内部に別 HTTP runtime を構築することは行いません。
+
+* Slim
+* Laravel
+* Symfony
+
+その理由として、下記を挙げておきます。
+
+* Routing が二重化する
+* Authentication が分裂する
+* Response 形式が混在する
+* 運用コストが増加する
+
+#### 3. WordPress の流儀に統一する
+
+HTTP 層は、WordPress の規約に寄せます。
+
+| 項目 | WordPress 標準 |
+|------|----------------|
+| Routing | `register_rest_route` |
+| Response | `WP_REST_Response` |
+| Error | `WP_Error` |
+| Permission | `permission_callback` |
+| Authentication | WordPress / Application Passwords / JWT 等 |
+
+### アーキテクチャ上の位置づけ
+
+#### 方針
+
+* `register_rest_route` の callback / permission_callback を、REST Adapter（Controller）として扱います。
+
+#### 構成
+
+```mermaid id="wp_runtime_arch"
+flowchart TD
+  A["HTTP Request"] --> B["register_rest_route"]
+  B --> C["callback / permission_callback"]
+  C --> D["SimilarityService"]
+  D --> E["EmbeddingStrategy"]
+```
+
+### REST API 仕様との整合
+
+[REST API 仕様](docs/interfaces/rest_api_spec.md) における、下記に挙げる様な責務は、WordPress REST API 上で実現します。
+
+* Routing
+* Controller
+* Authentication
+* Error mapping
+
+### Core / Application との関係
+
+#### 原則
+
+* Core / Application は WordPress に依存しない。
+* WordPress 依存コードは Adapter 層に限定する。
+
+### 補足
+
+本ライブラリは、Composer package として提供されるが、主用途は WordPress エコシステムへの組み込みです。そのため、下記との整合性を優先します。
+
+* WordPress のライフサイクル
+* WordPress の認証モデル
+* WordPress REST API
