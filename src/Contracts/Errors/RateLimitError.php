@@ -9,6 +9,6 @@ final class RateLimitError extends DomainError
      */
     public function __construct(string $message = "Rate limited", array $details = [], ?\Throwable $previous = null)
     {
-        parent::__construct("RateLimitError", $message, $details, $previous);
+        parent::__construct("rate_limit", $message, $details, $previous);
     }
 }

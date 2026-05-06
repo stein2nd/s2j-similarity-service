@@ -9,6 +9,6 @@ final class NetworkError extends DomainError
      */
     public function __construct(string $message = "Network error", array $details = [], ?\Throwable $previous = null)
     {
-        parent::__construct("NetworkError", $message, $details, $previous);
+        parent::__construct("network_error", $message, $details, $previous);
     }
 }

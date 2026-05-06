@@ -9,6 +9,6 @@ final class ProviderError extends DomainError
      */
     public function __construct(string $message = "Provider error", array $details = [], ?\Throwable $previous = null)
     {
-        parent::__construct("ProviderError", $message, $details, $previous);
+        parent::__construct("provider_error", $message, $details, $previous);
     }
 }

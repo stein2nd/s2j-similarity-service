@@ -9,6 +9,6 @@ final class TimeoutError extends DomainError
      */
     public function __construct(string $message = "Timeout", array $details = [], ?\Throwable $previous = null)
     {
-        parent::__construct("TimeoutError", $message, $details, $previous);
+        parent::__construct("timeout", $message, $details, $previous);
     }
 }

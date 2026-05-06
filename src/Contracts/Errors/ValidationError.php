@@ -9,6 +9,6 @@ final class ValidationError extends DomainError
      */
     public function __construct(string $message = "Invalid input", array $details = [], ?\Throwable $previous = null)
     {
-        parent::__construct("ValidationError", $message, $details, $previous);
+        parent::__construct("validation_error", $message, $details, $previous);
     }
 }

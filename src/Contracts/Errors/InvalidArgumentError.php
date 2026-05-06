@@ -9,6 +9,6 @@ final class InvalidArgumentError extends DomainError
      */
     public function __construct(string $message = "Invalid argument", array $details = [], ?\Throwable $previous = null)
     {
-        parent::__construct("InvalidArgumentError", $message, $details, $previous);
+        parent::__construct("validation_error", $message, $details, $previous);
     }
 }
