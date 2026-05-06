@@ -780,3 +780,172 @@ const score = await service.similarity(textA, textB, model);
 * `provider` という変数名の使用
 * `EmbeddingProvider` という型・クラス名の使用
 * インターフェース名をクラス名として使用すること (たとえば、`OpenAIEmbeddingStrategyInterface`)
+
+## API 統合方針（旧 API 廃止）
+
+### 設計意図（ゴール）
+
+SDK の公開 API を単一体系へ統合し、利用者・実装者・ドキュメント間の不整合を排除します。
+
+### 設計原則
+
+```plaintext id="api_principle"
+公開入口は、1つ
+命名は、1つ
+責務は、1つ
+```
+
+### 設計方針（規約）
+
+* `S2J\Similarity\...` を唯一の正式 API とします。
+* `S2J\SimilarityService\...` は、旧 API として廃止します。
+* 旧 API は、互換レイヤを提供せず削除します。
+* README、examples、Playground、SDK は、新 API のみを使用します。
+* API 命名は、`similarity()`、`embed()` に統一します。
+
+### 非対象（Out of Scope）
+
+* 後方互換性維持
+* 旧 API ラッパー
+* 自動 migration tool
+* semantic alias
+
+### 責務
+
+* SDK の公開 API を統一すること。
+* 命名体系を安定化すること。
+* ドキュメントと実装を一致させること。
+
+### 非責務
+
+* 旧 API ユーザーの自動移行
+* legacy adapter 提供
+* 廃止 warning runtime
+
+### 現行 API
+
+#### 正式 API（採用）
+
+```plaintext id="api_new"
+S2J\Similarity\...
+```
+
+たとえば
+
+```php id="api_new_example"
+$service->similarity($textA, $textB)
+$strategy->embed($text)
+```
+
+### 旧 API（削除対象）
+
+```plaintext id="api_old"
+S2J\SimilarityService\...
+```
+
+たとえば
+
+```php id="api_old_example"
+$service->compare(...)
+$strategy->getEmbedding(...)
+```
+
+### 廃止理由
+
+#### 1. 責務重複
+
+* 新 API と旧 API が、実質同一機能を提供しています。
+
+#### 2. 命名不整合
+
+```plaintext id="api_old_names"
+compare() vs similarity()
+getEmbedding() vs embed()
+```
+
+#### 3. DI 設計との不整合
+
+旧 API は、下記を直接引数に持ち、現在の Strategy / DI 設計と整合しません。
+
+* API key
+* language
+* locale
+
+#### 4. ドキュメント分裂防止
+
+下記を単一 API に統一します。
+
+* README
+* examples
+* Playground
+* SDK
+
+### 統一後の公開入口
+
+#### Application 層
+
+```plaintext id="api_public"
+SimilarityService
+EmbeddingService
+```
+
+#### Strategy
+
+```plaintext id="api_strategy"
+EmbeddingStrategyInterface
+OpenAIEmbeddingStrategy
+ClaudeEmbeddingStrategy
+GeminiEmbeddingStrategy
+```
+
+### 命名規則
+
+| 役割 | 正式名称 |
+|------|----------|
+| 類似度計算 | similarity() |
+| embedding 取得 | embed() |
+| 抽象 | EmbeddingStrategyInterface |
+
+### 削除方針
+
+#### 方針
+
+* 旧 API は、段階的廃止を行いません。
+* compatibility layer は、提供しません。
+* namespace ごと削除します。
+
+#### 削除対象
+
+```plaintext id="api_remove"
+S2J\SimilarityService\...
+compare()
+getEmbedding()
+```
+
+### migration 方針
+
+#### 旧
+
+```php id="api_before"
+$service->compare($a, $b)
+```
+
+#### 新
+
+```php id="api_after"
+$service->similarity($a, $b)
+```
+
+### README / examples
+
+#### ルール
+
+* すべて新 API のみ掲載します。
+* 旧 API の記述を残しません。
+
+### Playground / SDK
+
+#### ルール
+
+* Playground は、新 API のみ利用します。
+* codegen 出力も、新 API 前提とします。
