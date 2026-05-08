@@ -1162,3 +1162,163 @@ flowchart TD
   A["HTTP error.type"] --> B["DomainError::$type"]
   B --> C["PHP / TS error handling"]
 ```
+
+## HTTP integration test (WordPress REST API Adapter)
+
+### 設計意図 (ゴール)
+
+REST API 仕様と実装の整合を、WordPress 実ランタイム上で検証可能にします。
+
+本ライブラリは WordPress REST API (`register_rest_route`) を HTTP runtime として利用するため、単なる Service 層テストではなく、WordPress の REST 実行経路を通した integration test を正式な品質基準とします。
+
+### 設計原則
+
+```plaintext
+REST は、WordPress runtime を通して検証する
+Core は、unit test
+HTTP は、integration test
+```
+
+### 設計方針 (規約)
+
+* HTTP integration test は、WordPress 実ランタイム上で実行します。
+* `WP_REST_Server` を経由して endpoint を検証します。
+* `register_rest_route` に登録された routing を通します。
+* `permission_callback` を含めて検証します。
+* OpenAPI 契約との整合を確認します。
+* Controller / Adapter 単体ではなく、HTTP entrypoint 全体を対象とします。
+
+### 責務
+
+* WordPress REST runtime 上での endpoint 品質を保証すること。
+* REST 契約との整合を確認すること。
+* HTTP entrypoint の回帰を検知すること。
+* Adapter 実装を検証すること。
+
+### 非責務
+
+* Core algorithm correctness
+* external provider uptime
+* performance benchmark
+* load test
+* browser E2E
+
+### 推奨テスト基盤
+
+* PHPUnit
+* WordPress test suite
+* `WP_UnitTestCase`
+* `rest_do_request()`
+* `WP_REST_Server`
+
+### テスト実装方針
+
+#### Route registration
+
+以下を検証します。
+
+* namespace
+* route パス
+* HTTP メソッド
+
+たとえば
+
+```plaintext
+/s2j/v1/similarity
+POST
+```
+
+#### Request test
+
+下記を対象に、`WP_REST_Request` を生成して dispatch します。
+
+* 正常系
+* validation error
+* authentication failure
+* authorization failure
+* rate limit
+* provider error
+* timeout
+
+#### Error mapping
+
+下記のように、エラーに対して、適切なエラーレスポンスを示すことを保証します。
+
+```mermaid
+flowchart TD
+  A["DomainError"] --> B["WP_Error"]
+  B --> C["REST ErrorResponse"]
+```
+
+たとえば
+
+* ValidationError → `400`
+* AuthenticationError → `401`
+* RateLimitError → `429`
+* ProviderError → `503`
+
+#### Response assertion
+
+以下を検証します。
+
+* status code
+* response body
+* JSON schema
+* error.type
+* Retry-After header (必要時)
+
+### テストダブル方針
+
+Embedding provider は、下記の理由により、実 API を呼ばずに、stub / fake を使用します。
+
+* CI 安定性
+* API key 不要
+* deterministic test
+
+### テスト構成
+
+#### 実行経路
+
+```mermaid
+flowchart TD
+  A["WP_REST_Server"] --> B["register_rest_route"]
+  B --> C["permission_callback"]
+  C --> D["callback (Adapter / Controller)"]
+  D --> E["SimilarityService"]
+  E --> F["EmbeddingStrategy (stub/mock)"]
+```
+
+### テスト対象
+
+#### 対象
+
+* route registration
+* HTTP method
+* request validation
+* permission check
+* authentication
+* request → DTO mapping
+* Application 呼び出し
+* DomainError → `WP_Error`
+* response serialization
+* HTTP status code
+
+#### 非対象
+
+* Similarity algorithm 自体 (unit test)
+* Embedding provider 実 API 呼び出し
+* WordPress Core 自体の動作保証
+* browser UI
+* JavaScript SDK
+
+### OpenAPI 契約との整合
+
+#### 方針
+
+HTTP integration test の目的には、`schema/openapi.yaml` との契約整合の確認を含みます。整合確認の対象は、下記のとおりです。
+
+* パス
+* メソッド
+* request スキーマ
+* response スキーマ
+* ErrorResponse スキーマ

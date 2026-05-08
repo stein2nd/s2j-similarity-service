@@ -7,7 +7,7 @@ use S2J\Similarity\Contracts\Errors\DomainError;
 final class ErrorMapper
 {
     /**
-     * @return array{status:int, body:array{error:array{type:string,message:string,details:object|array|null}}}
+     * @return array{status:int, body:array{error:array{type:string,message:string,details:object|array|null}}, headers:array<string, string>}
      */
     public static function toErrorResponse(DomainError $e): array
     {
@@ -28,7 +28,25 @@ final class ErrorMapper
                     'details' => $details,
                 ],
             ],
+            'headers' => self::errorHeaders($e),
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function errorHeaders(DomainError $e): array
+    {
+        if ($e->type !== 'rate_limit') {
+            return [];
+        }
+
+        $retry = $e->details['retry_after'] ?? null;
+        if (is_int($retry) && $retry >= 0) {
+            return ['Retry-After' => (string) $retry];
+        }
+
+        return [];
     }
 
     private static function httpStatus(string $type): int
@@ -40,7 +58,7 @@ final class ErrorMapper
             'not_found' => 404,
             'timeout' => 408,
             'rate_limit' => 429,
-            'provider_error' => 502,
+            'provider_error' => 503,
             'network_error' => 503,
             'internal_error' => 500,
             default => 500,

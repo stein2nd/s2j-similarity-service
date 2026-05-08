@@ -1,6 +1,6 @@
 # Composer
 /vendor/
-composer.lock
+/wordpress/
 composer.phar
 
 # Node

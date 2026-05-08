@@ -6,9 +6,24 @@ use S2J\Similarity\Adapters\Http\WordPress\Http\RequestReader;
 
 final class BearerTokenAuth
 {
+    /**
+     * @param callable|null $authorizeAuthenticated Invoked after bearer verification succeeds (or when no bearer is configured).
+     *                                              Must return true, or a {@see WP_Error} / opaque error object for denial (typically HTTP 403).
+     */
     public function __construct(
-        private readonly ?string $expectedToken
+        private readonly ?string $expectedToken,
+        private $authorizeAuthenticated = null,
     ) {}
+
+    /**
+     * Build a permission denial response for use inside {@see $authorizeAuthenticated} callbacks.
+     *
+     * @return object|\WP_Error
+     */
+    public static function permissionDenied(string $message = 'Forbidden'): object
+    {
+        return self::wpError('permission_error', $message, 403);
+    }
 
     /**
      * @return true|object
@@ -16,7 +31,7 @@ final class BearerTokenAuth
     public function permission(mixed $request): mixed
     {
         if ($this->expectedToken === null || $this->expectedToken === '') {
-            return true;
+            return $this->invokeAuthorizeAuthenticated($request);
         }
 
         $authHeader = RequestReader::header($request, 'authorization')
@@ -31,7 +46,21 @@ final class BearerTokenAuth
             return self::wpError('auth_error', 'Unauthorized', 401);
         }
 
-        return true;
+        return $this->invokeAuthorizeAuthenticated($request);
+    }
+
+    /**
+     * @return true|object
+     */
+    private function invokeAuthorizeAuthenticated(mixed $request): mixed
+    {
+        if ($this->authorizeAuthenticated === null) {
+            return true;
+        }
+
+        $result = ($this->authorizeAuthenticated)($request);
+
+        return $result === true ? true : $result;
     }
 
     private static function parseBearer(?string $header): ?string
@@ -46,7 +75,7 @@ final class BearerTokenAuth
     }
 
     /**
-     * @return object
+     * @return object|\WP_Error
      */
     private static function wpError(string $type, string $message, int $status): object
     {

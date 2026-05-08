@@ -42,10 +42,10 @@ final class SimilarityController
             ]);
         } catch (DomainError $e) {
             $mapped = ErrorMapper::toErrorResponse($e);
-            return ResponseFactory::json($mapped['body'], $mapped['status']);
+            return ResponseFactory::json($mapped['body'], $mapped['status'], $mapped['headers']);
         } catch (\Throwable $e) {
             $mapped = ErrorMapper::toErrorResponse(new InternalError('Internal error', [], $e));
-            return ResponseFactory::json($mapped['body'], $mapped['status']);
+            return ResponseFactory::json($mapped['body'], $mapped['status'], $mapped['headers']);
         }
     }
 }

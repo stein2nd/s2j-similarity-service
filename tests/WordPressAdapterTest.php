@@ -70,6 +70,14 @@ final class WordPressAdapterTest extends TestCase
         };
 
         $resp = $controller->handle($req);
+
+        if ($resp instanceof WP_REST_Response) {
+            $this->assertSame(400, $resp->get_status());
+            $data = $resp->get_data();
+            $this->assertSame('validation_error', $data['error']['type']);
+            return;
+        }
+
         $this->assertIsArray($resp);
         $this->assertSame(400, $resp['status']);
         $this->assertSame('validation_error', $resp['body']['error']['type']);
