@@ -19,6 +19,9 @@
     "semantic",
     "similarity"
   ],
+  "workspaces": [
+    "packages/*"
+  ],
   "directories": {
     "doc": "docs",
     "example": "examples",
@@ -44,6 +47,7 @@
     "prelint:docs_compat": "cd tools/docs-linter && git restore . && cd ../.. && git submodule update --remote --merge && cd tools/docs-linter && (npx -y npm@11.11.0 ci || (rm -f package-lock.json && npx -y npm@11.11.0 run install:compat)) && npx -y npm@11.11.0 run build && cd node_modules/textlint-rule-preset-wp-docs-ja && (npx -y npm@11.11.0 install || true) && (test -f vite.config.ts || test -f vite.config.js) && npx -y npm@11.11.0 run build || true && cd ../../..",
     "generate": "./scripts/generate/all.zsh",
     "verify:codegen": "./scripts/generate/all.zsh && git diff --exit-code",
+    "build:ts-client": "npm run build -w @s2j/similarity-client",
     "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/presets/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "lint:docs_compat": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/presets/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md"
   }

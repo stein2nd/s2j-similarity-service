@@ -2733,3 +2733,233 @@ function isSDKError(error: unknown): error is SDKError
 
 * OpenAPI の error schema を source of truth とします。
 * TS 型は、codegen または mapping により生成可能とします。
+
+## TypeScript SDK の最小実装スコープとエラー設計
+
+### 設計意図 (ゴール)
+
+TypeScript SDK において、下記を明確化し、WordPress 主用途の本ライブラリと整合した、安定 SDK を提供します。
+
+* 公開 API の責務境界
+* 通信レイヤの最小限の実装範囲
+* 型安全なエラー表現
+
+本 SDK は、standalone frontend SDK ではなく、下記での利用を主用途とします。
+
+* 開発用途
+* 管理画面
+* Playground
+* internal tooling
+
+### 設計原則
+
+```plaintext
+SDK is a stable wrapper
+Generated code stays internal
+Retry is lightweight
+Errors are discriminated unions
+```
+
+### 設計方針 (規約)
+
+* SDK は、高レベル wrapper client を提供します。
+* generated raw client は、公開 API としません。
+* HttpClient abstraction を持ちます。
+* Timeout を SDK が提供します。
+* 軽量 Retry を SDK が提供します。
+* Circuit Breaker は、提供しません。
+* Queue / orchestration は、提供しません。
+* エラー識別は、`error.type` を基準とします。
+* エラー型は、discriminated union を正本とします。
+* runtime 利便性のため、Error class を補助提供します。
+* enum は、採用しません。
+
+### 非対象 (Out of Scope)
+
+* React hooks SDK
+* browser UI SDK
+* npm public package as primary product
+* websocket transport
+* GraphQL client
+* offline sync
+
+### 責務
+
+* stable TypeScript API を提供すること。
+* runtime 差異を吸収すること。
+* timeout / retry を標準化すること。
+* REST エラーを型安全に扱えるようにすること。
+* OpenAPI 契約と整合すること。
+
+### 非責務
+
+* circuit breaker
+* queue orchestration
+* distributed caching
+* rate limiting enforcement
+* infrastructure retry policy
+* standalone production SDK
+
+### 最小実装スコープ
+
+#### 公開対象: ApiClient
+
+下記のコード例のように、正式な公開入口です。
+
+```ts
+await client.similarity(textA, textB)
+```
+
+その責務は、下記のとおりです。
+
+* high-level API
+* request orchestration
+* response mapping
+* error normalization
+
+#### 公開対象: HttpClient abstraction
+
+下記のコード例のように、runtime 差異を吸収します。
+
+```ts
+interface HttpClient {
+  fetch(input: RequestInfo, init?: RequestInit): Promise<Response>
+}
+```
+
+#### 公開対象: Timeout
+
+SDK 標準機能として、下記を対象に提供します。
+
+* hung request
+* provider timeout
+* transport timeout
+
+#### 公開対象: Retry
+
+下記の方針で、軽量 retry を提供します。
+
+* exponential backoff
+* small retry count
+* idempotent request only
+
+提供の対象は、下記のとおりです。
+
+* network failure
+* timeout
+* HTTP `429`
+* HTTP `503`
+
+### 非公開対象
+
+下記は、公開 API としません。
+
+* generated raw client
+* transport internals
+* low-level OpenAPI client
+
+### 実装対象外: Circuit Breaker
+
+下記の理由により、実装対象外とします。
+
+* SDK レイヤには過剰。
+* 状態管理の責務を増やすため。
+
+### 実装対象外: Queue / Batch orchestration
+
+下記の理由により、実装対象外とします。
+
+* application responsibility
+
+### 実装対象外: distributed retry coordination
+
+下記の理由により、実装対象外とします。
+
+* deployment concern
+
+### 実装対象外: caching
+
+下記の理由により、実装対象外とします。
+
+* storage policy が利用者依存
+
+### エラー型設計
+
+#### 正式方針
+
+TypeScript SDK のエラー型は、下記を正式仕様とします。
+
+```ts
+discriminated union
+```
+
+#### Error Type
+
+```ts
+type ErrorType =
+  | 'validation_error'
+  | 'auth_error'
+  | 'permission_error'
+  | 'timeout'
+  | 'rate_limit'
+  | 'provider_error'
+  | 'network_error'
+  | 'internal_error'
+```
+
+#### SDK Error
+
+```ts
+interface SDKError {
+  type: ErrorType
+  message: string
+  details?: unknown
+}
+```
+
+#### 具体型
+
+```ts
+type SDKDomainError =
+  | ValidationError
+  | AuthenticationError
+  | TimeoutError
+  | RateLimitError
+  | ProviderError
+```
+
+#### runtime 補助
+
+`instanceof` や `runtime ergonomics` に対する補助用途として、下記のコード例のような、Error class を提供しても良いでしょう。
+
+```ts
+class SDKErrorBase extends Error
+```
+
+#### enum 不採用
+
+下記の理由により、enum は、採用しません。
+
+* OpenAPI とズレる
+* JSON と不整合
+* bundle 増加
+* tree shaking 不利
+
+### OpenAPI / REST との整合
+
+error.type は、`snake_case` で統一します。
+
+一致対象は、下記のとおりです。
+
+* REST `payload`
+* OpenAPI `enum`
+* TS literal
+* PHP `DomainError::$type`
+
+### runtime 差異
+
+| runtime | transport |
+| ------- | ---------------------- |
+| Browser | native fetch |
+| Edge | global fetch |
+| Node | fetch / undici adapter |

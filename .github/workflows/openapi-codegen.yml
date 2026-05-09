@@ -26,5 +26,8 @@ jobs:
       - name: Regenerate from schema/openapi.yaml
         run: ./scripts/generate/all.zsh
 
+      - name: Build TypeScript SDK package
+        run: npm run build -w @s2j/similarity-client
+
       - name: Fail on unexpected generated diff
         run: git diff --exit-code

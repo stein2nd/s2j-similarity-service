@@ -3,8 +3,8 @@
 /wordpress/
 composer.phar
 
-# Node
-/node_modules/
+# Node (any depth: root workspace, packages/*, tools/docs-linter, etc.)
+node_modules/
 
 # OS
 .DS_Store
@@ -35,5 +35,8 @@ Thumbs.db
 
 # Codegen temporary
 /tmp/
+
+# TypeScript workspace build output (rebuild with `npm run build -w @s2j/similarity-client`)
+/packages/ts-client/dist/
 
 # tools/generated/ts はリポジトリ管理し CI で再現性を検証する (Composer dist からは .gitattributes で除外)
