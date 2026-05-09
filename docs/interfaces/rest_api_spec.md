@@ -1510,3 +1510,180 @@ REST API は、以下を満たした場合に成立とします。
 #### 残判断
 
 * OpenAPI レスポンスの JSON Schema 検証を CI に載せ、engineering policy として別途判断します。
+
+## REST API (HTTP Runtime / WordPress REST Adapter)
+
+### 設計意図 (ゴール)
+
+OpenAPI で定義された下記の REST API 契約を、「WordPress REST API を HTTP runtime とする」実装として成立させます。
+
+* `POST /v1/similarity`
+* `POST /v1/embedding`
+
+本ライブラリは、WordPress プラグイン / テーマへの組込みを主用途とするため、独自 HTTP サーバーを持たず、WordPress Core の REST infrastructure 上で契約を実現します。
+
+また、下記の整合を保証し、ユーザーが迷わず利用できる状態を完成条件とします。
+
+* OpenAPI 契約
+* WordPress runtime
+* integration test
+* ユーザー向け導線
+
+### 設計方針 (規約)
+
+* OpenAPI schema を HTTP 契約の source of truth とします。
+* HTTP runtime は、WordPress REST API を使用します。
+* `register_rest_route()` を唯一の routing mechanism とします。
+* controller は、REST Adapter として実装します。
+* `permission_callback` により認証 / 権限を判定します。
+* `WP_REST_Server` を通る integration test を REST 成立条件とします。
+* REST エラーは、`ErrorMapper` により DomainError に対応付けます。
+* OpenAPI パスは、論理契約、WordPress エンドポイントは runtime エンドポイントとします。
+* [READ ME](../../README.md) (ユーザー向け導線) で runtime エンドポイントを明示します。
+
+### 設計原則
+
+```plaintext
+REST contract is OpenAPI
+HTTP runtime is WordPress
+Integration means WP_REST_Server
+User-facing endpoint documentation is mandatory
+```
+
+### 責務
+
+* OpenAPI 契約を WordPress runtime 上で成立させること。
+* HTTP adapter の品質を保証すること。
+* runtime エンドポイントの解釈を明確化すること。
+* ユーザー導線を整備すること。
+
+### 非責務
+
+* インフラ provisioning
+* distributed rate limiting
+* external IAM
+* deployment automation
+
+### HTTP Adapter の責務
+
+* WordPress ルーティングを登録すること。
+* リクエストを解析すること。
+* リクエストを検証すること。
+* 認証 (authentication) すること。
+* 承認 (authorization) すること。
+* アプリケーションをディスパッチすること。
+* DomainError をマッピングすること。
+* HTTP レスポンスを生成すること。
+
+### Domain / Core の責務
+
+* 類似度を計算すること。
+* オーケストレーションを embed すること。
+* プロバイダを抽象化すること。
+
+### REST Adapter の非責務
+
+REST Adapter は、以下を責務としません。
+
+* WordPress Core 自体の品質保証
+* API Gateway
+* WAF
+* CDN
+* infrastructure throttling
+* external auth provider implementation
+
+### 非対象 (Out of Scope)
+
+* Slim / Laravel / Symfony runtime
+* standalone HTTP server
+* GraphQL endpoint
+* WebSocket transport
+* Kubernetes ingress
+* infrastructure deployment
+
+### 実装済み
+
+下記は、実装済みとします。
+
+#### 契約
+
+* `schema/openapi.yaml`
+* `POST /v1/similarity`
+* `POST /v1/embedding`
+* `ErrorResponse`
+
+#### HTTP runtime
+
+* `register_rest_route`
+* Routes
+* `SimilarityController`
+* `EmbeddingController`
+* request validation
+* `ErrorMapper`
+
+#### integration test
+
+* `tests/Integration/WordPressRestAdapterIntegrationTest.php`
+* WorDBless
+* `WP_REST_Server`
+
+下記 HTTP エラーは、検証済みです。
+
+* `200` OK
+* `401` Unauthorized
+* `403` Forbidden
+* `429` Too Many Requests
+* `Retry-After`
+
+#### URL contract
+
+下記仕様は、実装に反映済みです。
+
+* OpenAPI logical パス
+
+```plaintext
+/v1/similarity
+/v1/embedding
+```
+
+* WordPress runtime エンドポイント
+
+```plaintext
+/wp-json/s2j/v1/similarity
+/wp-json/s2j/v1/embedding
+```
+
+または
+
+```plaintext
+?rest_route=/s2j/v1/similarity
+?rest_route=/s2j/v1/embedding
+```
+
+なお、integration test では、`rest_url()` により、URL 形式を検証します。
+
+### REST API の成立条件
+
+下記を満たした場合、REST API は成立とします。
+
+1. OpenAPI schema が存在する
+2. WordPress routing が存在する
+3. controller / adapter が存在する
+4. request validation が存在する
+5. error mapping が存在する
+6. WordPress runtime integration test が存在する
+
+### 100% 完了条件
+
+#### 必須
+
+[READ ME](../../README.md) に下記を明記することにより、ユーザーがエンドポイント解釈で迷わない状態の完成とします。
+
+* OpenAPI logical パス
+* WordPress runtime エンドポイント
+* 組込み手順
+* REST 利用例
+
+#### 任意
+
+「CI に OpenAPI レスポンス JSON Schema 検証を載せる」は、任意の quality enhancement とし、これは engineering policy として別途確定します。

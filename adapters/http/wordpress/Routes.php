@@ -5,6 +5,12 @@ namespace S2J\Similarity\Adapters\Http\WordPress;
 use S2J\Similarity\Adapters\Http\WordPress\Controllers\EmbeddingController;
 use S2J\Similarity\Adapters\Http\WordPress\Controllers\SimilarityController;
 
+/**
+ * HTTP runtime uses WordPress REST API only ({@see register_rest_route}).
+ *
+ * OpenAPI logical paths map to this namespace; see
+ * docs/interfaces/rest_api_spec.md § REST API (HTTP Runtime / WordPress REST Adapter).
+ */
 final class Routes
 {
     public const DEFAULT_NAMESPACE = 's2j/v1';

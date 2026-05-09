@@ -18,7 +18,8 @@ use S2J\Similarity\Contracts\Errors\TimeoutError;
 /**
  * HTTP integration tests through WordPress {@see WP_REST_Server} (WorDBless runtime).
  *
- * Aligns with docs/interfaces/rest_api_spec.md § HTTP integration test (WordPress REST API Adapter).
+ * Aligns with docs/interfaces/rest_api_spec.md § HTTP integration test (WordPress REST API Adapter)
+ * and § REST API (HTTP Runtime / WordPress REST Adapter).
  */
 final class MutableAuthorizationGate
 {

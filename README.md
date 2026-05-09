@@ -196,6 +196,91 @@ $matrix = $service->similarityMatrix(['a', 'b', 'c']);
 
 * `float` (0.0〜1.0の類似度スコア)
 
+## REST API (HTTP runtime / WordPress REST Adapter)
+
+HTTP 経由で利用する場合、本ライブラリは、**独自の HTTP サーバーを持たず**、WordPress Core の REST API (`register_rest_route`) を HTTP runtime として用います。契約の詳細・責務境界は [**REST API 仕様**](docs/interfaces/rest_api_spec.md) の「REST API (HTTP Runtime / WordPress REST Adapter)」を参照してください。
+
+### OpenAPI と実エンドポイントの対応
+
+契約の source of truth は、[`schema/openapi.yaml`](schema/openapi.yaml) です。
+
+| 論理 API (OpenAPI) | WordPress runtime URL (例) |
+| --- | --- |
+| `POST /v1/similarity` | `https://<サイト>/wp-json/s2j/v1/similarity` |
+| `POST /v1/embedding` | `https://<サイト>/wp-json/s2j/v1/embedding` |
+
+パーマリンク設定により URL が変わる場合は、次の形式になることがあります (いずれも WordPress の標準挙動です)。
+
+* `https://<サイト>/?rest_route=/s2j/v1/similarity`
+* `https://<サイト>/?rest_route=/s2j/v1/embedding`
+
+プラグイン内では、`rest_url('s2j/v1/similarity')` 等で実 URL を取得できます。
+
+### プラグイン / テーマへの組み込み
+
+`rest_api_init` でルートを登録し、`SimilarityController` / `EmbeddingController` にアプリケーションサービスと `BearerTokenAuth` を注入します。
+
+```php
+<?php
+/**
+ * Plugin Name: S2J Similarity REST (example)
+ */
+require_once __DIR__ . '/vendor/autoload.php';
+
+use S2J\Similarity\Adapters\Http\WordPress\Auth\BearerTokenAuth;
+use S2J\Similarity\Adapters\Http\WordPress\Controllers\EmbeddingController;
+use S2J\Similarity\Adapters\Http\WordPress\Controllers\SimilarityController;
+use S2J\Similarity\Adapters\Http\WordPress\Routes;
+use S2J\Similarity\Application\EmbeddingService;
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
+add_action('rest_api_init', static function (): void {
+    $strategy = new OpenAIEmbeddingStrategy(
+        apiKey: getenv('OPENAI_API_KEY') ?: '',
+        defaultModel: 'text-embedding-3-small'
+    );
+
+    $expectedToken = getenv('S2J_REST_API_TOKEN') ?: null;
+    $auth = new BearerTokenAuth($expectedToken);
+
+    Routes::register(
+        new SimilarityController(new SimilarityService($strategy), $auth),
+        new EmbeddingController(
+            new EmbeddingService(
+                strategy: $strategy,
+                provider: 'openai',
+                defaultModel: 'text-embedding-3-small'
+            ),
+            $auth
+        )
+    );
+});
+```
+
+* `BearerTokenAuth` に `null` または空文字を渡すと、Bearer 検証をスキップします (開発向け)。本番では環境変数等からトークンを渡す運用を推奨します。
+* 名前空間を変える場合は `Routes::register(..., namespace: 'my/v1')` のように第4引数で指定します (デフォルトは `s2j/v1`)。
+
+### REST 呼び出し例 (curl)
+
+類似度 (`POST /v1/similarity` に相当):
+
+```bash
+curl -sS -X POST 'https://example.com/wp-json/s2j/v1/similarity' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"textA":"hello","textB":"world"}'
+```
+
+Embedding (`POST /v1/embedding` に相当):
+
+```bash
+curl -sS -X POST 'https://example.com/wp-json/s2j/v1/embedding' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"text":"hello"}'
+```
+
 ## FAQ
 
 ### Q: このライブラリは、WordPress プラグイン以外でも使用できますか ?
