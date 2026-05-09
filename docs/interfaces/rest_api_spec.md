@@ -1322,3 +1322,191 @@ HTTP integration test の目的には、`schema/openapi.yaml` との契約整合
 * request スキーマ
 * response スキーマ
 * ErrorResponse スキーマ
+
+## WordPress REST API Adapter の完成条件
+
+### 設計意図 (ゴール)
+
+WordPress REST API を HTTP runtime とする本ライブラリにおいて、REST API の成立条件、責務境界、運用上の契約を明確化し、実装完了の判定を一貫して行えるようにします。
+
+本仕様では、下記を統合して定義します。
+
+* OpenAPI 契約
+* WordPress REST runtime
+* Controller / Adapter 実装
+* 認証
+* 権限
+* レート制御
+* integration test
+
+### 設計原則
+
+```plaintext
+REST = OpenAPI + WordPress runtime
+Authentication is adapter responsibility
+Rate limits are deployment policy
+```
+
+### 設計方針 (規約)
+
+* REST API は、OpenAPI 契約 と WordPress 実 runtime の両方で成立します。
+* `register_rest_route` を、唯一の HTTP routing とします。
+* `callback` / `permission_callback` を、Adapter (Controller) として扱います。
+* HTTP integration test は、WordPress 実 runtime (`WP_REST_Server`) を通します。
+* 認証・権限は、WordPress REST API のしくみに準拠します。
+* Rate limiting の enforcement 値は、インフラ / ホスト側で決定します。
+* ライブラリは、RateLimitError と `Retry-After` 表現を保証します。
+* OpenAPI のパスは、論理契約として扱い、WordPress URL は、runtime endpoint として扱います。
+
+### 非対象 (Out of Scope)
+
+* Slim / Laravel runtime
+* standalone HTTP server
+* infrastructure provisioning
+* Kubernetes ingress
+* external auth provider implementation
+
+### 責務
+
+* REST API の成立条件を定義すること。
+* WordPress runtime 上の品質を保証すること。
+* 認証 / 権限の adapter 責務を明確化すること。
+* RateLimitError 契約を保証すること。
+* OpenAPI と runtime endpoint の関係を定義すること。
+
+### 非責務
+
+* API Gateway enforcement
+* WAF
+* distributed throttling
+* OAuth server
+* infrastructure quotas
+* CDN edge rate limiting
+
+### 現在の実装状況
+
+以下は、実装済みとします。
+
+* `schema/openapi.yaml`
+* `register_rest_route`
+* `SimilarityController`
+* `EmbeddingController`
+* `ErrorMapper`
+* request validation
+* `tests/Integration/WordPressRestAdapterIntegrationTest.php`
+* `WorDBless`
+* `WP_REST_Server`
+
+統合テストの対象となる HTTP ステータスは、下記とします。
+
+* `200` OK
+* `401` Unauthorized
+* `403` Forbidden
+* `429` Too Many Requests
+* `Retry-After`
+
+### REST API の成立条件
+
+REST API は、以下を満たした場合に成立とします。
+
+1. OpenAPI schema が存在する
+2. WordPress routing が実装されている
+3. Controller / Adapter が実装されている
+4. Error mapping が実装されている
+5. request validation が実装されている
+6. WordPress runtime 上の HTTP integration test が存在する
+
+### HTTP integration test
+
+#### 方針
+
+* integration test は、`WP_REST_Server` を経由して実施します。
+* 単なる Service unit test では、REST 成立条件を満たしません。
+
+#### 対象
+
+検証対象は、下記のとおりです。
+
+* route registration
+* HTTP method
+* request validation
+* permission callback
+* controller dispatch
+* error mapping
+* response serialization
+* status code
+* headers
+
+### 認証モデル
+
+#### 方針
+
+* 認証は、WordPress REST API に準拠します。
+* 最小実装 (Bearer token string match) は許容するが、正式仕様としては adapter 実装責務とします。
+
+#### 推奨モデル
+
+たとえば
+
+* Application Passwords
+* JWT
+* OAuth-compatible gateway
+* custom Bearer validation
+
+### 権限モデル
+
+#### 方針
+
+* 権限判定は、`permission_callback` で行います。
+
+#### 責務
+
+責務は、下記のとおりです。
+
+* 認証済み確認
+* capability check
+* API access policy
+
+### レート制御
+
+#### 方針
+
+ライブラリは、下記の表現を提供します。
+
+* `RateLimitError`
+* `Retry-After`
+
+#### 非責務
+
+下記の具体値は、ホスト / インフラ側の責務とします。
+
+* requests per minute
+* burst
+* quota
+* distributed enforcement
+
+#### 例
+
+下記は、deployment policy であり、本仕様の固定値ではありません。
+
+* 60リクエスト/分
+* Retry-After: 30
+
+### OpenAPI パスと WordPress エンドポイント
+
+#### 契約
+
+* OpenAPI の `/v1/similarity` は、論理 API パスを表します。
+* WordPress 実エンドポイントは、`/wp-json/s2j/v1/similarity` となります。
+
+#### 方針
+
+* README / REST API 仕様で、この対応を明示します。
+
+### JSON Schema validation
+
+* integration test による実レスポンス検証は、実装済みとします。
+
+#### 残判断
+
+* OpenAPI レスポンスの JSON Schema 検証を CI に載せ、engineering policy として別途判断します。

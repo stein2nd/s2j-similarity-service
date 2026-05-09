@@ -96,6 +96,21 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $this->assertContains('POST', $methods);
     }
 
+    public function testPublicWordPressEndpointUsesWpJsonPrefix(): void
+    {
+        // WordPress external REST endpoint convention: /wp-json/<namespace>/<route>
+        // docs/interfaces/rest_api_spec.md § OpenAPI パスと WordPress エンドポイント
+        $url = rest_url('s2j/v1/similarity');
+        $this->assertIsString($url);
+        // In test/runtime environments (e.g. WorDBless) pretty permalinks may be disabled,
+        // and WordPress falls back to the "rest_route" query parameter form.
+        $this->assertTrue(
+            str_contains($url, '/wp-json/s2j/v1/similarity')
+                || str_contains($url, 'rest_route=/s2j/v1/similarity'),
+            'Expected WordPress REST URL to include either "/wp-json/..." or "rest_route=/...". Got: ' . $url
+        );
+    }
+
     public function testSimilaritySuccessViaRestDispatch(): void
     {
         $request = $this->similarityJsonRequest([
