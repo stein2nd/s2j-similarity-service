@@ -1,0 +1,30 @@
+# docs/contracts/codegen_spec.md — OpenAPI Code Generation Governance (CI 品質ゲート)
+name: OpenAPI codegen
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  verify-generated-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Regenerate from schema/openapi.yaml
+        run: ./scripts/generate/all.zsh
+
+      - name: Fail on unexpected generated diff
+        run: git diff --exit-code

@@ -423,3 +423,172 @@ flowchart TD
 ### 注意
 
 生成物の更新は、[コード生成パイプライン](../engineering/codegen_pipeline.md) のルールに従います。
+
+## OpenAPI Code Generation Governance
+
+### 設計意図 (ゴール)
+
+OpenAPI schema を唯一の契約定義 (Single Source of Truth) とし、各言語向け生成物の一貫性・再現性・公開境界を保証します。
+
+本ライブラリは、WordPress プラグインやテーマへの組込みを前提とするため、本番環境での code generation を前提とせず、開発、CI、release 時のみ生成します。
+
+### 設計原則
+
+```plaintext
+OpenAPI is the source of truth
+Generated code is reproducible
+PHP artifacts are distributable
+TS generated code is development-only
+Public API is handwritten and stable
+```
+
+### 設計方針 (規約)
+
+* `schema/openapi.yaml` を唯一の契約定義とします。
+* code generation は、開発環境 / CI / release build のみで実行します。
+* 本番 WordPress 環境では、code generation を実行しません。
+* PHP DTO は、Composer 配布物へ同梱します。
+* TypeScript generated code は、開発用途に限定します。
+* TS generated/raw client は、WordPress ユーザー向け公開 API としません。
+* codegen 出力は、deterministic (再現可能) でなければなりません。
+* CI により、生成差分ゼロを保証します。
+
+### 非対象 (Out of Scope)
+
+* GraphQL codegen
+* O/R マッパー codegen
+* DB schema generation
+* browser-side runtime generation
+* npm package としての TS SDK 公開
+
+### 責務
+
+* OpenAPI を、Single Source に保つこと。
+* code generation の再現性を、保証すること。
+* generated/public の境界を、定義すること。
+* CI による整合性を検証すること。
+* WordPress 配布モデルと整合させること。
+
+### 非責務
+
+* runtime code generation
+* WordPress 本番環境での build
+* TS SDK の standalone 配布
+* IDE plugin support
+* GUI OpenAPI editor
+
+### Source of Truth
+
+[OpenAPI schema](../../schema/openapi.yaml) を契約定義の唯一の正本とし、ここから下記を派生させます。
+
+* PHP DTO
+* TypeScript types
+* Zod schema
+* raw client
+* ErrorResponse types
+
+### 生成基盤
+
+#### 実行スクリプト
+
+`scripts/generate/all.zsh` を code generation の唯一の入口とします。
+
+#### 再現性固定
+
+`openapitools.json` により、OpenAPI Generator のバージョン、設定を固定し、開発者の環境差異による生成揺れを防止します。
+
+### 出力先
+
+#### PHP DTO (配布対象)
+
+`src/Contracts/DTO/Generated/` の用途は、下記のとおりです。
+
+* Composer 配布
+* 本番 WordPress runtime
+* DTO / ErrorResponse
+
+#### TypeScript generated (開発専用)
+
+`tools/generated/ts/` の用途は、下記のとおりです。
+
+* 管理画面
+* build tooling
+* Playground
+* Zod validation
+* internal testing
+
+### 実行タイミング
+
+#### 必須
+
+* OpenAPI schema 更新時
+* CI
+* release build
+
+#### 禁止
+
+本番環境 (production WordPress runtime) での code generation 実行は、禁止します。
+
+### CI 品質ゲート
+
+#### 必須ルール
+
+CI では、以下を実行します。
+
+```bash
+./scripts/generate/all.zsh
+git diff --exit-code
+```
+
+#### 判定
+
+生成差分が存在する場合、`CI FAIL` とします。
+
+#### 目的
+
+* schema と generated code の乖離防止
+* コミット漏れ検知
+* deterministic build 保証
+
+### 公開範囲
+
+#### 公開対象
+
+Composer 配布物は、下記とします。
+
+```plaintext
+src/Contracts/DTO/Generated/
+```
+
+#### 非公開対象
+
+以下は、WordPress ユーザー向け公開 API としません。
+
+```plaintext
+tools/generated/ts/
+raw client
+generated TS SDK
+```
+
+### SDK との整合
+
+[型安全な SDK 設計](../interfaces/sdk_spec.md) に従い、下記とします。
+
+* generated code = internal implementation
+* stable API = wrapper client
+
+ユーザーは generated client を直接利用しません。
+
+### release ルール
+
+release artifact には、下記を含めます。
+
+* PHP DTO
+* Contracts
+* handwritten SDK
+
+release artifact には、下記を含めません。
+
+* TS generated raw client
+* dev-only tools
+* Zod artifacts (公開用途)

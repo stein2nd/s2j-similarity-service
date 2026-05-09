@@ -1,0 +1,2 @@
+# Dev-only OpenAPI 生成物は git に保持するが、アーカイブ (Composer dist 等) には含めない
+/tools/generated export-ignore

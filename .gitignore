@@ -36,5 +36,4 @@ Thumbs.db
 # Codegen temporary
 /tmp/
 
-# Dev-only generated artifacts (not shipped to WordPress)
-/tools/generated/
+# tools/generated/ts はリポジトリ管理し CI で再現性を検証する (Composer dist からは .gitattributes で除外)
