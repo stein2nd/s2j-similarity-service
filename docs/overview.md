@@ -216,7 +216,7 @@ flowchart TD
 
 ```plaintext id="wp_sdk_principle"
 生成物は、内部に閉じ込め
-WordPress 利用者には、安定 API を公開する
+WordPress ユーザーには、安定 API を公開する
 ```
 
 ### 非対象 (Out of Scope)
