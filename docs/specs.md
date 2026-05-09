@@ -41,7 +41,7 @@
 3. core/*
 4. interfaces/sdk_spec.md
 
-#### インフラ・運用担当
+#### インフラストラクチャ・運用担当
 
 1. sre/*
 2. governance/*
