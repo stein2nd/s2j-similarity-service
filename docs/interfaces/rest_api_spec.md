@@ -485,7 +485,7 @@ Adapterで世界を繋ぐ
 
 * 特定フレームワークの実装詳細
 * デプロイ手順の詳細 (IaC / CI/CD)
-* インフラ構成 (VPC / LB 等)
+* インフラストラクチャ構成 (VPC / LB 等)
 
 ### 責務
 
@@ -729,7 +729,7 @@ class AuthContext
 ### 非対象 (Out of Scope)
 
 * 分散キャッシュ実装 (Redis 等)
-* インフラレベルのレート制御 (CDN / WAF)
+* インフラストラクチャレベルのレート制御 (CDN / WAF)
 * 課金との連動
 
 ### 責務
@@ -920,7 +920,7 @@ adapters/http/
 
 * フレームワーク選定
 * デプロイ
-* インフラ構成
+* インフラストラクチャ構成
 * 認証基盤そのもの
 
 ### OpenAPI の位置付け
@@ -1354,7 +1354,7 @@ Rate limits are deployment policy
 * `callback` / `permission_callback` を、Adapter (Controller) として扱います。
 * HTTP integration test は、WordPress 実 runtime (`WP_REST_Server`) を通します。
 * 認証・権限は、WordPress REST API のしくみに準拠します。
-* Rate limiting の enforcement 値は、インフラ / ホスト側で決定します。
+* Rate limiting の enforcement 値は、インフラストラクチャ / ホスト側で決定します。
 * ライブラリは、RateLimitError と `Retry-After` 表現を保証します。
 * OpenAPI のパスは、論理契約として扱い、WordPress URL は、runtime endpoint として扱います。
 
@@ -1478,7 +1478,7 @@ REST API は、以下を満たした場合に成立とします。
 
 #### 非責務
 
-下記の具体値は、ホスト / インフラ側の責務とします。
+下記の具体値は、ホスト / インフラストラクチャ側の責務とします。
 
 * requests per minute
 * burst
@@ -1559,7 +1559,7 @@ User-facing endpoint documentation is mandatory
 
 ### 非責務
 
-* インフラ provisioning
+* インフラストラクチャ provisioning
 * distributed rate limiting
 * external IAM
 * deployment automation
