@@ -103,6 +103,38 @@ $score = $service->similarity(
 echo $score; // 0.82 など (0.0〜1.0)
 ```
 
+### OpenAIEmbeddingStrategy オプション
+
+`OpenAIEmbeddingStrategy` のコンストラクタは、第1引数 `apiKey` のほか、任意で `defaultModel` / `endpoint` / `timeoutSeconds` を名前付き引数で渡せます (内部は `cURL` 1本で、HTTP クライアントの差し替え API はありません)。
+
+```php
+$strategy = new OpenAIEmbeddingStrategy(
+    apiKey: $_ENV['OPENAI_API_KEY'] ?? '',
+    defaultModel: 'text-embedding-3-small',
+    timeoutSeconds: 10,
+);
+```
+
+互換 API やプロキシを使う場合は、OpenAI 互換の Embeddings エンドポイント URL を `endpoint` に指定します。
+
+```php
+$strategy = new OpenAIEmbeddingStrategy(
+    apiKey: $_ENV['OPENAI_API_KEY'] ?? '',
+    defaultModel: 'text-embedding-3-small',
+    endpoint: 'https://api.openai.com/v1/embeddings',
+    timeoutSeconds: 30,
+);
+```
+
+主なオプション:
+
+* `apiKey` — API キー
+* `defaultModel` — `embed()` / `embedBatch()` でモデル未指定のとき使うデフォルトモデル (省略時 `text-embedding-3-small`)
+* `endpoint` — Embeddings API の URL (省略時は OpenAI デフォルト `https://api.openai.com/v1/embeddings`)
+* `timeoutSeconds` — cURL タイムアウト (秒。省略時は30)
+
+その他の挙動・例外・応用例は [`docs/interfaces/usage_spec.md`](docs/interfaces/usage_spec.md) を参照してください。
+
 ### Embedding のみを生成する (`EmbeddingService`)
 
 類似度計算ではなく、Embedding ベクトル (および `model/provider/dimension` メタデータ) を取得したい場合は `EmbeddingService` を使用します。

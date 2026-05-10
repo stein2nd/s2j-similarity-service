@@ -27,6 +27,9 @@
 5. **interfaces/**
    * 外部との接続点 (REST API、SDK、使用方法)
 
+6. **governance/**
+   * 統制、コンプライアンス、セキュリティ、データ管理、ドキュメント整合など。ガバナンスの全体像は、本ページの一覧を参照し、詳細は **governance/** 配下の個別ドキュメントへ委ねます。
+
 ### 役割別読み順
 
 #### 利用者 (SDK / API ユーザー)
@@ -34,12 +37,13 @@
 1. interfaces/usage_spec.md
 2. interfaces/rest_api_spec.md
 
-#### 実装者 (ライブラリ開発者)
+#### 実装者 (ライブラリ開発者) / ドキュメント編集者
 
 1. architecture.md
 2. contracts/*
 3. core/*
 4. interfaces/sdk_spec.md
+5. [ドキュメンテーションガバナンス](./governance/documentation_governance.md) (README、使用方法の整合、公開 API のユーザー向けドキュメント)
 
 #### インフラストラクチャ・運用担当
 
@@ -112,6 +116,7 @@
 | [セキュリティ設計](./governance/security.md) | 認証・認可、ゼロトラスト |
 | [コンプライアンス](./governance/compliance.md) | 監査、SLA、課金、SOC2 / SOX |
 | [データガバナンス](./governance/data_governance.md) | データ管理、レジデンシー |
+| [ドキュメンテーションガバナンス](./governance/documentation_governance.md) | README、使用方法の整合、公開 API のユーザー向けドキュメント SoT |
 
 ### その他
 
@@ -154,28 +159,14 @@ flowchart TD
 
 ## Source of Truth (SoT)
 
-* API 契約は、**[OpenAPI](./contracts/openapi_spec.md)** に集約します。
-* 生成物 (`generated`) は、派生物とし、直接編集を禁止します。
-* すべての型・DTO・SDK は、OpenAPI から生成されます。
+契約・コード生成と、ユーザー向け説明文では、参照の軸が異なります。
+
+* **API 契約・コード生成:** **[OpenAPI](./contracts/openapi_spec.md)** に集約します。生成物 (`generated`) は派生物とし、直接編集を禁止します。すべての型・DTO・SDK は、OpenAPI から生成されます。
+* **ユーザー向けドキュメント (公開 API の説明・命名・例):** プロジェクトルートの **[README](../README.md)** および **[使用方法](./interfaces/usage_spec.md)** の整合は、**[ドキュメンテーションガバナンス](./governance/documentation_governance.md)** で定義します。契約と矛盾する場合は、実装および OpenAPI を正とし、README・使用方法を追随させます。
 
 ## 用語統一ルール
 
-### 設計意図 (ゴール)
-
-ドキュメントと実装の乖離を防ぎます。
-
-### ルール
-
-* EmbeddingStrategyInterface を正式名称とします。
-* EmbeddingProvider という名称は、使用しません。
-
-### 運用
-
-```plaintext
-grep -R "EmbeddingProvider" docs src
-```
-
-検出された場合は、修正します。
+ユーザー向けドキュメントと実装の表記を揃えるための正式名称・禁止語・運用 (たとえば strategy の呼び方) は、**[ドキュメンテーションガバナンス](./governance/documentation_governance.md)** に集約します。本ページでは二重メンテナンスを避けるため、詳細ルールは同文書を参照してください。
 
 ## 補足
 
