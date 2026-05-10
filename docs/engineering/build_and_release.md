@@ -823,3 +823,167 @@ pnpm turbo run build --parallel
 
 * 開発者の手動ミスを防ぐこと。
 * 生成物の一貫性を保証すること。
+
+---
+
+## TypeScript SDK Runtime Validation 配布ポリシー
+
+### 設計意図 (ゴール)
+
+TypeScript SDK (`@s2j/similarity-client`) における runtime 検証 (たとえば Zod による success レスポンス検証) の配布方針を明確化し、製品構成、依存関係、バンドルサイズ、運用負荷の観点から、適切なビルド/リリースポリシーを定義します。
+
+本プロジェクトでは、TypeScript SDK は、主製品ではなく、REST API 利用を補助するラッパークライアントです。
+また、本プロジェクトの OpenAPI 契約、生成クライアント、ラッパー SDK は、同一リポジトリ内で管理されています。
+
+そのため public SaaS SDK のような「consumer を信頼できない前提」の runtime 検証を標準要件とはせず、必要時のみ製品依存で追加できる構成を採用します。
+
+### 設計方針 (規約)
+
+* runtime 検証は、標準配布物に含めません。
+* runtime 検証は、TypeScript SDK の必須機能としません。
+* OpenAPI 契約を Single Source of Truth とします。
+* runtime 検証を導入する場合は、製品依存の optional ポリシーとします。
+* 製品版の依存関係として、バリデータを強制しません。
+* WordPress ユーザーに、不要なバンドルサイズ増加を避けます。
+* runtime 検証を導入する場合は、ビルド成果物ポリシーを明示します。
+* runtime 検証の採用可否は、SDK 論理仕様ではなく、ビルド/リリースポリシーで判断します。
+
+### 設計原則
+
+```plaintext id="fy4cz8"
+Keep the default SDK lean
+Do not duplicate contract ownership
+Validation is optional hardening, not mandatory behavior
+Optimize for WordPress deployment constraints
+```
+
+### 責務
+
+* runtime 検証パッケージングポリシー
+* 依存関係の境界を定義すること。
+* バンドルの footprint を制御すること。
+* リリース成果物の一貫性
+* optional 拡張ポリシー
+* WordPress 対応配布
+
+### 非責務
+
+* SDK エラー設計
+* リトライ挙動
+* タイムアウト挙動
+* OpenAPI スキーマ設計
+* 生成クライアント実装
+* runtime バリデータ実装詳細
+
+### 非対象 (Out of Scope)
+
+* TypeScript SDK 論理仕様
+* CI 品質ゲート
+* スキーマ検証 CI
+* PHP DTO 検証
+* フロントエンドテスト戦略
+* ブラウザー互換性テスト
+
+### 標準方針: 標準構成
+
+標準配布物: `@s2j/similarity-client` には、runtime バリデータを含めません。
+
+対象外:
+
+```plaintext
+zod
+valibot
+io-ts
+superstruct
+```
+
+### 標準方針: 理由
+
+本プロジェクトでは、下記の構成により、producer / consumer が同一リポジトリ内で管理されます。
+
+```mermaid
+flowchart TD
+  A["schema/openapi.yaml"] --> B["generated TS client"]
+  B --> C["wrapper SDK"]
+```
+
+そのため、success ペイロード検証を標準搭載すると、下記を増やすだけになりやすい。
+
+* 契約定義の重複
+* バンドルサイズの増加
+* runtime オーバーヘッド
+* スキーマ drift リスク
+* 依存関係の複雑化
+
+### optional 導入ポリシー
+
+runtime 検証が必要な場合は、optional とします。
+
+### optional 導入ポリシー: 開発専用アサーション
+
+たとえば
+
+```ts id="u0nt3d"
+if (__DEV__) {
+  schema.parse(response)
+}
+```
+
+用途:
+
+* SDK 開発
+* デバッグ
+* CI 診断
+
+製品版の依存関係には、しません。
+
+### optional 導入ポリシー: 独立した検証パッケージ
+
+* 依存関係の境界が明確化
+* ツリーシェイクが可能
+* 標準パッケージが非汚染
+
+上記条件が満たされる場合、下記のような分離を許容します。
+
+```plaintext
+@s2j/similarity-client
+@s2j/similarity-client-validation
+```
+
+### optional 導入ポリシー: 製品固有のラッパー
+
+特定製品で必要な場合、内部ラッパーで追加します。
+
+たとえば
+
+* SaaS フロントエンド
+* 管理ダッシュボード
+* 内部ツール
+
+### 必須 runtime 検証
+
+標準では採用しません。
+
+### バンドルされた Zod 依存関係
+
+標準では採用しません。
+
+### デフォルト製品スキーマの解析
+
+標準では採用しません。
+
+### リリースポリシー
+
+リリース成果物は、下記を維持します。
+
+* 最小限の依存関係
+* 決定論的なビルド
+* WordPress に対応した footprint
+
+runtime バリデータ導入時は、リリースノート、パッケージ境界、依存関係ポリシーを更新すること。
+
+### [型安全な SDK 設計](docs/interfaces/sdk_spec.md) との関係
+
+SDK 論理仕様「runtime 検証は標準外」の正は、[型安全な SDK 設計](docs/interfaces/sdk_spec.md) です。
+
+本仕様は、「実際の成果物に含めるか ?」を定義します。
