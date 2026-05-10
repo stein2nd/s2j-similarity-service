@@ -13,7 +13,8 @@ final class CachedEmbeddingStrategy implements BatchEmbeddingStrategyInterface
         private readonly EmbeddingStrategyInterface $inner,
         private readonly string $provider,
         private readonly int $ttlSeconds = 86400
-    ) {}
+    ) {
+    }
 
     public function embed(string $text, ?string $model = null): array
     {

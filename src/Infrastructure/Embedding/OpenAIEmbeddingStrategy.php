@@ -19,7 +19,8 @@ final class OpenAIEmbeddingStrategy implements BatchEmbeddingStrategyInterface
         private readonly string $defaultModel = 'text-embedding-3-small',
         private readonly string $endpoint = self::DEFAULT_ENDPOINT,
         private readonly int $timeoutSeconds = 30
-    ) {}
+    ) {
+    }
 
     public function embed(string $text, ?string $model = null): array
     {
@@ -91,10 +92,16 @@ final class OpenAIEmbeddingStrategy implements BatchEmbeddingStrategyInterface
         if ($status !== 200) {
             $errorMessage = $data['error']['message'] ?? 'Unknown error';
             if ($status === 429) {
-                throw new RateLimitError("OpenAI API rate limited: {$errorMessage}", ['provider' => 'openai', 'status' => $status]);
+                throw new RateLimitError(
+                    "OpenAI API rate limited: {$errorMessage}",
+                    ['provider' => 'openai', 'status' => $status],
+                );
             }
 
-            throw new ProviderError("OpenAI API returned error ({$status}): {$errorMessage}", ['provider' => 'openai', 'status' => $status]);
+            throw new ProviderError(
+                "OpenAI API returned error ({$status}): {$errorMessage}",
+                ['provider' => 'openai', 'status' => $status],
+            );
         }
 
         $items = $data['data'] ?? null;
@@ -106,7 +113,10 @@ final class OpenAIEmbeddingStrategy implements BatchEmbeddingStrategyInterface
         foreach ($items as $idx => $row) {
             $vec = $row['embedding'] ?? null;
             if (!is_array($vec) || $vec === []) {
-                throw new ProviderError('OpenAI API response missing embedding vector.', ['provider' => 'openai', 'index' => $idx]);
+                throw new ProviderError(
+                    'OpenAI API response missing embedding vector.',
+                    ['provider' => 'openai', 'index' => $idx],
+                );
             }
             $vectors[$idx] = VectorMath::l2Normalize($vec);
         }

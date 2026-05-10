@@ -3152,3 +3152,177 @@ engineering にて確定します。
 * 軽量なスキーマガード
 
 正式導入は、[型安全な SDK 設計](docs/interfaces/sdk_spec.md) / 運用ポリシーで別途確定します。
+
+## TypeScript SDK の品質保証の方針
+
+### 設計意図 (ゴール)
+
+TypeScript SDK (`@s2j/similarity-client`) について、公開 API の安定性と回帰検知を保証しつつ、本プロジェクトの主製品である Composer ライブラリ (WordPress プラグイン / テーマへの組込み用途) と整合した、過不足のない品質保証の方針を定義します。
+
+本 SDK は、スタンドアローンフロントエンド SDK ではなく、REST API 利用を補助するラッパークライアントです。
+そのためブラウザー E2E や runtime スキーマ検証を標準の品質要件とはせず、責務に見合った軽量な品質保証を採用します。
+
+### 設計方針 (規約)
+
+* TypeScript SDK の品質保証は、軽量ユニットテストを基本とします。
+* TypeScript SDK に ブラウザー E2E を要求しません。
+* TypeScript SDK に WordPress 統合ライブテストを要求しません。
+* HTTP 通信は、`HttpClient` abstraction をモック化して検証します。
+* タイムアウト / リトライ / エラー標準化は、SDK の責務として検証します。
+* OpenAPI 契約整合は、コード生成の再現性により保証します。
+* success response の runtime 検証 (Zod 等) は、標準採用しません。
+* generated raw クライアントの品質は、公開 API ではなく内部実装の品質として扱います。
+
+### 責務
+
+TypeScript SDK の責務は、下記のとおりです。
+
+* 公開 API の安定性
+* リクエスト構築の正確性
+* タイムアウトの正確性
+* リトライの正確性
+* REST エラーの標準化
+* 型安全なエラー処理
+* 軽量な回帰テスト
+
+### 非責務
+
+TypeScript SDK の非責務は、下記のとおりです。
+
+* ブラウザー自動化
+* UI テスト
+* フロントエンド E2E
+* インフラストラクチャ統合
+* プロバイダのライブ検証
+* 分散リトライ
+* サーキットブレーカー
+* runtime スキーマ検証
+
+### 非対象 (Out of Scope)
+
+* React SDK
+* ブラウザー SDK のセキュリティ強化
+* スタンドアローン npm SDK の製品化
+* Playwright による自動化
+* Cypress による自動化
+* 本番環境のレスポンススキーマの検証
+
+### テスト戦略: 採用
+
+TypeScript SDK の自動テストには、以下を採用します。
+
+```plaintext
+Vitest
+mocked HttpClient
+```
+
+### テスト戦略: テスト対象
+
+#### ApiClient リクエスト構築
+
+検証対象は、下記のとおりです。
+
+* HTTP メソッド
+* エンドポイントパス
+* ヘッダー
+* 認証
+* JSON ボディ
+* リクエストのシリアライズ
+
+#### タイムアウト
+
+```ts
+withTimeout()
+```
+
+上記コードを対象に、下記を検証します。
+
+* 中断
+* タイムアウトエラーのマッピング
+
+#### リトライ
+
+```ts
+withRetry()
+```
+
+上記コードを対象に、下記を検証します。
+
+* ネットワーク障害
+* タイムアウト
+* HTTP `429`
+* HTTP `503`
+
+下記は、非対象です。
+
+* HTTP `400`
+* HTTP `401`
+* HTTP `403`
+
+#### エラーの標準化
+
+REST ErrorResponse:
+
+```json
+{
+  "error": {
+    "type": "rate_limit"
+  }
+}
+```
+
+↓
+
+```ts
+SDKError
+```
+
+#### 型ガード
+
+対象は、下記のとおりです。
+
+```ts
+isSDKError()
+```
+
+### 不採用
+
+下記は、採用しません。
+
+* Playwright
+* Cypress
+* ブラウザー E2E
+* HTTP ライブ統合
+* 外部 API アクセス
+* WordPress runtime 統合
+
+### runtime 検証: 方針
+
+成功レスポンスの runtime 検証 (Zod 等) は、標準採用しません。
+
+### runtime 検証: 理由
+
+本プロジェクトでは、下記の構成により、producer / consumer が同一リポジトリ内で管理されているためです。
+
+```mermaid
+flowchart TD
+  A["schema/openapi.yaml"] --> B["generated TS"]
+  B --> C["wrapper SDK"]
+```
+
+runtime 検証を追加すると、下記が発生します。
+
+* バンドルサイズの増加
+* runtime コスト
+* 契約の重複
+* ドリフトのリスク
+
+### runtime 検証: 例外
+
+下記コード例のような、開発アサーションとしてのみ、許容します。製品の依存関係としては、採用しません。
+
+```ts
+if (__DEV__) {
+  schema.parse(response)
+}
+```

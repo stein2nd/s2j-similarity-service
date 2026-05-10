@@ -7,8 +7,11 @@ final class CalculationError extends DomainError
     /**
      * @param array<string, mixed> $details
      */
-    public function __construct(string $message = "Calculation failed", array $details = [], ?\Throwable $previous = null)
-    {
+    public function __construct(
+        string $message = "Calculation failed",
+        array $details = [],
+        ?\Throwable $previous = null,
+    ) {
         parent::__construct("internal_error", $message, $details, $previous);
     }
 }

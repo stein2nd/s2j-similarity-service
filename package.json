@@ -48,6 +48,7 @@
     "generate": "./scripts/generate/all.zsh",
     "verify:codegen": "./scripts/generate/all.zsh && git diff --exit-code",
     "build:ts-client": "npm run build -w @s2j/similarity-client",
+    "test:ts-client": "npm test -w @s2j/similarity-client",
     "lint:docs": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/presets/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md",
     "lint:docs_compat": "NODE_PATH=./tools/docs-linter/node_modules textlint --config ./tools/docs-linter/presets/wordpress/.textlintrc.wp.json ./README.md ./docs/**/*.md"
   }

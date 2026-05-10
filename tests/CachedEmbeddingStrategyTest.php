@@ -10,8 +10,10 @@ final class CachedEmbeddingStrategyTest extends TestCase
     public function testCachesByTextModelProvider(): void
     {
         $calls = 0;
-        $inner = new class($calls) implements EmbeddingStrategyInterface {
-            public function __construct(private int &$calls) {}
+        $inner = new class ($calls) implements EmbeddingStrategyInterface {
+            public function __construct(private int &$calls)
+            {
+            }
             public function embed(string $text, ?string $model = null): array
             {
                 $this->calls++;
@@ -39,8 +41,10 @@ final class CachedEmbeddingStrategyTest extends TestCase
     public function testBatchUsesCacheAndPreservesOrder(): void
     {
         $calls = 0;
-        $inner = new class($calls) implements EmbeddingStrategyInterface {
-            public function __construct(private int &$calls) {}
+        $inner = new class ($calls) implements EmbeddingStrategyInterface {
+            public function __construct(private int &$calls)
+            {
+            }
             public function embed(string $text, ?string $model = null): array
             {
                 $this->calls++;

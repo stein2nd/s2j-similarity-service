@@ -79,10 +79,8 @@ final class BearerTokenAuth
      */
     private static function wpError(string $type, string $message, int $status): object
     {
-        if (class_exists('WP_Error')) {
-            /** @var class-string $cls */
-            $cls = 'WP_Error';
-            return new $cls($type, $message, ['status' => $status]);
+        if (class_exists(\WP_Error::class)) {
+            return new \WP_Error($type, $message, ['status' => $status]);
         }
 
         // Non-WordPress environments: return an opaque object.

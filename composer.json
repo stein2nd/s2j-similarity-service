@@ -17,7 +17,9 @@
     "require-dev": {
         "automattic/wordbless": "^0.6",
         "johnpbloch/wordpress": "^6.9",
-        "phpunit/phpunit": "^13.1"
+        "phpunit/phpunit": "^13.1",
+        "phpstan/phpstan": "^2.1",
+        "squizlabs/php_codesniffer": "^4.0"
     },
     "config": {
         "allow-plugins": {
@@ -29,6 +31,15 @@
     },
     "scripts": {
         "test": "@php vendor/bin/phpunit",
+        "test:unit": "@php vendor/bin/phpunit --testsuite unit",
+        "test:wordpress": "@php vendor/bin/phpunit --testsuite wordpress",
+        "phpstan": "@php vendor/bin/phpstan analyse --memory-limit=512M",
+        "phpcs": "@php vendor/bin/phpcs",
+        "phpcbf": "@php vendor/bin/phpcbf",
+        "lint:php": [
+            "@phpstan",
+            "@phpcs"
+        ],
         "post-install-cmd": "WorDBless\\Composer\\InstallDropin::copy",
         "post-update-cmd": "WorDBless\\Composer\\InstallDropin::copy"
     }

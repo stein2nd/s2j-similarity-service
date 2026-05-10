@@ -1,0 +1,92 @@
+# docs/engineering/ci.md — CI 品質ゲート
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  php-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, ctype, json
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: PHPUnit (unit suite)
+        run: composer run test:unit
+
+      - name: PHPStan
+        run: composer run phpstan
+
+      - name: PHP_CodeSniffer (PSR-12)
+        run: composer run phpcs
+
+  wordpress-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, ctype, json
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: PHPUnit (WordPress REST integration)
+        run: composer run test:wordpress
+
+  openapi-codegen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Regenerate from schema/openapi.yaml
+        run: ./scripts/generate/all.zsh
+
+      - name: Fail on unexpected generated diff
+        run: git diff --exit-code
+
+  typescript-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Test TypeScript SDK (Vitest)
+        run: npm test -w @s2j/similarity-client
+
+      - name: Build TypeScript SDK package
+        run: npm run build -w @s2j/similarity-client
+
+      - name: Typecheck TypeScript SDK
+        run: npm run typecheck -w @s2j/similarity-client

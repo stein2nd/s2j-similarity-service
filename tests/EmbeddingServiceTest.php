@@ -34,8 +34,10 @@ final class EmbeddingServiceTest extends TestCase
     public function testEmbedBatchFallsBackWhenStrategyNotBatchCapable(): void
     {
         $calls = 0;
-        $strategy = new class($calls) implements EmbeddingStrategyInterface {
-            public function __construct(private int &$calls) {}
+        $strategy = new class ($calls) implements EmbeddingStrategyInterface {
+            public function __construct(private int &$calls)
+            {
+            }
             public function embed(string $text, ?string $model = null): array
             {
                 $this->calls++;
@@ -53,8 +55,10 @@ final class EmbeddingServiceTest extends TestCase
     public function testEmbedBatchUsesBatchStrategyWhenAvailable(): void
     {
         $calls = 0;
-        $strategy = new class($calls) implements BatchEmbeddingStrategyInterface {
-            public function __construct(private int &$calls) {}
+        $strategy = new class ($calls) implements BatchEmbeddingStrategyInterface {
+            public function __construct(private int &$calls)
+            {
+            }
             public function embed(string $text, ?string $model = null): array
             {
                 $this->calls++;

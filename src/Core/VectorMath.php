@@ -84,8 +84,12 @@ final class VectorMath
         $cos = $dot / (sqrt($sumSqA) * sqrt($sumSqB)); // [-1, 1] (ideally)
         $score = ($cos + 1.0) / 2.0; // [0, 1]
 
-        if ($score < 0.0) return 0.0;
-        if ($score > 1.0) return 1.0;
+        if ($score < 0.0) {
+            return 0.0;
+        }
+        if ($score > 1.0) {
+            return 1.0;
+        }
         return $score;
     }
 }

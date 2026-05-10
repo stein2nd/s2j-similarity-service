@@ -1,4 +1,5 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 use S2J\Similarity\Application\SimilarityService;
 use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;

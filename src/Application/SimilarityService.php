@@ -9,7 +9,8 @@ final class SimilarityService
 {
     public function __construct(
         private readonly EmbeddingStrategyInterface $strategy
-    ) {}
+    ) {
+    }
 
     public function similarity(
         string $a,
