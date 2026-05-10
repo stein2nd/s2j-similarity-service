@@ -276,11 +276,11 @@ WorDBless
 リポジトリでの実装は、下記のとおりです。
 
 * `tests/Support/OpenApiResponseContractValidator.php` が `schema/openapi.yaml` の `#/components/schemas/*` を解決し、JSON Schema として検証に渡します。
-* `tests/Integration/WordPressRestAdapterIntegrationTest.php` が **POST `/v1/similarity` 相当** および **POST `/v1/embedding` 相当** の実レスポンスに対し、成功時はそれぞれ `SimilarityResponse` / `EmbeddingResponse`、ドメイン由来のエラーおよび入力検証エラー (**400**) は `ErrorResponse` を検証します (WordPress ネイティブの `WP_Error` 形のみの応答は、本節の OpenAPI `ErrorResponse` とは別形のため対象外)。
+* `tests/Integration/WordPressRestAdapterIntegrationTest.php` が **POST `/v1/similarity` 相当** および **POST `/v1/embedding` 相当** の実レスポンスに対し、成功時はそれぞれ `SimilarityResponse` / `EmbeddingResponse`、ドメイン由来のエラーおよび入力検証エラー (**400**) は `ErrorResponse` を検証します (WordPress ネイティブの `WP_Error` 形のみの応答は、本節の OpenAPI `ErrorResponse` とは別形のため、対象外)。
 
 ### 推奨実装
 
-OpenAPI spec から schema を参照し、実レスポンスを検証します。
+[OpenAPI 契約の統合仕様](docs/contracts/openapi_spec.md) から schema を参照し、実レスポンスを検証します。
 
 実装候補は、下記のとおりです。
 
@@ -296,3 +296,185 @@ OpenAPI spec から schema を参照し、実レスポンスを検証します�
 
 * これは、「HTTP 統合の品質ゲート」だから。
 * OpenAPI/codegen ジョブ ではない。
+
+---
+
+## CI 品質ゲートの段階的な拡張方針
+
+### 設計意図 (ゴール)
+
+本プロジェクトの CI 品質ゲートについて、現在の実装規模、責務分離、実行コストを踏まえつつ、段階的に品質保証レベルを引き上げられる拡張方針を定義します。
+
+本プロジェクトは、WordPress プラグイン / テーマへ組み込まれる Composer ライブラリを主製品としつつ、OpenAPI を Single Source of Truth とした REST API、コード生成、TypeScript SDK を併せ持つ複合構成です。
+
+そのため、品質ゲートは、一度に最大化するのではなく、下記を考慮しながら、成熟度に応じて段階的に拡張します。
+
+* 実装責務
+* 実行時間
+* 保守コスト
+* 契約 drift のリスク
+
+### 設計原則
+
+```plaintext
+Quality gates should grow with product maturity
+Test real risk, not theoretical completeness
+Prefer deterministic CI over unstable external dependency
+WordPress integration is mandatory
+External provider dependency is optional
+```
+
+### 設計方針 (規約)
+
+* CI 品質ゲートは、段階的に拡張します。
+* 現時点で必須な品質ゲートと、将来的に導入可能な品質ゲートを明確に分離します。
+* merge blocker とする品質ゲートは、明示します。
+* 実装責務に対して過剰なテストは、要求しません。
+* CI の実行時間・安定性・保守コストを、考慮します。
+* 外部 API や不安定な外部環境に依存する品質ゲートは、標準採用しません。
+* 段階拡張は、[本仕様書](docs/engineering/ci.md) を唯一の正とします。
+
+### 責務
+
+* CI 品質ゲートの成熟ロードマップを定義すること。
+* 必須 / 推奨 / 任意ゲートを分類すること。
+* merge blocker 基準を明確化すること。
+* CI コストを制御すること。
+* 品質ゲートの過剰設計を防止すること。
+* 品質保証レベルを継続的に向上すること。
+
+### 非責務
+
+* 個別テスト実装詳細
+* コード生成の実装詳細
+* OpenAPI 契約の詳細
+* SDK runtime 検証の方針
+* パッケージ依存関係ポリシー
+* デプロイのオーケストレーション
+
+### 非対象 (Out of Scope)
+
+* ブラウザー E2E
+* Playwright
+* Cypress
+* OpenAI API ライブアクセス
+* Claude API ライブアクセス
+* Gemini API ライブアクセス
+* 負荷テスト
+* カオスエンジニアリング
+* 分散型の耐障害性テスト
+* 本番環境のモニタリング
+
+### CI マトリックスとの関係
+
+本段階定義は、下記の CI マトリックスのジョブ構成と対応します。段階拡張に応じて、ジョブを追加・強化します。
+
+* ジョブ1: PHP の品質
+* ジョブ2: WordPress 統合
+* ジョブ3: OpenAPI / コード生成
+* ジョブ4: TypeScript SDK
+
+### 段階定義: フェーズ1 (必須 / 基本品質ゲート)
+
+実装の健全性と静的品質を担保するのが、目的です。
+
+#### PHP
+
+```bash
+composer test
+phpstan
+phpcs
+```
+
+または `pint` を別方針として採用します。
+
+#### TypeScript SDK
+
+```bash
+pnpm build
+pnpm typecheck
+```
+
+下記を目的とします。
+
+* ユニット整合性
+* 静的解析
+* コーディング標準
+* ビルドの再現性
+
+### 段階定義: フェーズ2 (必須 / 統合品質ゲート)
+
+下記を対象に、WordPress 実ランタイムとの統合整合を担保するのが、目的です。
+
+* REST 統合の正確性
+* WordPress アダプタの正確性
+
+対象は、下記のとおりです。
+
+* WorDBless
+* WP_REST_Server
+
+下記を検証します。
+
+* register_rest_route
+* リクエストの検証
+* permission_callback
+* コントローラのディスパッチ
+* ErrorMapper
+* HTTP ステータス
+* Retry-After
+
+### 段階定義: フェーズ3 (推奨 / 契約品質ゲート)
+
+下記を対象に、OpenAPI 契約との整合を継続保証するのが、目的です。
+
+* コード生成の再現性
+* OpenAPI レスポンススキーマの検証
+* TypeScript SDK ユニットテスト
+
+#### コード生成の再現性
+
+```bash
+./scripts/generate/all.zsh
+git diff --exit-code
+```
+
+#### OpenAPI レスポンススキーマの検証
+
+WordPress REST 統合テストの実レスポンスについて、下記を OpenAPI 由来 JSON Schema で機械検証します。
+
+* success response
+* `ErrorResponse`
+
+初期導入は、小さなスコープとします。
+
+#### TypeScript SDK ユニットテスト
+
+```bash
+pnpm test -w @s2j/similarity-client
+```
+
+ユニットテストの目的は、下記のとおりです。
+
+* 契約の drift 検出
+* SDK の回帰検出
+* 生成された成果物の一貫性
+
+対象は、下記のとおりです。
+
+* モック化 HttpClient
+* タイムアウト
+* リトライ
+* エラーの標準化
+* リクエストの構築
+
+### 段階定義: フェーズ4 (任意 / 高度品質ゲート)
+
+下記は、導入候補です。実装成熟度、CI コスト、保守負荷を見て判断します。
+
+* 依存関係の監査
+* セキュリティスキャン
+* カバレッジ閾値
+* 変異テスト
+* パフォーマンスベンチマーク
+* パッケージパブリッシュの dry-run
