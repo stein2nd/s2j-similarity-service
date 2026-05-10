@@ -14,6 +14,7 @@ use S2J\Similarity\Contracts\Errors\AuthorizationError;
 use S2J\Similarity\Contracts\Errors\ProviderError;
 use S2J\Similarity\Contracts\Errors\RateLimitError;
 use S2J\Similarity\Contracts\Errors\TimeoutError;
+use S2J\Similarity\Tests\Support\OpenApiResponseContractValidator;
 
 /**
  * HTTP integration tests through WordPress {@see WP_REST_Server} (WorDBless runtime).
@@ -127,6 +128,7 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $this->assertArrayHasKey('data', $data);
         $this->assertArrayHasKey('similarityScore', $data['data']);
         $this->assertIsFloat($data['data']['similarityScore']);
+        OpenApiResponseContractValidator::assertSimilaritySuccessBody($this, $data);
     }
 
     public function testSimilarityValidationErrorReturns400(): void
@@ -142,6 +144,7 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $data = $response->get_data();
         $this->assertIsArray($data);
         $this->assertSame('validation_error', $data['error']['type'] ?? null);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     public function testAuthenticationFailureReturns401(): void
@@ -189,6 +192,7 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $data = $response->get_data();
         $this->assertIsArray($data);
         $this->assertSame('permission_error', $data['error']['type'] ?? null);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     public function testRateLimitDomainErrorMapsTo429(): void
@@ -206,6 +210,7 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $data = $response->get_data();
         $this->assertIsArray($data);
         $this->assertSame('rate_limit', $data['error']['type'] ?? null);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     public function testRateLimitIncludesRetryAfterHeaderWhenProvidedInDetails(): void
@@ -222,6 +227,9 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $retryAfter = $headers['Retry-After'] ?? $headers['retry-after'] ?? null;
         $this->assertNotNull($retryAfter);
         $this->assertSame('120', is_array($retryAfter) ? ($retryAfter[0] ?? '') : $retryAfter);
+        $data = $response->get_data();
+        $this->assertIsArray($data);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     public function testTimeoutDomainErrorMapsTo408(): void
@@ -239,6 +247,7 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $data = $response->get_data();
         $this->assertIsArray($data);
         $this->assertSame('timeout', $data['error']['type'] ?? null);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     public function testProviderDomainErrorMapsTo503(): void
@@ -256,6 +265,7 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $data = $response->get_data();
         $this->assertIsArray($data);
         $this->assertSame('provider_error', $data['error']['type'] ?? null);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     public function testEmbeddingSuccessViaRestDispatch(): void

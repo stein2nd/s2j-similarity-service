@@ -11,6 +11,11 @@
         "S2J\\Similarity\\Adapters\\Http\\WordPress\\": "adapters/http/wordpress/"
       }
     },
+    "autoload-dev": {
+      "psr-4": {
+        "S2J\\Similarity\\Tests\\Support\\": "tests/Support/"
+      }
+    },
     "require": {
       "php": ">=8.0"
     },
@@ -19,7 +24,9 @@
         "johnpbloch/wordpress": "^6.9",
         "phpunit/phpunit": "^13.1",
         "phpstan/phpstan": "^2.1",
-        "squizlabs/php_codesniffer": "^4.0"
+        "squizlabs/php_codesniffer": "^4.0",
+        "justinrainbow/json-schema": "^6",
+        "symfony/yaml": "^6.4"
     },
     "config": {
         "allow-plugins": {
