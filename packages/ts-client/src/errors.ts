@@ -80,7 +80,7 @@ export type SDKError =
   | ProviderError
   | NetworkError
 
-/** Subset called out in sdk_spec.md: 「TypeScript SDK の最小実装スコープとエラー設計」. */
+/** Subset called out in sdk_spec.md — 「TypeScript SDK (@s2j/similarity-client)」 / エラー設計. */
 export type SDKDomainError =
   | ValidationError
   | AuthenticationError

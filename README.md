@@ -281,6 +281,76 @@ curl -sS -X POST 'https://example.com/wp-json/s2j/v1/embedding' \
   -d '{"text":"hello"}'
 ```
 
+## TypeScript SDK (`@s2j/similarity-client`)
+
+OpenAPI 契約に沿った **公式の TypeScript ラッパー** です。生成クライアント (`tools/generated/ts`) は公開せず、タイムアウト・軽量リトライ・ REST エラー正規化などをまとめた、安定した API のみを公開します。設計の詳細は [**SDK 仕様**](docs/interfaces/sdk_spec.md) の「TypeScript SDK (@s2j/similarity-client)」を参照してください。
+
+### モノレポ内の場所
+
+| 項目 | 値 |
+| --- | --- |
+| ディレクトリ | [`packages/ts-client`](packages/ts-client) |
+| npm パッケージ名 | `@s2j/similarity-client` |
+| ルートの workspaces | [`package.json`](package.json) の `workspaces` |
+
+### 別プロジェクトから依存させる例
+
+本リポジトリをローカルにクローン済みであれば、`package.json` にパス依存を追加します。
+
+```json
+{
+  "dependencies": {
+    "@s2j/similarity-client": "file:../s2j-similarity-service/packages/ts-client"
+  }
+}
+```
+
+パスは、プロジェクト配置に合わせて調整してください。ビルド済みの `dist/` が必要な場合は、依存先で次のビルドを実行します。
+
+```zsh
+npm run build -w @s2j/similarity-client
+```
+
+### `createApiClient` の最小例
+
+クライアントは、内部で `POST /v1/similarity` および `POST /v1/embedding` を呼びます。WordPress REST アダプタと組み合わせる場合、`baseUrl` には **サイトのオリジンから `/wp-json/s2j` まで** (末尾スラッシュなし) を指定してください。これにより `baseUrl` + `/v1/similarity` が「上記 REST 節の表」と同じ実行時 URL (例: `https://example.com/wp-json/s2j/v1/similarity`) になります。
+
+```ts
+import { createApiClient, isSDKError } from "@s2j/similarity-client";
+
+const client = createApiClient({
+  baseUrl: "https://example.com/wp-json/s2j",
+  apiKey: process.env.S2J_REST_TOKEN,
+});
+
+try {
+  const score = await client.similarity("文章 A", "文章 B");
+  const embedding = await client.embedding("単一の文章");
+  console.log(score, embedding.vector.length);
+} catch (e) {
+  if (isSDKError(e) && e.type === "rate_limit") {
+    /* … */
+  }
+  throw e;
+}
+```
+
+Bearer を使わない開発環境では `apiKey` を省略できます (サーバー側の `BearerTokenAuth` 設定に依存)。
+
+### ビルドと codegen の検証 (開発者向け)
+
+リポジトリルートで Node.js v20以上を用意し、依存関係を入れたうえで次を実行します。
+
+```zsh
+npm ci
+npm run build -w @s2j/similarity-client
+npm run verify:codegen
+```
+
+`verify:codegen` は、OpenAPI からコード生成したあと、リポジトリに差分が残らないことを確認します ([`schema/openapi.yaml`](schema/openapi.yaml) が契約の起点)。
+
+より詳しい HTTP 利用の整理は [**使用方法**](docs/interfaces/usage_spec.md) の TypeScript SDK 節も参照してください。
+
 ## FAQ
 
 ### Q: このライブラリは、WordPress プラグイン以外でも使用できますか ?

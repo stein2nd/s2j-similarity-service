@@ -1,9 +1,10 @@
 /**
  * @packageDocumentation
- * Stable TS wrapper for S2J Similarity HTTP API — see docs/interfaces/sdk_spec.md
- * (「TypeScript SDK の最小実装スコープとエラー設計」).
+ * Stable TypeScript SDK (`@s2j/similarity-client`) for the S2J Similarity HTTP API — see
+ * docs/interfaces/sdk_spec.md §「TypeScript SDK (@s2j/similarity-client)」
+ * (エラー設計・最小スコープは同ファイル内の関連節を参照).
  *
- * Generated OpenAPI clients under tools/generated/ts remain internal; this package is the public surface.
+ * Generated OpenAPI clients under tools/generated/ts remain internal; this package is the sole public surface.
  */
 
 export type { HttpClient } from './http.js'

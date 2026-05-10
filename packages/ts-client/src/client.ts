@@ -20,7 +20,7 @@ export interface EmbeddingResponseBody {
   meta: Record<string, unknown>
 }
 
-/** Public, stable entry (docs/interfaces/sdk_spec.md). */
+/** Public, stable entry — docs/interfaces/sdk_spec.md §「TypeScript SDK (@s2j/similarity-client)」. */
 export interface ApiClient {
   similarity(textA: string, textB: string, options?: SimilarityCallOptions): Promise<number>
 

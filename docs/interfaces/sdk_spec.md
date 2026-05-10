@@ -1010,7 +1010,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 * API 仕様変更への対応 (Contracts 側)
 * 実際の HTTP 実装 (fetch / axios 等)
 * ログ出力
-* インフラレベルのリトライ
+* インフラストラクチャレベルのリトライ
 
 ### 責務分離
 
@@ -1244,7 +1244,7 @@ flowchart TD
 ### 非責務
 
 * アルゴリズム定義
-* インフラ制御
+* インフラストラクチャ制御
 
 ### API 例
 
@@ -1363,7 +1363,7 @@ Embedding API のコストとレイテンシを削減するため、再利用可
 ### 非責務
 
 * キャッシュストレージ実装 (Redis 等)
-* キャッシュインフラ管理
+* キャッシュインフラストラクチャ管理
 * 永続化戦略
 
 ### キャッシュキー
@@ -2431,7 +2431,7 @@ Retry は、最小限に
 ### 非責務
 
 * 高度な可用性制御
-* インフラレベルのリトライ
+* インフラストラクチャレベルのリトライ
 * 分散システム管理
 
 ### 推奨構成
@@ -2963,3 +2963,192 @@ error.type は、`snake_case` で統一します。
 | Browser | native fetch |
 | Edge | global fetch |
 | Node | fetch / undici adapter |
+
+## TypeScript SDK (@s2j/similarity-client)
+
+### 設計意図 (ゴール)
+
+OpenAPI 契約に対応する TypeScript SDK として、HTTP ユーザー向けの安定した公開 API を提供します。
+
+本 SDK は、generated raw client を直接公開せず、下記を含む wrapper SDK として提供し、HTTP ユーザーが runtime 差異や generated implementation detail を意識せず利用できる状態を目標とします。
+
+* 型安全
+* transport abstraction
+* timeout / retry
+* REST エラー正規化
+
+また、WordPress 主用途の本プロジェクトにおいて、Node / Browser / Edge 等の差異を SDK 内部で吸収し、利用導線を簡潔に保ちます。
+
+### 設計原則
+
+```plaintext
+Public API is stable wrapper
+Generated code stays internal
+Retry is lightweight
+Errors are normalized
+Transport is replaceable
+```
+
+### 設計方針 (規約)
+
+* 公開 API は、`@s2j/similarity-client` のみとします。
+* generated raw client は、公開 API としません。
+* OpenAPI generated code は、internal implementation とします。
+* `ApiClient` を、高レベル HTTP entrypoint とします。
+* transport は、`HttpClient` abstraction で差し替え可能とします。
+* timeout は、SDK 標準機能とします。
+* retry は、lightweight retry とします。
+* retry 対象は、transient failure のみとします。
+* REST ErrorResponse は、SDKError に正規化します。
+* error 判定は、`error.type` を基準とします。
+* SDK error は、discriminated union を正本とします。
+* runtime ergonomics のため、Error class を補助提供します。
+* enum は、採用しません。
+
+### 責務
+
+SDK の責務は、下記のとおりです。
+
+* 公開 HTTP API を安定したものにすること。
+* トランスポートを抽象化すること。
+* タイムアウト
+* 軽量なリトライ
+* REST エラーを標準化すること。
+* 実行環境に依存しないクライアントアクセスにすること。
+* 生成された実装を分離すること。
+
+### 非責務
+
+SDK は、下記を責務としません。
+
+* 成された raw クライアントデータの公開
+* サーキットブレーカー
+* キューのオーケストレーション
+* 分散リトライの調整
+* キャッシュの永続化
+* インフラストラクチャのレート制限
+* ブラウザー UI
+* React フック
+
+### 非対象 (Out of Scope)
+
+* スタンドアローン型フロントエンドフレームワーク SDK
+* websocket トランスポート
+* GraphQL SDK
+* primary product としての npm 公開エコシステムパッケージ
+* ブラウザーサイドの runtime コード生成
+
+### 実装済み
+
+下記は、実装済みとします。
+
+#### 公開 API
+
+パッケージ `packages/ts-client` の公開対象は、下記のとおりです。
+
+* `createApiClient`
+* `ApiClient`
+* `ApiClient.similarity()`
+* `ApiClient.embedding()`
+
+#### Transport abstraction
+
+下記は、実装済みとします。
+
+* `HttpClient`
+* fetch abstraction
+* runtime transport boundary
+
+#### Resilience
+
+下記は、実装済みとします。
+
+* `withTimeout`
+* `withRetry`
+
+retry 対象は、下記のとおりです。
+
+* network failure
+* timeout
+* HTTP `429`
+* HTTP `503`
+
+retry 方針は、下記のとおりです。
+
+* exponential backoff
+* lightweight retry
+* idempotent transport retry
+
+#### Error model
+
+下記は、実装済みとします。
+
+* `SDKError`
+* `SDKErrorBase`
+* `isSDKError`
+* REST ErrorResponse normalization
+
+下記は、判定のコード例です。
+
+```ts
+if (error.type === 'rate_limit') { ... }
+```
+
+#### Generated code boundary
+
+生成されたコードは、`tools/generated/ts` に配置され、その用途は下記となります。
+
+* 開発
+* 内部ツール
+* コード生成成果物
+
+公開 API ではありません。
+
+### 100% 完了条件
+
+#### 利用導線
+
+[READ ME](README.md) (必要に応じて [使用方法](docs/interfaces/usage_spec.md)) に、下記を追記します。
+
+* モノレポのパス
+* install / workspace の使用方法
+* createApiClient の最小限のサンプル
+* ビルドコマンド
+* codegen verify コマンド
+* REST エンドポイントの使用方法
+
+コード例は、下記のとおりです。
+
+```plaintext
+npm run build -w @s2j/similarity-client
+npm run verify:codegen
+```
+
+HTTP ユーザーが利用方法で迷わない状態を「完成」とします。
+
+#### テスト
+
+`packages/ts-client` に、automated test を追加します。その対象は、下記のとおりです。
+
+* モック化 HttpClient
+* タイムアウト
+* リトライ
+* SDKError の正規化
+* レスポンスの解析
+
+#### CI ポリシー
+
+engineering にて確定します。
+
+* テストが必須
+* CI の実行が必須
+* 失敗ブロックはマージ
+
+### 任意の品質向上
+
+成功レスポンスの runtime 検証の候補は、下記のとおりです。現状は、形状検証を中心としてます。
+
+* Zod
+* 軽量なスキーマガード
+
+正式導入は、[型安全な SDK 設計](docs/interfaces/sdk_spec.md) / 運用ポリシーで別途確定します。

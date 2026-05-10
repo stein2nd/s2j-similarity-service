@@ -1,7 +1,7 @@
 {
   "name": "@s2j/similarity-client",
   "version": "1.0.0",
-  "description": "TypeScript wrapper client for S2J Similarity Service (dev / admin / tooling)",
+  "description": "TypeScript SDK (@s2j/similarity-client): stable HTTP wrapper for the S2J Similarity OpenAPI contract; generated clients are not part of the public API",
   "type": "module",
   "license": "GPL-2.0-or-later",
   "main": "./dist/index.js",

@@ -4,7 +4,7 @@
 
 # S2J Similarity Service - 使用方法
 
-本ドキュメントは、本ライブラリの **具体的な使用方法 (PHP、JavaScript)** を定義します。
+本ドキュメントは、本ライブラリの **具体的な使用方法 (PHP、JavaScript、TypeScript HTTP クライアント)** を定義します。
 ユーザーが、最小構成で類似度を算出できることを目的とします。
 
 ## 概要
@@ -29,8 +29,8 @@
 ### 設計方針 (規約)
 
 * DI (依存性注入) を前提とします。
-* Provider を差し替え可能とします。
-* 同一インターフェースで PHP、JS を提供します。
+* Strategy (Embedding 実装) を差し替え可能とします。
+* インプロセスの計算は **PHP ライブラリ** が正本です。HTTP 経由は OpenAPI 契約を共有する **TypeScript SDK (`@s2j/similarity-client`)** (同一ファイル内の後述節) を参照します。
 
 ### 非対象 (Out of Scope)
 
@@ -75,8 +75,8 @@ flowchart TD
 ### 1. 初期化
 
 ```php id="php_init"
-use App\Infrastructure\OpenAIEmbeddingStrategy;
-use App\Application\SimilarityService;
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
 
 $strategy = new OpenAIEmbeddingStrategy($apiKey);
 $service = new SimilarityService($strategy);
@@ -100,6 +100,8 @@ echo $score; // 0.0 - 1.0
 ### 3. 低レベル利用 (Embedding + Core)
 
 ```php id="php_low"
+use S2J\Similarity\Core\SimilarityCalculator;
+
 $vectorA = $strategy->embed($textA);
 $vectorB = $strategy->embed($textB);
 
@@ -116,19 +118,19 @@ $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 * `$model` は、省略可能。
 * 未指定時は、Strategy のデフォルトモデルが使用される
 
-## JavaScript 使用例
+## JavaScript / TypeScript (擬似コード)
 
-### 1. 初期化
+本リポジトリは **PHP のライブラリ**として類似度計算を提供します。同一プロセスで動く TypeScript / JavaScript の `OpenAIEmbeddingStrategy` / `SimilarityService` クラスは **同梱していません**。以下は、PHP API と **対応関係を示す擬似コード**です。実運用では **PHP を呼び出す**か、デプロイ済み REST に **TypeScript SDK (`@s2j/similarity-client`)** からアクセスしてください。
+
+### 1. 初期化 (擬似)
 
 ```ts id="ts_init"
-import { OpenAIEmbeddingStrategy } from "./infrastructure";
-import { SimilarityService } from "./application";
-
-const strategy = new OpenAIEmbeddingStrategy(apiKey);
+// 擬似コード (実装は PHP。import パスは存在しない)
+const strategy = openAiEmbeddingStrategyFromEnv();
 const service = new SimilarityService(strategy);
 ```
 
-### 2. 類似度算出
+### 2. 類似度算出 (擬似)
 
 ```ts id="ts_usage"
 const textA = "WordPress プラグイン開発";
@@ -139,14 +141,80 @@ const score = await service.similarity(textA, textB);
 console.log(score);
 ```
 
-### 3. 低レベル利用
+### 3. 低レベル利用 (擬似)
 
 ```ts id="ts_low"
-const vectorA = await provider.embed(textA);
-const vectorB = await provider.embed(textB);
+const vectorA = await strategy.embed(textA);
+const vectorB = await strategy.embed(textB);
 
-const score = calculateSimilarity(vectorA, vectorB);
+const score = cosineSimilarity(vectorA, vectorB); // PHP では SimilarityCalculator::calculate に相当
 ```
+
+## TypeScript SDK (`@s2j/similarity-client`)
+
+本節は、モノレポの **`@s2j/similarity-client`** により、デプロイ済みの **REST API** に HTTP でアクセスする場合の手順です (PHP の `SimilarityService` を同一プロセスで呼ぶユースケースとは別層)。契約・公開境界・エラー型の正本は [**SDK 仕様**](sdk_spec.md) の「TypeScript SDK (@s2j/similarity-client)」です。
+
+### パッケージの場所
+
+| 項目 | 値 |
+| --- | --- |
+| ディレクトリ | `packages/ts-client` |
+| npm 名 | `@s2j/similarity-client` |
+
+### リポジトリ内でのインストールとビルド
+
+ルートで workspaces を解決してから、SDK をビルドします。
+
+```zsh
+npm ci
+npm run build -w @s2j/similarity-client
+```
+
+OpenAPI / 生成コードとリポジトリ成果物に差分がないことを確認するには、ルートで次を実行します。
+
+```zsh
+npm run verify:codegen
+```
+
+### 外部プロジェクトからの依存 (例)
+
+同一マシン上に本リポジトリがある場合、`package.json` の依存にパス指定が使えます。
+
+```json
+{
+  "dependencies": {
+    "@s2j/similarity-client": "file:../s2j-similarity-service/packages/ts-client"
+  }
+}
+```
+
+### `createApiClient` の最小例
+
+`createApiClient` は `POST /v1/similarity` と `POST /v1/embedding` を呼び出します。WordPress REST アダプタ利用時は、`baseUrl` に **`https://<サイト>/wp-json/s2j`** (末尾スラッシュなし) を渡すと、実行時 URL は `https://<サイト>/wp-json/s2j/v1/similarity` 等となり、[README.md](../../README.md) の REST 表と整合します。
+
+```ts
+import { createApiClient, isSDKError } from "@s2j/similarity-client";
+
+const client = createApiClient({
+  baseUrl: "https://example.com/wp-json/s2j",
+  apiKey: process.env.S2J_REST_TOKEN,
+});
+
+try {
+  const score = await client.similarity("文章 A", "文章 B");
+  const { vector, dimension } = await client.embedding("文章");
+  console.log(score, dimension, vector.length);
+} catch (e) {
+  if (isSDKError(e)) {
+    if (e.type === "rate_limit") {
+      /* … */
+    }
+  }
+  throw e;
+}
+```
+
+エラーは `error.type` (snake_case) で判別できる union です。例外クラスは補助であり、詳細は SDK 仕様のエラー節を参照してください。
 
 ## 設定
 
@@ -154,73 +222,82 @@ const score = calculateSimilarity(vectorA, vectorB);
 
 | 項目 | 説明 |
 | ------- | --------------- |
-| apiKey | Embedding API キー |
-| model | 使用モデル |
-| timeout | タイムアウト |
+| apiKey | Embedding API キー (`OpenAIEmbeddingStrategy` の第1引数) |
+| defaultModel | デフォルトモデル (省略時は `text-embedding-3-small`) |
+| endpoint | Embeddings API の URL (省略時は OpenAI デフォルト URL) |
+| timeoutSeconds | cURL タイムアウト (秒、デフォルトは30) |
 
 ### 例 - PHP
 
 ```php id="php_config"
-$strategy = new OpenAIEmbeddingStrategy([
-    'apiKey' => 'xxx',
-    'model' => 'text-embedding-3-small',
-]);
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
+$strategy = new OpenAIEmbeddingStrategy(
+    apiKey: 'xxx',
+    defaultModel: 'text-embedding-3-small',
+    endpoint: 'https://api.openai.com/v1/embeddings',
+    timeoutSeconds: 30,
+);
 ```
 
 ## API キーの設定
 
 API キーは、アプリケーション側で管理し、Strategy に渡します。
 
-```ts id="usage_api_key"
-const strategy = new OpenAIEmbeddingStrategy({
-  apiKey: process.env.OPENAI_API_KEY
-})
+```php id="usage_api_key"
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
+$strategy = new OpenAIEmbeddingStrategy(
+    apiKey: getenv('OPENAI_API_KEY') ?: '',
+);
 ```
 
 ## エラーハンドリング
 
-ApiClient は、例外モデルを採用しているため、try/catch により処理します。
+PHP の `SimilarityService` は、`S2J\Similarity\Contracts\Errors` 以下の **`DomainError` 派生**で失敗を表します。HTTP 経由で **TypeScript SDK (`@s2j/similarity-client`)** を使う場合は `isSDKError` と `error.type` を参照してください ([SDK 仕様](sdk_spec.md))。
 
-```ts id="usage_try_catch"
+### PHP (`SimilarityService`)
+
+```php id="usage_try_catch"
+use S2J\Similarity\Contracts\Errors\ProviderError;
+use S2J\Similarity\Contracts\Errors\ValidationError;
+
 try {
-  const result = await client.similarity(input)
+    $score = $service->similarity($textA, $textB);
+} catch (ValidationError $e) {
+    // 入力エラー
+} catch (ProviderError $e) {
+    // API エラー
+}
+```
+
+### TypeScript SDK (HTTP)
+
+```ts id="usage_try_catch_ts"
+import { createApiClient, isSDKError } from "@s2j/similarity-client";
+
+const client = createApiClient({
+  baseUrl: "https://example.com/wp-json/s2j",
+  apiKey: process.env.S2J_REST_TOKEN,
+});
+
+try {
+  const score = await client.similarity(textA, textB);
 } catch (e) {
-  // エラー処理
+  if (isSDKError(e) && e.type === "validation_error") {
+    // 入力・契約エラー
+  }
 }
 ```
 
 ### 推奨
 
-* エラー種別 (code) で分岐する。
+* エラー種別 (`error.type` または例外クラス) で分岐する。
 * ユーザー表示とログを分離する。
-
-### PHP
-
-```php id="php_error"
-try {
-    $score = $service->similarity($textA, $textB);
-} catch (ValidationException $e) {
-    // 入力エラー
-} catch (ProviderException $e) {
-    // APIエラー
-}
-```
-
-### JavaScript
-
-```ts id="ts_error"
-try {
-  const score = await service.calculate(textA, textB);
-} catch (e) {
-  if (e instanceof ValidationError) {
-    // 入力エラー
-  }
-}
-```
 
 ## ベストプラクティス
 
-### Provider の再利用
+### Strategy の再利用
 
 * 毎回生成しません。
 * シングルトンとして扱います。
@@ -297,13 +374,12 @@ try {
 
 ## 初期化方法
 
-Service は、依存オブジェクトを渡して初期化します。
+`SimilarityService` は **Embedding 用 Strategy1つ**だけをコンストラクタに取ります。
 
-```ts id="usage_di"
-const service = new SimilarityService({
-  embeddingStrategy,
-  httpClient
-})
+```php id="usage_di"
+use S2J\Similarity\Application\SimilarityService;
+
+$service = new SimilarityService($strategy);
 ```
 
 ## Quick Start 最適化
@@ -715,7 +791,7 @@ failed
 ### 設計方針 (規約)
 
 * サンプルコードの命名は、実装と完全一致させます。
-* 抽象インターフェースは、`EmbeddingStrategyInterface` のみを使用します。
+* 抽象インターフェースとしては `EmbeddingStrategyInterface` を型の入口とします (`BatchEmbeddingStrategyInterface` はこれを拡張)。
 * DI されるインスタンスは、`strategy` と命名します。
 * `provider` という用語は、使用しません (概念としてのみ存在し、命名には使わない)。
 * 実装クラスは、`*EmbeddingStrategy` 形式で統一します。
@@ -750,6 +826,9 @@ failed
 ### PHP 使用例
 
 ```php id="usage_php_correct"
+use S2J\Similarity\Application\SimilarityService;
+use S2J\Similarity\Infrastructure\Embedding\OpenAIEmbeddingStrategy;
+
 $strategy = new OpenAIEmbeddingStrategy($apiKey);
 
 $service = new SimilarityService($strategy);
@@ -757,14 +836,19 @@ $service = new SimilarityService($strategy);
 $score = $service->similarity($textA, $textB, $model);
 ```
 
-### TypeScript 使用例
+### TypeScript SDK (HTTP) の例
+
+インプロセスの `SimilarityService` は PHP のみです。Node / ブラウザからは REST 経由で `@s2j/similarity-client` を使います。
 
 ```ts id="usage_ts_correct"
-const strategy = new OpenAIEmbeddingStrategy(apiKey);
+import { createApiClient } from "@s2j/similarity-client";
 
-const service = new SimilarityService(strategy);
+const client = createApiClient({
+  baseUrl: "https://example.com/wp-json/s2j",
+  apiKey: process.env.S2J_REST_TOKEN,
+});
 
-const score = await service.similarity(textA, textB, model);
+const score = await client.similarity(textA, textB);
 ```
 
 ### 用語整理

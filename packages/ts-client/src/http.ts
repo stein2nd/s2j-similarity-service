@@ -2,7 +2,7 @@ import { SDKErrorBase, toSDKErrorException, type SDKError } from './errors.js'
 
 /**
  * Runtime-neutral HTTP surface (browser / edge / Node fetch).
- * @see docs/interfaces/sdk_spec.md — TypeScript SDK の最小実装スコープとエラー設計
+ * @see docs/interfaces/sdk_spec.md — 「TypeScript SDK (@s2j/similarity-client)」
  */
 export interface HttpClient {
   fetch(input: RequestInfo, init?: RequestInit): Promise<Response>
