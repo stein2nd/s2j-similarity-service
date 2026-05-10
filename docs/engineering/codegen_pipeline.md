@@ -457,3 +457,166 @@ fi
 
 * generated ディレクトリを手動で編集しない。
 * schema と生成物の不整合状態でマージしない。
+
+---
+
+## 生成 PHP DTO の品質・整形ポリシー
+
+### 設計意図 (ゴール)
+
+OpenAPI を Single Source of Truth として生成される PHP DTO について、生成物の品質保証、整形方針、lint 適用範囲を明確化し、code generation の再現性と保守性を維持します。
+
+本プロジェクトでは、PHP DTO は、手書きドメインコードではなく、OpenAPI 契約から自動生成される生成成果物です。
+
+そのため、通常のアプリケーションコードと同一の品質ルールを機械的に適用するのではなく、下記を優先して取り扱います。
+
+* 再生成の可能性
+* 決定論的ビルド
+* diff の安定性
+* ジェネレータの互換性
+
+### 設計方針 (規約)
+
+* 生成 PHP DTO は、生成された成果物として扱います。
+* 生成 PHP DTO の手動編集は、禁止します。
+* OpenAPI schema を、唯一の正とします。
+* DTO 修正は、ジェネレータ設定またはスキーマ修正で行います。
+* 生成 DTO に対する静的解析は、許可します。
+* 生成 DTO に対するコーディングスタイル lint は、原則適用しません。
+* 生成 DTO に対する後処理のフォーマットは、標準採用しません。
+* lint 対象範囲は、手書きコードと生成コードを分離します。
+
+### 設計原則
+
+```plaintext id="hfrs03"
+Generated code is an artifact, not authored source
+Fix schema or generator, not generated output
+Prefer deterministic generation over cosmetic consistency
+Static analysis is acceptable, formatting ownership remains with generator
+```
+
+### 責務
+
+* 生成された DTO のガバナンス
+* コード生成の再現性を確保すること。
+* lint 適用範囲を定義すること。
+* 決定論的ビルドを保持すること。
+* ジェネレータ所有権を明確化すること。
+* CI 誤検知を低減すること。
+
+### 非責務
+
+* OpenAPI スキーマの設計
+* DTO セマンティックな正確性
+* PHP ドメインアーキテクチャー
+* SDK パッケージ化
+* リリースプロセス
+* CI ジョブのオーケストレーション
+
+### 非対象 (Out of Scope)
+
+* 手書き PHP コーディング標準
+* TypeScript 生成成果物
+* runtime 検証
+* Zod 生成ポリシー
+* フロントエンドのフォーマッターポリシー
+* アダプタ用の WordPress コーディング標準
+
+### 品質適用ポリシー: PHPStan
+
+対象: `src/Contracts/DTO/Generated/`
+
+適用: YES
+
+理由:
+
+* 型安全性
+* ジェネレータ出力の破綻検知
+* DTO 契約の一貫性
+
+### 品質適用ポリシー: PHPCS
+
+標準: NO
+
+理由: 生成されたコードは、フォーマット所有権をジェネレータが持つため。
+
+PHPCS を適用すると、下記が発生しやすい。
+
+* フォーマットのズレ
+* ジェネレータのアップグレードノイズ
+* CI の不安定性
+* 誤検知
+
+### 品質適用ポリシー: PHPCBF / autofix
+
+理由: 後処理フォーマットにより、生成物の決定論性が低下するため。
+
+標準: NO
+
+### 品質適用ポリシー: 例外
+
+PHPCS を生成された DTO に適用する場合は、下記条件を満たすこと。
+
+* ジェネレータの出力が、決定論的である
+* フォーマット処理が決定論的である
+* CI で再生成との差分検知が成立する
+* コード生成パイプラインにフォーマット手順を正式組込みする
+
+たとえば
+
+```mermaid id="03cslr"
+flowchart TD
+  A["generate"] --> B["phpcbf"]
+  B --> C["git diff --exit-code"]
+```
+
+この場合、PHPCS 適用範囲、fixer 設定、ジェネレータ互換性を本仕様で明記します。
+
+### lint 対象分離: 手書きコード
+
+対象:
+
+```plaintext
+src/Application/
+src/Core/
+src/Infrastructure/
+src/Adapters/
+```
+
+適用:
+
+* PHPStan
+* PHPCS
+
+### lint 対象分離: 生成コード
+
+対象: `src/Contracts/DTO/Generated/`
+
+適用:
+
+* PHPStan
+* コード生成の再現性
+
+標準では PHPCS 除外。
+
+### CI との関係
+
+CI 側は、本ポリシーに従います。
+
+たとえば
+
+* phpstan: 生成 DTO を含む
+* phpcs: 生成 DTO を除外
+
+`docs/engineering/ci.md` は、lint 実行方針を定義するが、生成成果物に関するポリシーの正は、本仕様とします。
+
+### 将来拡張
+
+将来的に下記を検討可能です。
+
+* 生成 DTO 専用のフォーマッター
+* PSR-12標準化
+* ジェネレータテンプレートのカスタマイズ
+* 個別の生成 lint プロファイル
+
+ただし、デフォルトポリシーは、変更しません。
