@@ -149,6 +149,14 @@ final class OpenApiResponseContractValidator
     /**
      * @param array<string, mixed> $data
      */
+    public static function assertEmbeddingSuccessBody(TestCase $test, array $data): void
+    {
+        self::assertJsonMatchesSchema($test, $data, 'EmbeddingResponse');
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
     public static function assertErrorResponseBody(TestCase $test, array $data): void
     {
         self::assertJsonMatchesSchema($test, $data, 'ErrorResponse');

@@ -152,7 +152,7 @@ WordPress REST API Adapter の実装が、OpenAPI 契約で定義されたレス
 ### 設計方針 (規約)
 
 * OpenAPI レスポンス契約は、CI 上で機械検証します。
-* 検証対象は、WordPress REST integration test の実レスポンスとします。
+* 検証対象は、WordPress REST 統合テストの実レスポンスとします。
 * OpenAPI schema を、Single Source of Truth とします。
 * 検証は、OpenAPI 由来の JSON Schema を用います。
 * 初期スコープは、最小限とします。
@@ -250,15 +250,15 @@ flowchart TD
 初期導入は、小規模な範囲とし、下記を対象とします。
 
 * `/v1/similarity`
-* success response
-* `ErrorResponse`
+* `/v1/embedding` (OpenAPI のパス表記。WordPress 実装では `POST /s2j/v1/embedding` 相当)
+* 各エンドポイントの success response (`SimilarityResponse` / `EmbeddingResponse`)
+* ドメイン由来の `ErrorResponse` (検証エラー **400** を含む)
 
 将来的に、下記に拡張を検討しています。
 
 * レスポンスヘッダー
 * オプションフィールド
 * 列挙型の対応範囲
-* `/v1/embedding`
 * スキーマの完全なカバー範囲
 
 ### CI 統合
@@ -276,7 +276,7 @@ WorDBless
 リポジトリでの実装は、下記のとおりです。
 
 * `tests/Support/OpenApiResponseContractValidator.php` が `schema/openapi.yaml` の `#/components/schemas/*` を解決し、JSON Schema として検証に渡します。
-* `tests/Integration/WordPressRestAdapterIntegrationTest.php` が **POST `/v1/similarity` 相当**の実レスポンスに対し、成功時は `SimilarityResponse`、ドメイン由来のエラーは `ErrorResponse` を検証します (WordPress ネイティブの `WP_Error` 形のみの応答は、本節の OpenAPI `ErrorResponse` とは別形のため対象外)。
+* `tests/Integration/WordPressRestAdapterIntegrationTest.php` が **POST `/v1/similarity` 相当** および **POST `/v1/embedding` 相当** の実レスポンスに対し、成功時はそれぞれ `SimilarityResponse` / `EmbeddingResponse`、ドメイン由来のエラーおよび入力検証エラー (**400**) は `ErrorResponse` を検証します (WordPress ネイティブの `WP_Error` 形のみの応答は、本節の OpenAPI `ErrorResponse` とは別形のため対象外)。
 
 ### 推奨実装
 
@@ -288,7 +288,7 @@ OpenAPI spec から schema を参照し、実レスポンスを検証します�
 * JSON スキーマバリデータ
 * PHP スキーマバリデータ
 
-本リポジトリでは、**JSON スキーマバリデータ**として `justinrainbow/json-schema`、OpenAPI YAML の読込に `symfony/yaml` (^6.4、PHP 8.0 互換) を Composer `require-dev` しています。
+本リポジトリでは、**JSON スキーマバリデータ**として `justinrainbow/json-schema`、OpenAPI YAML の読込に `symfony/yaml` (^6.4、PHP v8.0互換) を Composer `require-dev` しています。
 
 ### CI マトリックス上の位置付け
 

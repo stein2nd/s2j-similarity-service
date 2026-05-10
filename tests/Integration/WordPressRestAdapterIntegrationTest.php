@@ -284,6 +284,23 @@ final class WordPressRestAdapterIntegrationTest extends TestCase
         $this->assertIsArray($data);
         $this->assertSame([0.25, 0.75], $data['data']['vector']);
         $this->assertSame(2, $data['data']['dimension']);
+        OpenApiResponseContractValidator::assertEmbeddingSuccessBody($this, $data);
+    }
+
+    public function testEmbeddingValidationErrorReturns400(): void
+    {
+        $request = new WP_REST_Request('POST', '/s2j/v1/embedding');
+        $request->set_header('Authorization', 'Bearer ' . self::INTEGRATION_TOKEN);
+        $request->set_header('Content-Type', 'application/json');
+        $request->set_body(wp_json_encode(['text' => '   ']));
+
+        $response = rest_do_request($request);
+
+        $this->assertSame(400, $response->get_status());
+        $data = $response->get_data();
+        $this->assertIsArray($data);
+        $this->assertSame('validation_error', $data['error']['type'] ?? null);
+        OpenApiResponseContractValidator::assertErrorResponseBody($this, $data);
     }
 
     /**
