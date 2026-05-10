@@ -471,7 +471,7 @@ await client.similarity({
 
 <!-- 小見出し「README 自動生成 (docs から)」は、docs/engineering/codegen_pipeline.md に移動 -->
 
-<!-- 小見出し「playground (ブラウザ実行環境)」は、docs/engineering/playground.md に移動 -->
+<!-- 小見出し「playground (ブラウザー実行環境)」は、docs/engineering/playground.md に移動 -->
 
 <!-- 小見出し「docs → OpenAPI → README → Playground の完全連動」は、docs/engineering/codegen_pipeline.md に移動 -->
 
@@ -838,7 +838,7 @@ $score = $service->similarity($textA, $textB, $model);
 
 ### TypeScript SDK (HTTP) の例
 
-インプロセスの `SimilarityService` は PHP のみです。Node / ブラウザからは REST 経由で `@s2j/similarity-client` を使います。
+インプロセスの `SimilarityService` は PHP のみです。Node / ブラウザーからは REST 経由で `@s2j/similarity-client` を使います。
 
 ```ts id="usage_ts_correct"
 import { createApiClient } from "@s2j/similarity-client";
