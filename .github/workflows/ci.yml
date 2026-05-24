@@ -90,3 +90,39 @@ jobs:
 
       - name: Typecheck TypeScript SDK
         run: npm run typecheck -w @s2j/similarity-client
+
+  docs-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            docs:
+              - 'README.md'
+              - 'docs/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'pnpm-lock.yaml'
+              - '.textlintrc.json'
+              - '.vscode/settings.json'
+
+      - name: Skip docs lint (no relevant changes)
+        if: steps.changes.outputs.docs != 'true'
+        run: echo "No documentation or linter config changes — skipping lint:docs."
+
+      - uses: actions/setup-node@v4
+        if: steps.changes.outputs.docs == 'true'
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Node dependencies
+        if: steps.changes.outputs.docs == 'true'
+        run: npm ci
+
+      - name: Lint documentation
+        if: steps.changes.outputs.docs == 'true'
+        run: npm run lint:docs

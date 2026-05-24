@@ -478,3 +478,137 @@ pnpm test -w @s2j/similarity-client
 * 変異テスト
 * パフォーマンスベンチマーク
 * パッケージパブリッシュの dry-run
+
+## ドキュメント品質ゲート
+
+### 設計意図 (ゴール)
+
+本プロジェクトの仕様書、README、設計文書を、実装コードと同等の品質対象として扱い、文書品質の継続的な維持を CI 上で保証します。
+
+本プロジェクトでは、下記ファイルは、単なる補助資料ではなく、設計、実装、CI、コード生成の判断根拠となる、プロダクト資産です。
+
+* `README.md`
+* `docs/**`
+* OpenAPI 関連の説明文書
+* engineering policy
+* architecture / contracts / interfaces 仕様
+
+そのため Markdown 文書の品質についても、下記のような運用ではなく、CI 品質ゲートとして自動検証します。
+
+* ローカルのみ
+* 任意実行
+* 人手レビュー依存
+
+### 設計方針 (規約)
+
+* Markdown / documentation lint を、正式な CI 品質ゲートとします。
+* `README.md` および `docs/**` を品質対象とします。
+* lint ルールは、`@s2j/docs-linter` を Single Source of Truth とします。
+* ローカル実行と CI 実行で同一ルールを適用します。
+* PR / push ごとに対象変更時のみ実行します。
+* merge blocker として required check に含めます。
+* ドキュメント品質を人手レビューのみに依存しません。
+* lint 失敗時は、merge 不可とします。
+
+### 設計原則
+
+* ドキュメントは、製品であり、単なる解説ではない
+* ドキュメントの品質は、CI によって保証される
+* ローカルと CI のルールは、一致していなければならない
+* 変更されたドキュメントのみが、ドキュメントの lint をトリガーする
+
+### 責務
+
+* Markdown 構文の品質
+* ドキュメントの一貫性
+* 用語の不一致の検出
+* 誤字・スタイルルールの適用
+* ローカル/CI ルールの整合性
+* ドキュメントのマージゲート適用
+
+### 非責務
+
+* 技術的な正確性の検証
+* アーキテクチャーの整合性
+* セマンティック契約の検証
+* OpenAPI スキーマの検証
+* PHP の静的解析
+* TypeScript の型安全性
+* コード生成の検証
+
+### 対象範囲
+
+* README.md
+* docs/**
+* *.md (必要に応じて拡張)
+
+### 対象外
+
+* vendor/
+* node_modules/
+* dist/
+* generated artifacts
+
+code-generated Markdown を将来的に含める場合は、別途定義します。
+
+### lint ルール
+
+`@s2j/docs-linter` 経由 (たとえば `npm run lint:docs` または `pnpm lint:docs`) で実行します。
+
+実行方法は、リポジトリの package manager policy に従います。
+
+### CI 実行方針
+
+#### 実行条件
+
+無関係な PHP / TS 変更で docs lint を毎回実行しないため、下記を対象に、変更時のみ実行します。
+
+* README.md
+* docs/**
+* package.json
+* package-lock.json
+* pnpm-lock.yaml
+* @s2j/docs-linter config
+
+#### workflow
+
+たとえば、下記のような処理フローとなる `docs-lint` という名称で、専用 job または専用 workflow とします。
+
+```mermaid
+flowchart TD
+  A["actions/checkout"] --> B["Node setup"]
+  B --> C["dependency install"]
+  C --> D["lint:docs"]
+```
+
+#### required check
+
+「Merge Gate としてのドキュメント品質」を目的として、GitHub branch protection において required check とします。
+
+### ローカル実行
+
+下記目的のため、CI と同一コマンド (たとえば `npm run lint:docs` または `pnpm lint:docs`) をローカルで実行可能とします。
+
+* プッシュ前の検証
+* コントリビューターへの、フィードバックの迅速化
+* CI の失敗の削減
+
+### `docs/engineering/ci.md` との関係
+
+本品質ゲートは、CI 品質ゲートの一部です。
+
+CI Matrix 上は、独立 job (たとえば `job 5: documentation quality`) として扱っても良いし、軽量 job として既存 lint job に統合してもかまいません。
+
+### 完了条件 (100%)
+
+以下を満たした時点で100%とします。
+
+* `docs/engineering/ci.md` に本品質ゲート方針を明文化
+* `.github/workflows/ci.yml` または専用 workflow に docs lint job を追加
+* `README.md` / `docs/**` 変更時のみ実行
+* `actions/checkout`
+* Node runtime setup
+* dependency install
+* `lint:docs`
+* branch protection required check 化
+* ローカル実行手順を `README.md` に明記
