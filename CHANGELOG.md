@@ -14,6 +14,7 @@
 * OpenAPI を Single Source of Truth とした codegen パイプライン (TypeScript types、Zod、PHP DTO)
 * OpenAPI レスポンスの JSON Schema 機械検証を CI に追加
 * Markdown 品質ゲート (S2J Docs Linter) と `docs-lint.yml` ワークフロー
+* Composer 配布 tarball 生成 (`composer run dist:php` → `artifacts/s2j-similarity-service-{version}.tar.gz`)
 
 ### Changed
 
@@ -21,6 +22,8 @@
 * S2J Docs Linter の運用を npm モジュール経由に切り替え
 * 開発用 npm 依存 (`@openapitools/openapi-generator-cli`、`@s2j/docs-linter` 等) を更新
 * README、使用方法ドキュメントの命名、例コードを整合
+* `.gitattributes` の `export-ignore` と `composer.json` の `archive.exclude` で PHP 配布物から開発専用ファイルを除外
+* `composer.json` に `version` を追加 (Packagist、artifact リポジトリ向け)
 
 ## 1.0.1
 

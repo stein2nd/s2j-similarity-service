@@ -1,2 +1,27 @@
-# Dev-only OpenAPI 生成物は git に保持するが、アーカイブ (Composer dist 等) には含めない
+# Composer dist (git archive / Packagist / GitHub / composer archive)
+# PHP ライブラリ配布物に含めない開発専用パス
 /tools/generated export-ignore
+/node_modules export-ignore
+/vendor export-ignore
+/wordpress export-ignore
+/tests export-ignore
+/docs export-ignore
+/docs_old export-ignore
+/.github export-ignore
+/.vscode export-ignore
+/.cursor export-ignore
+/packages export-ignore
+/scripts export-ignore
+/schema export-ignore
+/tools export-ignore
+/examples export-ignore
+phpunit.xml export-ignore
+phpcs.xml.dist export-ignore
+phpstan.neon export-ignore
+openapitools.json export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+.textlintrc.json export-ignore
+composer.lock export-ignore
+.gitignore export-ignore
+.DS_Store export-ignore

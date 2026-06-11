@@ -1,6 +1,7 @@
 {
     "name": "s2j/similarity-service",
     "description": "A pure PHP library for semantic similarity detection.",
+    "version": "2.0.0",
     "type": "library",
     "license": "GPL-3.0-or-later",
     "autoload": {
@@ -36,7 +37,46 @@
     "extra": {
         "wordpress-install-dir": "wordpress"
     },
+    "archive": {
+        "name": "s2j-similarity-service",
+        "exclude": [
+            "/node_modules",
+            "/vendor",
+            "/wordpress",
+            "/tests",
+            "/docs",
+            "/docs_old",
+            "/.github",
+            "/.vscode",
+            "/.cursor",
+            "/packages",
+            "/scripts",
+            "/schema",
+            "/tools",
+            "/examples",
+            "/artifacts",
+            "/dist",
+            "/tmp",
+            "/.sandbox",
+            ".phpunit.cache",
+            ".phpunit.result.cache",
+            "phpunit.xml",
+            "phpunit.xml.bak",
+            "phpcs.xml.dist",
+            "phpstan.neon",
+            "openapitools.json",
+            "package.json",
+            "package-lock.json",
+            ".textlintrc.json",
+            "composer.lock",
+            ".DS_Store",
+            ".gitignore",
+            "src/Interfaces",
+            "src/types"
+        ]
+    },
     "scripts": {
+        "dist:php": "./scripts/package/php-archive.zsh",
         "test": "@php vendor/bin/phpunit",
         "test:unit": "@php vendor/bin/phpunit --testsuite unit",
         "test:wordpress": "@php vendor/bin/phpunit --testsuite wordpress",

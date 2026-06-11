@@ -5,25 +5,50 @@ composer.phar
 
 # Node (any depth: root workspace, packages/*, tools/docs-linter, etc.)
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+!package-lock.json
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs / Temporary files
+logs/
+*.log
+*.tmp
+*.bak
+*.pid
+*.seed
+*.tgz
 
 # IDE / Editor
 # PhpStorm / IntelliJ
 .idea/
+*.swp
 # VSCode
 #.vscode/
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
 
-# Logs / Temporary files
-*.log
-*.tmp
-*.bak
-*.swp
+# Env files
+.env
+.env.local
+
+# Build / cache
+!dist/
+
+# Composer 配布 tarball (scripts/package/php-archive.zsh で再生成)
+/artifacts/*.tar
+/artifacts/*.tar.gz
+/artifacts/*.tar.bz2
+/artifacts/*.zip
+!artifacts/.gitkeep
+
+.sandbox/
+!.sandbox/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Unit testing / coverage
 /coverage/
