@@ -6,7 +6,7 @@
  * ベクトル化された2文字列間のコサイン類似度を計算する、ユーティリティ・クラス。
  *
  * @package S2J\SimilarityService
- * @license GPL-2.0-or-later
+ * @license GPL-3.0-or-later
  */
 
 namespace S2J\SimilarityService;

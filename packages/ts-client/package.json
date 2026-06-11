@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "TypeScript SDK (@s2j/similarity-client): stable HTTP wrapper for the S2J Similarity OpenAPI contract; generated clients are not part of the public API",
   "type": "module",
-  "license": "GPL-2.0-or-later",
+  "license": "GPL-3.0-or-later",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

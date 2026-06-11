@@ -1,6 +1,6 @@
 # S2J Similarity Service
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![PHP](https://img.shields.io/badge/PHP-8.0-blue.svg)](https://www.php.net/)
 [![Composer](https://img.shields.io/badge/Composer-v2-blue.svg)](https://getcomposer.org)
 [![PHPUnit](https://img.shields.io/badge/PHPUnit-13.1-blue.svg)](https://phpunit.de/)
@@ -37,7 +37,7 @@ Strategy パターンを採用した `EmbeddingStrategyInterface` により、�
 
 ## License
 
-このプロジェクトは GPL v2以降の下でライセンスされています - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
+このプロジェクトは GPL v3以降の下でライセンスされています - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
 ## Support and Contact
 
