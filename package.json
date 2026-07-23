@@ -1,6 +1,6 @@
 {
   "name": "s2j-similarity-service",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A pure PHP library for semantic similarity detection",
   "type": "module",
   "author": "Koutarou ISHIKAWA",
@@ -34,10 +34,10 @@
   ],
   "main": "src/SimilarityService.php",
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.37.0",
-    "@s2j/docs-linter": "^1.0.18",
+    "@openapitools/openapi-generator-cli": "^2.40.0",
+    "@s2j/docs-linter": "^1.0.21",
     "openapi-typescript": "^7.13.0",
-    "openapi-typescript-codegen": "^0.30.0",
+    "openapi-typescript-codegen": "^0.31.0",
     "openapi-zod-client": "^1.18.3"
   },
   "scripts": {

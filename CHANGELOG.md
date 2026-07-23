@@ -2,6 +2,16 @@
 
 ## unreleased
 
+## 2.0.1 - 2026-07-23
+
+### Added
+
+* npm 12 以降で `@s2j/docs-linter` の推移的 Git 依存を取得できるよう、ルート `.npmrc` に `allow-git=all` を追加 (`EALLOWGIT` 回避)
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@openapitools/openapi-generator-cli` ^2.40.0、`@s2j/docs-linter` ^1.0.21、`openapi-typescript-codegen` ^0.31.0)
+
 ## 2.0.0 - 2026-06-11
 
 ### Breaking Changes
