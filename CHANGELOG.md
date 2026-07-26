@@ -6,7 +6,7 @@
 
 ### Added
 
-* npm 12 以降で `@s2j/docs-linter` の推移的 Git 依存を取得できるよう、ルート `.npmrc` に `allow-git=all` を追加 (`EALLOWGIT` 回避)
+* npm v12以降で `@s2j/docs-linter` の推移的 Git 依存を取得できるよう、ルート `.npmrc` に `allow-git=all` を追加 (`EALLOWGIT` 回避)
 
 ### Changed
 
