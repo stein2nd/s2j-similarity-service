@@ -2,6 +2,17 @@
 
 ## unreleased
 
+## 2.0.2 - 2026-08-08
+
+### Added
+
+* npm v12以降で `esbuild` と `@s2j/docs-linter` の postinstall が実行できるよう、ルート `package.json` に `allowScripts` を追加
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@openapitools/openapi-generator-cli` ^2.40.1、`@s2j/docs-linter` ^1.0.22)
+* 推移的依存 `js-yaml` の脆弱性 (CVE-2026-59870) を `npm audit fix` で解消
+
 ## 2.0.1 - 2026-07-23
 
 ### Added
