@@ -1,6 +1,6 @@
 {
   "name": "s2j-similarity-service",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A pure PHP library for semantic similarity detection",
   "type": "module",
   "author": "Koutarou ISHIKAWA",
@@ -48,7 +48,8 @@
     "lint:docs": "s2j-docs-linter ./README.md ./CHANGELOG.md ./docs/**/*.md"
   },
   "allowScripts": {
-    "@s2j/docs-linter@1.0.22": true,
-    "esbuild@0.27.2": true
+    "@openapitools/openapi-generator-cli": true,
+    "@s2j/docs-linter": true,
+    "esbuild": true
   }
 }

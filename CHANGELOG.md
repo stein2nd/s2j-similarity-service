@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.3 - 2026-08-11
+
+### Changed
+
+* `@s2j/similarity-client` で TypeScript v7 (`tsc` via `@typescript/native`) と `@typescript/typescript6` を公式 side-by-side 構成で併用 (`typescript-eslint` 等の API 互換用)
+* `@s2j/similarity-client` の `vitest` を ^4.1.10 に更新
+* ルート `allowScripts` をパッケージ名指定に整理し、`@openapitools/openapi-generator-cli` を追加 (`esbuild` / `@s2j/docs-linter` のバージョン固定を解除)
+
 ## 2.0.2 - 2026-08-08
 
 ### Added
