@@ -110,7 +110,7 @@ OpenAPI のレスポンス仕様と DomainError を、対応付けます。
 ### マッピング定義
 
 | HTTP Status | DomainError |
-| ----------- | --------------- |
+| --- | --- |
 | 400 | ValidationError |
 | 401 | ApiError |
 | 403 | ApiError |
@@ -178,7 +178,7 @@ if (!res.ok) {
 ### Breaking Change の例
 
 | 変更内容 | 判定 |
-| ---------- | -- |
+| --- | --- |
 | フィールド削除 | ❌  |
 | 型変更 | ❌  |
 | required 追加 | ❌  |
@@ -262,7 +262,7 @@ jobs:
 ### 対象生成物
 
 | 対象 | 内容 |
-| ------------ | ------------------ |
+| --- | --- |
 | TypeScript 型 | DTO 型 |
 | Zod スキーマ | runtime validation |
 | API Client | fetch wrapper |
@@ -357,7 +357,7 @@ export async function similarity(input) {
 ### マッピングルール
 
 | OpenAPI | DB |
-| ------- | -------------- |
+| --- | --- |
 | string | VARCHAR / TEXT |
 | integer | INT |
 | number | FLOAT |
@@ -434,13 +434,11 @@ OpenAPI schema を唯一の契約定義 (Single Source of Truth) とし、各言
 
 ### 設計原則
 
-```plaintext
-OpenAPI is the source of truth
-Generated code is reproducible
-PHP artifacts are distributable
-TS generated code is development-only
-Public API is handwritten and stable
-```
+* OpenAPI が、唯一の信頼できる情報源である
+* 生成されたコードは、再現可能である
+* PHP の成果物は、配布可能である
+* TS で生成されたコードは、開発用のみである
+* パブリック API は、手作業で記述されており、安定している
 
 ### 設計方針 (規約)
 

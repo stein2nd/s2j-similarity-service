@@ -142,7 +142,7 @@ WordPress REST API Adapter の実装が、OpenAPI 契約で定義されたレス
 
 本プロジェクトでは、OpenAPI を Single Source of Truth として採用しているが、WordPress REST runtime の controller / adapter / serializer は手書き実装です。
 
-そのため、下記が OpenAPI 契約から逸脱する可能性があります。本品質ゲートは、その drift を CI 上で検出することを目的とします。
+そのため、下記が OpenAPI 契約から逸脱する可能性があります。本品質ゲートは、その逸脱を CI 上で検出することを目的とします。
 
 * リクエストのルーティング
 * コントローラへのディスパッチ
@@ -161,12 +161,10 @@ WordPress REST API Adapter の実装が、OpenAPI 契約で定義されたレス
 
 ### 設計原則
 
-```text
-OpenAPI is the contract
-WordPress responses must prove compliance
-Validate real HTTP responses
-Start small, expand safely
-```
+* OpenAPI が契約となる
+* WordPress のレスポンスは、準拠していることを証明しなければならない
+* 実際の HTTP レスポンスを検証する
+* 小規模から始め、安全に拡張する
 
 ### 非対象 (Out of Scope)
 
@@ -288,7 +286,7 @@ WorDBless
 * JSON スキーマバリデータ
 * PHP スキーマバリデータ
 
-本リポジトリでは、**JSON スキーマバリデータ**として `justinrainbow/json-schema`、OpenAPI YAML の読込に `symfony/yaml` (^6.4、PHP v8.0互換) を Composer `require-dev` しています。
+本リポジトリでは、**JSON スキーマバリデータ** として `justinrainbow/json-schema`、OpenAPI YAML の読込に `symfony/yaml` (^6.4、PHP v8.0互換) を Composer `require-dev` しています。
 
 ### CI マトリックス上の位置付け
 
@@ -316,13 +314,11 @@ WorDBless
 
 ### 設計原則
 
-```plaintext
-Quality gates should grow with product maturity
-Test real risk, not theoretical completeness
-Prefer deterministic CI over unstable external dependency
-WordPress integration is mandatory
-External provider dependency is optional
-```
+* 品質ゲートは、製品の成熟度に応じて拡大すべきである
+* 理論上の完全性ではなく、実際のリスクを検証すべきである
+* 不安定な外部の依存関係よりも、決定論的な CI を優先すべきである
+* WordPress との統合は、必須である
+* 外部プロバイダへの依存は、任意である
 
 ### 設計方針 (規約)
 

@@ -69,7 +69,7 @@ observability
 ### 技術例
 
 | ツール | 用途 |
-| ------------- | ----- |
+| --- | --- |
 | Prometheus | メトリクス |
 | Grafana | 可視化 |
 | OpenTelemetry | トレース |
@@ -77,7 +77,7 @@ observability
 ### メトリクス分類
 
 | 種別 | 内容 |
-| --- | --------------------------------- |
+| --- | --- |
 | RED | Rate / Errors / Duration |
 | USE | Utilization / Saturation / Errors |
 
@@ -94,7 +94,7 @@ observability
 ### 主な指標
 
 | 指標 | 内容 |
-| ------------- | ------ |
+| --- | --- |
 | request_count | リクエスト数 |
 | error_rate | エラー率 |
 | latency | 応答時間 |
@@ -140,7 +140,7 @@ observability
 ### アラート分類
 
 | レベル | 内容 |
-| -------- | ------ |
+| --- | --- |
 | Critical | 即時対応が必要 |
 | Warning | 注意 |
 | Info | 参考 |
@@ -210,26 +210,26 @@ flowchart TD
 #### 1. ApiClient 入口
 
 ```plaintext id="obs_apiclient"
-- リクエスト開始
-- リクエストパラメータ (安全な範囲)
-- request_id 発行
+* リクエスト開始
+* リクエストパラメータ (安全な範囲)
+* request_id 発行
 ```
 
 #### 2. Embedding 呼び出し
 
 ```plaintext id="obs_embedding"
-- provider 名
-- モデル名
-- レイテンシ
-- 成功 / 失敗
+* provider 名
+* モデル名
+* レイテンシ
+* 成功 / 失敗
 ```
 
 #### 3. 類似度計算
 
 ```plaintext id="obs_similarity"
-- 入力サイズ (N)
-- 処理時間
-- エラー有無
+* 入力サイズ (N)
+* 処理時間
+* エラー有無
 ```
 
 ### トレース構造
@@ -243,7 +243,7 @@ ApiClient span
 ### ログ項目
 
 | 項目 | 説明 |
-|------|------|
+| --- | --- |
 | request_id | トレース識別子 |
 | operation | 実行処理 |
 | duration_ms | 処理時間 |
@@ -259,7 +259,7 @@ ApiClient span
 ### 設計方針 (規約)
 
 | レベル | 内容 |
-|--------|------|
+| --- | --- |
 | info | 正常処理 |
 | warn | リトライ |
 | error | 失敗 |
@@ -319,7 +319,7 @@ debug ログは、デフォルト無効とします。
 ### コスト対象
 
 | 対象 | 内容 |
-| ----- | ------------- |
+| --- | --- |
 | 外部 API | Embedding API |
 | インフラストラクチャ | DB / compute |
 | ストレージ | ログ / データ |

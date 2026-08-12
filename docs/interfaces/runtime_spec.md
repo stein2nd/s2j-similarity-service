@@ -88,7 +88,7 @@ client-browser
 ### 条件分岐
 
 | 環境 | 使用形式 |
-| ---------- | ------- |
+| --- | --- |
 | Node (ESM) | import |
 | Node (CJS) | require |
 | Browser | import |
@@ -240,7 +240,7 @@ Node.js (NodeNext) と bundler (Vite、webpack) では、モジュール解決�
 ### 解像度の違い
 
 | 環境 | 解決方法 |
-| -------- | ---------- |
+| --- | --- |
 | NodeNext | exports 優先 |
 | bundler | 拡張子補完あり |
 
@@ -332,7 +332,7 @@ flowchart TD
 ### 変更点
 
 | 項目 | 内容 |
-| ------- | ---- |
+| --- | --- |
 | require | 使用不可 |
 | import | 必須 |
 | 拡張子 | 明示 |
@@ -398,7 +398,7 @@ CJS ユーザーには、deprecation warning を表示
 ### Runtime 別実装
 
 | Runtime | 実装 |
-|--------|------|
+| --- | --- |
 | Node.js | undici |
 | Edge (CloudFlare Workers 等) | global fetch |
 | Browser | native fetch |
@@ -464,7 +464,7 @@ flowchart TD
 ### ターゲット
 
 | ターゲット | 想定環境 | 特徴 |
-| ----- | -------------------------------- | ---------- |
+| --- | --- | --- |
 | edge | CloudFlare Workers / Vercel Edge | 軽量・標準 API のみ |
 | node | Node.js | フル機能・互換性重視 |
 
@@ -585,7 +585,7 @@ export default defineConfig([
 ### 条件一覧
 
 | 条件 | 説明 |
-| ------- | ------------ |
+| --- | --- |
 | import | ESM |
 | require | CJS |
 | node | Node.js |
@@ -674,7 +674,7 @@ flowchart TD
 ### 特徴
 
 | パッケージ | 特徴 |
-| ----------- | ------------------ |
+| --- | --- |
 | client-node | Node API 使用可 |
 | client-edge | fetch / Web 標準 API のみ |
 
@@ -838,7 +838,7 @@ import { createClient } from "@s2j/similarity-client";
 ### 検出対象
 
 | runtime | 判定方法 |
-| ------- | -------------------------------------- |
+| --- | --- |
 | Node.js | `typeof process !== "undefined"` |
 | Edge | `typeof WebSocketPair !== "undefined"` |
 | Browser | `typeof window !== "undefined"` |
@@ -933,7 +933,7 @@ createClientAuto({
 ### 対応環境
 
 | 環境 | 対応 |
-| ------------------ | ----- |
+| --- | --- |
 | CloudFlare Workers | ✔ |
 | Vercel Edge | ✔ |
 | Deno | ✔ (一部) |
@@ -1073,7 +1073,7 @@ https://esm.sh/@s2j/similarity-client@1.2.0
 ### 対応 CDN
 
 | CDN | 特徴 |
-| -------- | ----- |
+| --- | --- |
 | unpkg | npm 直結 |
 | `esm.sh` | ESM 変換 |
 | jsDelivr | 高速 CDN |
@@ -1204,7 +1204,7 @@ runtime ごとの差異を吸収し、一貫したタイムアウト動作を保
 ### 実装方針
 
 | runtime | 実装 |
-|--------|------|
+| --- | --- |
 | Node.js | AbortController / undici |
 | Edge | native fetch + AbortController |
 | Browser | native fetch |

@@ -89,7 +89,7 @@ flowchart TD
 ### Runtime 対応
 
 | runtime | パッケージ |
-| ------- | ------------------------------ |
+| --- | --- |
 | Node | @s2j/similarity-client |
 | Edge | @s2j/similarity-client-edge |
 | Browser | @s2j/similarity-client-browser |
@@ -179,7 +179,7 @@ flowchart TD
 ### 対象ソース
 
 | docs | README 反映 |
-| ------------- | ------------------- |
+| --- | --- |
 | overview.md | Overview |
 | usage_spec.md | Usage / Quick Start |
 | concept.md | Background |
@@ -256,7 +256,7 @@ flowchart TD
 ### 役割分担
 
 | レイヤ | 役割 |
-| ---------- | ----- |
+| --- | --- |
 | docs | 意図・仕様 |
 | OpenAPI | 契約 |
 | codegen | 実装補助 |
@@ -421,7 +421,7 @@ cp examples/basic.ts playground/main.ts
 ### 再生成トリガー
 
 | トリガー | 必須 |
-|----------|------|
+| --- | --- |
 | `schema/openapi.yaml` 変更 | 必須 |
 | contracts 変更 | 必須 |
 | 生成スクリプト変更 | 必須 |
@@ -488,12 +488,10 @@ OpenAPI を Single Source of Truth として生成される PHP DTO について
 
 ### 設計原則
 
-```plaintext id="hfrs03"
-Generated code is an artifact, not authored source
-Fix schema or generator, not generated output
-Prefer deterministic generation over cosmetic consistency
-Static analysis is acceptable, formatting ownership remains with generator
-```
+* 生成されたコードは成果物であり、作成されたソースコードではない
+* 修正すべきはスキーマまたはジェネレータであり、生成された出力ではない
+* 見かけの一貫性よりも、決定論的な生成を優先する
+* 静的解析は許容されるが、フォーマットの責任はジェネレータにある
 
 ### 責務
 

@@ -75,7 +75,7 @@ API レスポンスに含まれるスコアの意味を明確にします。
 ### フィールド詳細
 
 | フィールド | 型 | 必須 | 説明 |
-| ------- | -------- | -- | ------------------- |
+| --- | --- | --- | --- |
 | vectorA | number[] | 必須 | テキスト A の Embedding ベクトル |
 | vectorB | number[] | 必須 | テキスト B の Embedding ベクトル |
 | model | string | - | - |
@@ -97,7 +97,7 @@ vectorA と vectorB は、「同一モデル」から生成されている必要
 ### フィールド詳細
 
 | フィールド | 型 | 説明 |
-| --------------- | ------ | --------------- |
+| --- | --- | --- |
 | similarityScore | number | 0.0〜1.0の類似度スコア |
 
 ## 型定義
@@ -193,7 +193,7 @@ export type Embedding = {
 ### フィールド定義
 
 | フィールド | 説明 |
-|------------|------|
+| --- | --- |
 | vector | 埋め込みベクトル |
 | dimension | ベクトル次元数 |
 | model | 使用モデル |
@@ -264,7 +264,7 @@ class EmbeddingError extends Error {
 ### エラー分類
 
 | 種別 | 内容 |
-| -------------------- | ------------- |
+| --- | --- |
 | ValidationError | 入力不正 |
 | InvalidArgumentError | 次元不一致 |
 | CalculationError | 計算不可 (ゼロベクトル等) |
@@ -392,7 +392,7 @@ export class UnknownError extends Error {
 ### 変換ルール
 
 | 元エラー | DomainError |
-| ------------ | --------------- |
+| --- | --- |
 | fetch 失敗 | NetworkError |
 | AbortError | TimeoutError |
 | Zod 失敗 | ValidationError |

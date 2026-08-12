@@ -68,7 +68,7 @@ flowchart TD
 ### 検証対象
 
 | 対象 | 内容 |
-| ------------ | --------------------- |
+| --- | --- |
 | TypeScript 型 | `generated/models` |
 | Zod スキーマ | `generated/schemas` |
 | PHP DTO | `php/src/Contracts/DTO` |
@@ -143,7 +143,7 @@ jobs:
 ### バージョン決定ルール
 
 | コミット種別 | バージョン |
-| --------------- | ----- |
+| --- | --- |
 | BREAKING CHANGE | major |
 | fix | patch |
 | feat | minor |
@@ -305,7 +305,7 @@ pnpm turbo run build
 ### 比較概要
 
 | 項目 | semantic-release | Changesets |
-| ------- | ---------------- | --------------- |
+| --- | --- | --- |
 | バージョン決定 | 自動 (コミットベース) | 手動 (changeset 記述) |
 | モノレポ対応 | 弱い | 強い |
 | リリース粒度 | 全体 | パッケージ単位 |
@@ -334,7 +334,7 @@ pnpm turbo run build
 ### 本プロジェクトでの推奨
 
 | 条件 | 推奨 |
-| ----------- | ---------------- |
+| --- | --- |
 | 単一パッケージ | semantic-release |
 | モノレポ (複数 SDK) | Changesets |
 
@@ -380,7 +380,7 @@ Add new embedding endpoint
 ### 採用技術
 
 | 技術 | 役割 |
-| ---------- | ------------ |
+| --- | --- |
 | pnpm | パッケージ管理 |
 | Changesets | バージョン管理・リリース |
 | turborepo | タスク実行・キャッシュ  |
@@ -393,10 +393,10 @@ Add new embedding endpoint
 ├ pnpm-workspace.yaml
 ├ turbo.json
 ├ .changeset/
-├ packages/
-│  ├ ts-client/
-│  ├ core/
-│  └ client/
+├┬ packages/
+│├ ts-client/
+│├ core/
+│└ client/
 ├ schema/
 ├ scripts/
 └ src/
@@ -749,7 +749,7 @@ pnpm format
 ### 品質ゲート
 
 | チェック | 内容 |
-| -------- | ----- |
+| --- | --- |
 | generate | 契約同期  |
 | lint | コード品質 |
 | build | 型チェック |
@@ -850,12 +850,10 @@ TypeScript SDK (`@s2j/similarity-client`) における runtime 検証 (たとえ
 
 ### 設計原則
 
-```plaintext id="fy4cz8"
-Keep the default SDK lean
-Do not duplicate contract ownership
-Validation is optional hardening, not mandatory behavior
-Optimize for WordPress deployment constraints
-```
+* デフォルトの SDK は、軽量に保つ
+* コントラクトの所有権を重複させない
+* バリデーションは、オプションのセキュリティ強化であり、必須の動作ではない
+* WordPress のデプロイ制約に合わせて最適化する
 
 ### 責務
 

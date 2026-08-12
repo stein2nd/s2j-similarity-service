@@ -155,7 +155,7 @@ register_rest_route(
 HTTP 層は、WordPress の規約に寄せます。
 
 | 項目 | WordPress 標準 |
-|------|----------------|
+| --- | --- |
 | Routing | `register_rest_route` |
 | Response | `WP_REST_Response` |
 | Error | `WP_Error` |

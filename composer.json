@@ -1,7 +1,7 @@
 {
     "name": "s2j/similarity-service",
     "description": "A pure PHP library for semantic similarity detection.",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "type": "library",
     "license": "GPL-3.0-or-later",
     "autoload": {

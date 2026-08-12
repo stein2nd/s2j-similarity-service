@@ -23,8 +23,8 @@
 
 OpenAPI 定義を、本プロジェクトにおける唯一の契約定義 (Source of Truth) とします。
 
-- [契約 - 入出力仕様](./data_contract_spec.md) は、説明用ドキュメントとします。
-- 実際の型、バリデーション、API 仕様は、OpenAPI に従います。
+* [契約 - 入出力仕様](./data_contract_spec.md) は、説明用ドキュメントとします。
+* 実際の型、バリデーション、API 仕様は、OpenAPI に従います。
 
 ## 対象範囲
 
@@ -137,7 +137,7 @@ enum:
 ### TypeScript へのマッピング
 
 | OpenAPI | TypeScript |
-|--------|-----------|
+| --- | --- |
 | `required` | 必須プロパティ |
 | `optional` | `?` |
 | `nullable` | `\| null` |
@@ -145,7 +145,7 @@ enum:
 ### PHP へのマッピング
 
 | OpenAPI | PHP |
-|--------|-----|
+| --- | --- |
 | `required` | non-null |
 | `optional` | `?Type` または未設定 |
 | `nullable` | `?Type` |

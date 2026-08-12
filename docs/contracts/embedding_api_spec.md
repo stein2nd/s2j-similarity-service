@@ -123,7 +123,7 @@ Strategy が「プロバイダの役割」を兼ねます。
 ### フィールド詳細
 
 | フィールド | 型 | 必須 | 説明 |
-| ----- | ------ | -- | --------------- |
+| --- | --- | --- | --- |
 | text  | string | 必須 | Embedding 対象テキスト |
 | model | string | 任意 | 使用するモデル識別子 |
 
@@ -141,7 +141,7 @@ Strategy が「プロバイダの役割」を兼ねます。
 ### フィールド詳細
 
 | フィールド | 型 | 説明 |
-| --------- | -------- | ------------- |
+| --- | --- | --- |
 | vector | number[] | Embedding ベクトル |
 | dimension | number | ベクトル次元数 |
 
@@ -252,7 +252,7 @@ export interface EmbeddingStrategyInterface {
 ### プロバイダ差異
 
 | 項目 | 差異 |
-|------|------|
+| --- | --- |
 | 次元数 | モデルごとに異なる |
 | 正規化 | API によって未実施 |
 | レスポンス形式 | JSON 構造が異なる |
@@ -280,7 +280,7 @@ export interface EmbeddingStrategyInterface {
 ### 差異例
 
 | Provider | バッチ |
-|----------|--------|
+| --- | --- |
 | OpenAI | 対応 |
 | 他 | 未対応の場合あり |
 
@@ -405,7 +405,7 @@ Similarity 側では、正規化を行いません。
 ### エラー分類
 
 | 種別 | 内容 |
-| --------------- | ----------- |
+| --- | --- |
 | ValidationError | 入力不正 |
 | ProviderError | API レスポンスエラー |
 | RateLimitError | レート制限 |

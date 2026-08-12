@@ -212,7 +212,7 @@ ApiClient の責務は、下記の通りです。
 ### レイヤーごとの責務
 
 | レイヤー | 責務 |
-| -------------- | ---------- |
+| --- | --- |
 | Contracts | What |
 | Core | How (純ロジック) |
 | Infrastructure | How (副作用) |
@@ -398,7 +398,7 @@ interface EmbeddingStrategyInterface
 ### 実装責務
 
 | 要素 | 責務 |
-| --------- | ------- |
+| --- | --- |
 | Interface | 契約定義 |
 | Strategy | API コール |
 | Adapter | レスポンス変換 |

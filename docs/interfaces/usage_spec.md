@@ -120,7 +120,7 @@ $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 
 ## JavaScript / TypeScript (擬似コード)
 
-本リポジトリは **PHP のライブラリ**として類似度計算を提供します。同一プロセスで動く TypeScript / JavaScript の `OpenAIEmbeddingStrategy` / `SimilarityService` クラスは **同梱していません**。以下は、PHP API と **対応関係を示す擬似コード**です。実運用では **PHP を呼び出す**か、デプロイ済み REST に **TypeScript SDK (`@s2j/similarity-client`)** からアクセスしてください。
+本リポジトリは **PHP のライブラリ** として類似度計算を提供します。同一プロセスで動く TypeScript / JavaScript の `OpenAIEmbeddingStrategy` / `SimilarityService` クラスは **同梱していません**。以下は、PHP API と **対応関係を示す擬似コード** です。実運用では **PHP を呼び出す** か、デプロイ済み REST に **TypeScript SDK (`@s2j/similarity-client`)** からアクセスしてください。
 
 ### 1. 初期化 (擬似)
 
@@ -221,7 +221,7 @@ try {
 ### 設定項目
 
 | 項目 | 説明 |
-| ------- | --------------- |
+| --- | --- |
 | apiKey | Embedding API キー (`OpenAIEmbeddingStrategy` の第1引数) |
 | defaultModel | デフォルトモデル (省略時は `text-embedding-3-small`) |
 | endpoint | Embeddings API の URL (省略時は OpenAI デフォルト URL) |
@@ -254,7 +254,7 @@ $strategy = new OpenAIEmbeddingStrategy(
 
 ## エラーハンドリング
 
-PHP の `SimilarityService` は、`S2J\Similarity\Contracts\Errors` 以下の **`DomainError` 派生**で失敗を表します。HTTP 経由で **TypeScript SDK (`@s2j/similarity-client`)** を使う場合は `isSDKError` と `error.type` を参照してください ([SDK 仕様](sdk_spec.md))。
+PHP の `SimilarityService` は、`S2J\Similarity\Contracts\Errors` 以下の **`DomainError` 派生** で失敗を表します。HTTP 経由で **TypeScript SDK (`@s2j/similarity-client`)** を使う場合は `isSDKError` と `error.type` を参照してください ([SDK 仕様](sdk_spec.md))。
 
 ### PHP (`SimilarityService`)
 
@@ -374,7 +374,7 @@ try {
 
 ## 初期化方法
 
-`SimilarityService` は **Embedding 用 Strategy1つ**だけをコンストラクタに取ります。
+`SimilarityService` は、**Embedding 用 Strategy を1つ** だけ、コンストラクタに取ります。
 
 ```php id="usage_di"
 use S2J\Similarity\Application\SimilarityService;
@@ -536,7 +536,7 @@ openapi-editor/
 ### 技術例
 
 | ツール | 用途 |
-| -------------- | ---- |
+| --- | --- |
 | Swagger Editor | 基本 UI |
 | Redocly | 表示 |
 | custom UI | 拡張 |
@@ -635,7 +635,7 @@ flowchart TD
 ### 生成対象
 
 | 項目 | 内容 |
-| ---- | ------------------ |
+| --- | --- |
 | API | エンドポイント |
 | SDK | クライアント |
 | DB | スキーマ |
@@ -730,7 +730,7 @@ failed
 ### 技術例
 
 | ツール | 用途 |
-| -------------- | ------ |
+| --- | --- |
 | Temporal | ワークフロー |
 | n8n | ノーコード |
 | Step Functions | AWS |
@@ -817,7 +817,7 @@ failed
 ### 標準命名
 
 | 概念 | 正式名称 | 使用例 |
-|------|----------|--------|
+| --- | --- | --- |
 | 抽象 | EmbeddingStrategyInterface | 型ヒント |
 | 実装 | OpenAIEmbeddingStrategy | クラス名 |
 | 変数 | strategy | `$strategy` |
@@ -985,7 +985,7 @@ GeminiEmbeddingStrategy
 ### 命名規則
 
 | 役割 | 正式名称 |
-|------|----------|
+| --- | --- |
 | 類似度計算 | `similarity()` |
 | embedding 取得 | `embed()` |
 | 抽象 | `EmbeddingStrategyInterface` |

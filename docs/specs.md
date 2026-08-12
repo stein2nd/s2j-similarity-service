@@ -62,7 +62,7 @@
 ### Why (基本情報)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [概要](./overview.md) | プロジェクト概要、責務、前提条件 |
 | [コンセプト](./concept.md) | 背景、課題、ユースケース、処理フロー |
 | [アーキテクチャー](./architecture.md) | システム構造、レイヤ責務、設計原則 |
@@ -70,13 +70,13 @@
 ### Domain (コア)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [類似度算出の仕様](./core/similarity_spec.md) | 類似度算出ロジック |
 
 ### What (契約)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [入出力仕様](./contracts/data_contract_spec.md) | 入出力仕様 (DTO) |
 | [データ定義](./contracts/data_dictionary.md) | データ定義 (型、構造) |
 | [外部 API 仕様](./contracts/embedding_api_spec.md) | 外部 API 仕様 |
@@ -86,7 +86,7 @@
 ### How - 接続 (インターフェイス)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [REST API エンドポイント仕様](./interfaces/rest_api_spec.md) | REST API エンドポイント仕様 |
 | [型安全な SDK 設計](./interfaces/sdk_spec.md) | SDK / ApiClient 設計 |
 | [Runtime 仕様](./interfaces/runtime_spec.md) | runtime (node / edge / browser) 設計 |
@@ -95,7 +95,7 @@
 ### エンジニアリング (開発基盤)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [コード生成パイプライン](./engineering/codegen_pipeline.md) | docs → OpenAPI → SDK → README の連動 |
 | [ビルドおよびリリース](./engineering/build_and_release.md) | CI/CD、リリース戦略 |
 | [モノレポ構成とパッケージ管理](./engineering/monorepo.md) | pnpm / turborepo 構成 |
@@ -104,7 +104,7 @@
 ### SRE (運用・信頼性)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [システム可視化](./sre/observability.md) | メトリクス、ログ、トレース |
 | [信頼性](./sre/reliability.md) | SLO、自動復旧、カオスエンジニアリング |
 | [スケール戦略](./sre/scaling.md) | スケーリング、分散、DR、マルチクラウド |
@@ -112,7 +112,7 @@
 ### ガバナンス (統制)
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [セキュリティ設計](./governance/security.md) | 認証・認可、ゼロトラスト |
 | [コンプライアンス](./governance/compliance.md) | 監査、SLA、課金、SOC2 / SOX |
 | [データガバナンス](./governance/data_governance.md) | データ管理、レジデンシー |
@@ -121,7 +121,7 @@
 ### その他
 
 | ドキュメント | 内容 |
-|--------------|------|
+| --- | --- |
 | [実装状況](./status.md) | 実装状況、Backlog、品質レポート |
 
 ## 依存関係ルール

@@ -71,7 +71,7 @@
 ## エンドポイント一覧
 
 | メソッド | パス | 説明 |
-| ---- | -------------- | ------------ |
+| --- | --- | --- |
 | POST | `/v1/embedding`  | Embedding 生成 |
 | POST | `/v1/similarity` | 類似度算出 |
 
@@ -115,7 +115,7 @@ Authorization: Bearer {token}
 ### 4. HTTP ステータスコード
 
 | コード | 意味 |
-| --- | ---------- |
+| --- | --- |
 | `200` | 成功 |
 | `400` | バリデーションエラー |
 | `401` | 未認証 |
@@ -166,7 +166,7 @@ API の互換性を維持しつつ、破壊的変更を安全に導入できる�
 ### バージョンルール
 
 | 種別 | 変更内容 | URL 変更 |
-|------|----------|---------|
+| --- | --- | --- |
 | PATCH | バグ修正 | なし |
 | MINOR | 後方互換あり機能追加 | なし |
 | MAJOR | 破壊的変更 | 必須 |
@@ -279,7 +279,7 @@ flowchart TD
 ### 認可例
 
 | エンドポイント | 権限 |
-| ----------- | ---- |
+| --- | --- |
 | `/embedding`  | read |
 | `/similarity` | read |
 
@@ -401,7 +401,7 @@ REST API と PHP SDK のエラー表現を統一し、コール側が一貫し�
 ### エラー対応表 (REST → PHP)
 
 | HTTP | error.type | PHP クラス | 説明 |
-|------|------------------|------------------------|------|
+| --- | --- | --- | --- |
 | 400 | validation_error | ValidationError | 入力不正 |
 | 401 | auth_error | AuthenticationError | 認証失敗 |
 | 403 | permission_error | AuthorizationError | 権限不足 |
@@ -550,7 +550,7 @@ EmbeddingStrategy (Infrastructure)
 #### 3. 推奨ランタイム (参考)
 
 | 種別 | 推奨 |
-|------|------|
+| --- | --- |
 | PHP | Laravel / Slim |
 | Node | Fastify |
 | Edge | CloudFlare Workers |
@@ -682,7 +682,7 @@ if (!in_array(required_scope, context.scopes)) {
 ### エラー仕様
 
 | 状態 | HTTP | error.type |
-|------|------|-----------|
+| --- | --- | --- |
 | 未認証 | 401 | auth_error |
 | 権限不足 | 403 | permission_error |
 
@@ -761,7 +761,7 @@ requests / minute
 #### デフォルト値 (推奨)
 
 | プラン | 上限 |
-|--------|------|
+| --- | --- |
 | default | 1request/sec |
 | high | 5request/sec |
 | burst | 10request/sec (短時間バースト) |
@@ -1039,7 +1039,7 @@ JSON は、言語非依存
 ### 正式命名
 
 | 概念 | 命名 |
-|------|------|
+| --- | --- |
 | REST error.type | snake_case |
 | OpenAPI enum | snake_case |
 | PHP `DomainError::$type` | snake_case |
@@ -1049,7 +1049,7 @@ JSON は、言語非依存
 ### 正式一覧
 
 | error.type | PHP Class |
-|------------|-----------|
+| --- | --- |
 | validation_error | ValidationError |
 | auth_error | AuthenticationError |
 | permission_error | AuthorizationError |

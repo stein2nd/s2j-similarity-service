@@ -82,7 +82,7 @@ API キーなどの機密情報を、適切なスコープで管理し、セキ�
 ### 設定スコープ
 
 | レイヤ | API キー保持 |
-|----------|------------|
+| --- | --- |
 | SDK (ApiClient / Service) | ❌ 保持しない |
 | EmbeddingStrategy | ⭕ 注入により保持可能 |
 | コール側 (アプリケーション) | ⭕ 保持する |
@@ -251,7 +251,7 @@ public function similarity(
 ### 責務
 
 | 項目 | 内容 |
-| ------- | -------------------------- |
+| --- | --- |
 | 認証 | API キーを付与すること。 |
 | 通信 | HTTP リクエストを実行すること。 |
 | バリデーション | Zod による runtime validation を実行すること。 |
@@ -260,7 +260,7 @@ public function similarity(
 ### 非責務
 
 | 項目 | 内容 |
-| ------- | --------------------- |
+| --- | --- |
 | DTO 定義 | generated に委譲 |
 | 類似度計算 | Core に委譲 |
 | プロバイダ処理 | EmbeddingStrategy に委譲 |
@@ -356,7 +356,7 @@ ApiClient は、エラー発生時にログを出力するが、ログ処理は�
 #### ログポリシー
 
 | 項目 | 内容 |
-| --------- | ----- |
+| --- | --- |
 | エラー内容 | 必須 |
 | HTTP ステータス | 必須 |
 | リクエストボディ | 原則非出力 |
@@ -462,7 +462,7 @@ responses:
 #### DomainError との対応
 
 | error.code | DomainError |
-| -------------- | --------------- |
+| --- | --- |
 | INVALID_INPUT | ValidationError |
 | UNAUTHORIZED | ApiError |
 | RATE_LIMIT | ApiError |
@@ -790,7 +790,7 @@ const result = await client.similarity(input)
 ### エラー分類
 
 | 種別 | 内容 |
-|------|------|
+| --- | --- |
 | NetworkError | 通信失敗 |
 | TimeoutError | タイムアウト |
 | ApiError | API レスポンスエラー |
@@ -1015,7 +1015,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 ### 責務分離
 
 | 機能 | 担当 |
-|------|------|
+| --- | --- |
 | リトライ | ApiClient |
 | タイムアウト | HttpClient |
 | サーキットブレーカー | HttpClient (任意) |
@@ -1029,7 +1029,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 ### エラー分類との関係 (リトライ、サーキットブレーカー)
 
 | エラー種別 | リトライ | サーキットブレーカー |
-| ------------ | ----- | --------------- |
+| --- | --- | --- |
 | NetworkError | 可 | 可 |
 | `5xx` | 可 | 可 |
 | `4xx` | 不可 | 不可 |
@@ -1057,7 +1057,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 #### 遷移条件
 
 | 条件 | 動作 |
-| -------- | --------- |
+| --- | --- |
 | 連続失敗の回数超過 | OPEN |
 | 一定時間の経過 | HALF-OPEN |
 | 成功 | CLOSED |
@@ -1066,7 +1066,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 #### デフォルト設定
 
 | 項目 | 値 |
-| ---- | --- |
+| --- | --- |
 | 失敗閾値 | 5回 |
 | 回復時間 | 30秒 |
 
@@ -1096,7 +1096,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 #### デフォルト設定
 
 | 項目 | 値 |
-| -------- | ----------- |
+| --- | --- |
 | 最大リトライ回数 | 2 |
 | バックオフ | exponential |
 | 初期の待機時間 | 100ms |
@@ -1122,7 +1122,7 @@ ApiClient は、外部 API コールにおける信頼性を確保するため�
 #### デフォルト設定
 
 | 項目 | 値 |
-| ------ | ------ |
+| --- | --- |
 | タイムアウト | 5000ms |
 
 ## Fetch Abstraction (通信レイヤ抽象化)
@@ -1326,7 +1326,7 @@ results[i] corresponds to inputs[i]
 ### 分類
 
 | エラー | リトライ |
-|--------|------|
+| --- | --- |
 | `NetworkError` | ⭕ |
 | `TimeoutError` | ⭕ |
 | `ApiError(5xx)` | ⭕ |
@@ -1534,7 +1534,7 @@ class ClaudeEmbeddingStrategy implements EmbeddingStrategyInterface {}
 ### 配布対象
 
 | SDK | 配布方法 |
-| ---------- | -------- |
+| --- | --- |
 | TypeScript | npm |
 | PHP | Composer |
 
@@ -1683,7 +1683,7 @@ flowchart TD
 ### 配布戦略
 
 | パッケージ | 配布 |
-| --------- | --- |
+| --- | --- |
 | ts-client | npm |
 | core | npm |
 | client | npm |
@@ -1742,7 +1742,7 @@ import { cosineSimilarity } from "@s2j/similarity-core";
 ### バージョニングモデル
 
 | バージョン | 意味 |
-| ----- | ------------------ |
+| --- | --- |
 | v1.x | 安定版 |
 | v2.x | breaking change 含む |
 | v3.x | 新仕様 |
@@ -1758,7 +1758,7 @@ flowchart TD
 ### 互換性ポリシー
 
 | 変更 | 対応 |
-| ------- | ----- |
+| --- | --- |
 | フィールド追加 | minor |
 | フィールド削除 | major |
 | 型変更 | major |
@@ -1923,7 +1923,7 @@ import { createClient } from "@s2j/similarity-client-edge";
 ### role 定義
 
 | role | 意味 |
-| --------- | --------- |
+| --- | --- |
 | client | API クライアント |
 | core | ドメインロジック |
 | contracts | 型・スキーマ |
@@ -1931,7 +1931,7 @@ import { createClient } from "@s2j/similarity-client-edge";
 ### runtime 定義
 
 | runtime | 意味 |
-| ------- | ------------ |
+| --- | --- |
 | node | Node.js |
 | edge | Edge runtime |
 | browser | Browser |
@@ -2222,7 +2222,7 @@ packages/php-sdk/src/Contracts/DTO/Generated/
 ##### 推奨ツール
 
 | 言語 | ツール |
-|------|--------|
+| --- | --- |
 | TypeScript | `openapi-typescript` |
 | PHP | JanePHP or OpenAPI Generator |
 
@@ -2347,7 +2347,7 @@ packages/php-sdk/src/Contracts/DTO/Generated/
 ### 生成物と手書きコードの境界
 
 | 領域 | 生成 | 手書き |
-|------|------|--------|
+| --- | --- | --- |
 | DTO | ✔ | ✖ |
 | OpenAPI types | ✔ | ✖ |
 | Service | ✖ | ✔ |
@@ -2421,7 +2421,7 @@ Retry は、最小限に
 ### 責務分離
 
 | 層 | 責務 |
-|----|------|
+| --- | --- |
 | ApiClient | 高レベル API |
 | HttpClient | 通信抽象 |
 | Retry | 一時的な障害耐性 |
@@ -2463,7 +2463,7 @@ const client = new RetryHttpClient(
 ### runtime 別 fetch
 
 | runtime | 実装 |
-|---------|------|
+| --- | --- |
 | Node.js | undici |
 | Browser | native fetch |
 | Edge | global fetch |
@@ -2693,7 +2693,7 @@ type ErrorType = 'timeout' | 'network_error'
 ### REST との整合
 
 | REST error.type | TS type |
-|----------------|---------|
+| --- | --- |
 | validation_error | ValidationError |
 | timeout | TimeoutError |
 | rate_limit | RateLimitError |
@@ -2959,7 +2959,7 @@ error.type は、`snake_case` で統一します。
 ### runtime 差異
 
 | runtime | transport |
-| ------- | ---------------------- |
+| --- | --- |
 | Browser | native fetch |
 | Edge | global fetch |
 | Node | fetch / undici adapter |

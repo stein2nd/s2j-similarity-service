@@ -36,7 +36,7 @@ flowchart TD
 #### 4. 責務分離
 
 | 層 | 責務 |
-|----|------|
+| --- | --- |
 | Core | 純粋ロジック |
 | Contracts | 型 |
 | Infrastructure | 外部依存 |

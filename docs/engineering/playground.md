@@ -85,7 +85,7 @@
 ### デプロイ
 
 | 方法 | 内容 |
-| ---------------- | ------ |
+| --- | --- |
 | GitHub Pages | 静的配信 |
 | Vercel | 即時デプロイ |
 | CloudFlare Pages | Edge 配信 |
@@ -285,7 +285,7 @@ export const BasicSimilarity = async () => {
 ### 技術選択 (例)
 
 | ツール | 用途 |
-| --------- | ---- |
+| --- | --- |
 | Storybook | UI 管理 |
 | Vite | ビルド |
 | React | UI |
@@ -293,7 +293,7 @@ export const BasicSimilarity = async () => {
 ### Playground との違い
 
 | 項目 | Playground | Storybook |
-| -- | ---------- | --------- |
+| --- | --- | --- |
 | 目的 | 試す | 理解する |
 | 構造 | 単一 | 複数シナリオ |
 | UI | 最小 | リッチ |
