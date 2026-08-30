@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 2.0.5 - 2026-08-31
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@openapitools/openapi-generator-cli` ^2.41.0、`@s2j/docs-linter` ^1.0.23)
+
 ## 2.0.4 - 2026-08-12
 
 ### Changed
