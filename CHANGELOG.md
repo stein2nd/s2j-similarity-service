@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.6 - 2026-09-09
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@s2j/docs-linter` ^1.0.24)
+* 推移的依存 `js-yaml` の脆弱性 (CVE-2026-84375) を `npm audit fix` で解消
+
 ## 2.0.5 - 2026-08-31
 
 ### Changed
