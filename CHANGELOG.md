@@ -7,8 +7,8 @@
 ### Changed
 
 * 開発用 npm 依存を更新 (`@s2j/docs-linter` ^1.0.25)
-* 開発用 Composer ロックを更新 (`phpunit/phpunit` 13.3.5、`phpstan/phpstan` 2.2.16、`johnpbloch/wordpress` 6.9.9 等)
-* `composer.json` の `version` を `package.json` に合わせて 2.0.7 に更新
+* 開発用 Composer ロックを更新 (`phpunit/phpunit` 13.3.5、`phpstan/phpstan` 2.2.16、`johnpbloch/wordpress` 6.9.9、等)
+* `composer.json` の `version` を `package.json` に合わせて v2.0.7に更新
 
 ## 2.0.6 - 2026-09-09
 
