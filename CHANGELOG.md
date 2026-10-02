@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.8 - 2026-10-02
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@s2j/docs-linter` ^1.0.26)
+* 開発用 Composer ロックを更新 (`phpunit/phpunit` 13.4.0、`phpunit/php-code-coverage` 14.4.0、`symfony/yaml` v6.4.47、等)
+* `composer.json` の `version` を `package.json` に合わせて v2.0.8に更新
+
 ## 2.0.7 - 2026-09-26
 
 ### Changed
