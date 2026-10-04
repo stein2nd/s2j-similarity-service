@@ -7,7 +7,7 @@
 ### Changed
 
 * 開発用 npm 依存を更新 (`@s2j/docs-linter` ^1.0.27)
-* `package-lock.json` の package version を v2.0.9に揃える
+* `package-lock.json` の package version を v2.0.9にそろえる
 * VS Code の workspace 設定で JSON schema のダウンロードを有効化 (`json.schemaDownload.enable`)
 * 推移的依存 `basic-ftp` の脆弱性 (GHSA-c475-qrg2-pj4r) は上流対応待ち。`get-uri` が修正版 `basic-ftp@6.2.1` を取り込むまで、`@openapitools/openapi-generator-cli` 経由で残る
 * `composer.json` の `version` を `package.json` に合わせて v2.0.9に更新
