@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.10 - 2026-10-05
+
+### Changed
+
+* 仕様ドキュメント (`README.md`、`docs/**`、`docs_old/**`) の表記を整備 (`以下` → `下記`、テーブル区切りの統一、`プロバイダー` → `プロバイダ`、`位置づけ` → `位置付け`、など)
+* `package-lock.json` の package version を v2.0.10にそろえる
+* `composer.json` の `version` を `package.json` に合わせて v2.0.10に更新
+
 ## 2.0.9 - 2026-10-04
 
 ### Changed

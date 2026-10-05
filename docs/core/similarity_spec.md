@@ -28,7 +28,7 @@
 
 ## 本仕様の責務
 
-本仕様は、以下のみを扱います。
+本仕様は、下記のみを扱います。
 
 * 2つのベクトルから類似度スコアを算出すること。
 * スコアの正規化ルールを定義すること。
@@ -149,7 +149,7 @@ cosine_similarity = A · B
 
 ### スコア正規化
 
-cosine similarity の値域は [-1, 1] であるため、以下の式で0〜1に変換します。
+cosine similarity の値域は [-1, 1] であるため、下記の式で0〜1に変換します。
 
 ```plaintext id="score_normalization"
 score = (cosine_similarity + 1) / 2

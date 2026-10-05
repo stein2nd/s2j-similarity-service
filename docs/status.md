@@ -24,7 +24,7 @@
 ### 機能一覧 (実装状況サマリー)
 
 | 機能名 | 実装済み/未実装 | 実装％ | 完了条件 (実装％を100にするために仕様書で明確化すべき点) |
-|---|---:|---:|---|
+| --- | --- | --- | --- |
 | 類似度算出 (2文)`SimilarityService::similarity()` | 実装済み | 100 | - **docs/core/similarity_spec.md**: cosine + 0..1正規化 + clamp の整合。追加の明確化なし |
 | 類似度算出 (1対多)`SimilarityService::similarityOneToMany()` | 実装済み | 100 | - **docs/core/similarity_spec.md**: 出力の順序保証 (入力順維持) の整合。追加の明確化なし |
 | 類似度算出 (N 対 N 行列)`SimilarityService::similarityMatrix()` | 実装済み | 100 | - **docs/core/similarity_spec.md**: 行列定義 (対称/対角) の整合。追加の明確化なし |

@@ -597,7 +597,7 @@ CI Matrix 上は、独立 job (たとえば `job 5: documentation quality`) と�
 
 ### 完了条件 (100%)
 
-以下を満たした時点で100%とします。
+下記を満たした時点で100%とします。
 
 * `docs/engineering/ci.md` に本品質ゲート方針を明文化
 * `.github/workflows/ci.yml` または専用 workflow に docs lint job を追加

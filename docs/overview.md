@@ -22,7 +22,7 @@
 
 本プロジェクトは、PHP 環境における再利用可能な **Composer パッケージ** として提供されます。
 
-主な特徴は、以下の通りです。
+主な特徴は、下記の通りです。
 
 * Embedding ベースの類似度の算出機能を提供します。
 * 外部 Embedding API (OpenAI 等) との統合を抽象化します。
@@ -51,7 +51,7 @@
 
 ### 責務
 
-本ライブラリは、以下の責務を持ちます。
+本ライブラリは、下記の責務を持ちます。
 
 * Embedding を用いて、類似度算出を抽象化すること。
 * 外部 API コールの、統一インターフェースを提供すること。
@@ -60,7 +60,7 @@
 
 ### 非対応スコープ (Out of Scope)
 
-本ライブラリは、以下を対象としません。
+本ライブラリは、下記を対象としません。
 
 * 大規模検索エンジン (全文検索・ランキング最適化)
 * ベクトルデータベース (保存・インデックス管理)
@@ -88,7 +88,7 @@ WordPress を runtime として利用する
 
 ### 非対象 (Out of Scope)
 
-* 独立 HTTP サーバとしての提供
+* 独立 HTTP サーバーとしての提供
 * Slim / Laravel 同梱
 * WordPress 外での standalone runtime 提供
 * 独自 Router 実装
@@ -112,7 +112,7 @@ WordPress を runtime として利用する
 
 #### 1. WordPress 自身が HTTP 基盤を提供している
 
-WordPress は、下記に相当する仕組みを、既に備えています。
+WordPress は、下記に相当するしくみを、すでに備えています。
 
 * Routing
 * Controller
@@ -137,7 +137,7 @@ register_rest_route(
 
 #### 2. 二重 HTTP スタックを避ける
 
-本ライブラリでは、下記の様なサードパーティー製ツール等を同梱し、WordPress 内部に別 HTTP runtime を構築することは行いません。
+本ライブラリでは、下記のようなサードパーティー製ツール等を同梱し、WordPress 内部に別 HTTP runtime を構築することは行いません。
 
 * Slim
 * Laravel
@@ -162,7 +162,7 @@ HTTP 層は、WordPress の規約に寄せます。
 | Permission | `permission_callback` |
 | Authentication | WordPress / Application Passwords / JWT 等 |
 
-### アーキテクチャ上の位置づけ
+### アーキテクチャー上の位置付け
 
 #### 方針
 
@@ -196,7 +196,7 @@ flowchart TD
 
 ### 補足
 
-本ライブラリは、Composer package として提供されるが、主用途は WordPress エコシステムへの組み込みです。そのため、下記との整合性を優先します。
+本ライブラリは、Composer package として提供されるが、主用途は WordPress エコシステムへの組込みです。そのため、下記との整合性を優先します。
 
 * WordPress のライフサイクル
 * WordPress の認証モデル
@@ -223,7 +223,7 @@ WordPress ユーザーには、安定 API を公開する
 
 * 本番環境での Node 実行
 * runtime codegen
-* generated client の直接利用推奨
+* generated client の直接利用の推奨
 * standalone TS SDK 配布
 
 ### SDK が吸収する責務
@@ -299,7 +299,7 @@ src/Contracts/DTO/Generated/
 
 #### TypeScript / Zod
 
-TypeScript / Zod 生成物は、下記の様な開発用途に限定します。
+TypeScript / Zod 生成物は、下記のような開発用途に限定します。
 
 * 管理画面
 * Playground
@@ -375,7 +375,7 @@ interface ClientInterface
 
 ### 補足
 
-本ライブラリでは、下記として責務分離を行います。
+本ライブラリでは、下記として責務を分離します。
 
 ```plaintext id="wp_sdk_boundary"
 OpenAPI = 契約

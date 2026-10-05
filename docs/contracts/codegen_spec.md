@@ -531,7 +531,7 @@ OpenAPI schema を唯一の契約定義 (Single Source of Truth) とし、各言
 
 #### 必須ルール
 
-CI では、以下を実行します。
+CI では、下記を実行します。
 
 ```bash
 ./scripts/generate/all.zsh
@@ -560,7 +560,7 @@ src/Contracts/DTO/Generated/
 
 #### 非公開対象
 
-以下は、WordPress ユーザー向け公開 API としません。
+下記は、WordPress ユーザー向け公開 API としません。
 
 ```plaintext
 tools/generated/ts/

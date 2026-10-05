@@ -9,7 +9,7 @@
 
 ## 概要
 
-本 API は、以下を提供します。
+本 API は、下記を提供します。
 
 * テキストから Embedding を生成する API
 * 2つのテキストの類似度を算出する API
@@ -22,7 +22,7 @@
 
 本 API は、Contracts 層の DTO を直接公開しません。
 
-内部で、以下のように変換します。
+内部で、下記のように変換します。
 
 * text → Embedding → vector
 * vector → Similarity
@@ -33,7 +33,7 @@
 
 本 API は、Contracts 層の DTO (vector ベース) を直接公開しません。
 
-代わりに、以下の変換を内部で行います。
+代わりに、下記の変換を内部で行います。
 
 * text → Embedding → vector
 * vector → Similarity 計算
@@ -296,7 +296,7 @@ flowchart TD
 
 ## 類似度スコアの意味
 
-レスポンスの `data.similarityScore` は、以下を満たします。
+レスポンスの `data.similarityScore` は、下記を満たします。
 
 * 範囲: 0.0〜1.0
 * 意味: 意味的な類似度 (1に近いほど、類似)
@@ -961,7 +961,7 @@ flowchart TD
 
 #### REST API の成立条件
 
-以下を満たした場合に「REST API 実装済み」とします。
+下記を満たした場合に「REST API 実装済み」とします。
 
 ```plaintext id="rest_impl_requirements"
 1. OpenAPI schema 存在
@@ -1215,7 +1215,7 @@ HTTP は、integration test
 
 #### Route registration
 
-以下を検証します。
+下記を検証します。
 
 * namespace
 * route パス
@@ -1259,7 +1259,7 @@ flowchart TD
 
 #### Response assertion
 
-以下を検証します。
+下記を検証します。
 
 * status code
 * response body
@@ -1385,7 +1385,7 @@ Rate limits are deployment policy
 
 ### 現在の実装状況
 
-以下は、実装済みとします。
+下記は、実装済みとします。
 
 * `schema/openapi.yaml`
 * `register_rest_route`
@@ -1407,7 +1407,7 @@ Rate limits are deployment policy
 
 ### REST API の成立条件
 
-REST API は、以下を満たした場合に成立とします。
+REST API は、下記を満たした場合に成立とします。
 
 1. OpenAPI schema が存在する
 2. WordPress routing が実装されている
@@ -1583,7 +1583,7 @@ User-facing endpoint documentation is mandatory
 
 ### REST Adapter の非責務
 
-REST Adapter は、以下を責務としません。
+REST Adapter は、下記を責務としません。
 
 * WordPress Core 自体の品質保証
 * API Gateway

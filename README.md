@@ -212,7 +212,7 @@ $matrix = $service->similarityMatrix(['a', 'b', 'c']);
 ### パラメータ
 
 | パラメータ | 型 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | a | string | テキスト A |
 | b | string | テキスト B |
 | model | string \| null | モデル名 (例: text-embedding-3-small)。未指定時は Strategy の default |
@@ -421,7 +421,7 @@ A: 外部依存はありません。cURL は PHP 標準機能を使用します�
 ### モデル選定方針
 
 | モデル名 | 用途 | コメント |
-| --- | ---- | --- |
+| --- | --- | --- |
 | `text-embedding-3-small` | 通常利用 | 「意味的な類似度」の判定、コスト効率に優れる |
 | `text-embedding-3-large` | 精度重視 | 研究・学習データの類似検索等に向く |
 
@@ -460,7 +460,7 @@ composer install
 
 ## Testing
 
-このライブラリでは、以下の2種類のテスト手法を提供しています。
+このライブラリでは、下記の2種類のテスト手法を提供しています。
 
 ### テスト手法の概要
 
@@ -527,7 +527,7 @@ composer install
 ./vendor/bin/phpunit
 ```
 
-テストが成功すると、以下のような結果が表示されます:
+テストが成功すると、下記のような結果が表示されます:
 
 ```
 PHPUnit 12.4.2 by Sebastian Bergmann and contributors.
@@ -564,7 +564,7 @@ export OPENAI_API_KEY=your_api_key_here
 php examples/test_similarity.php
 ```
 
-実行すると、以下のような出力が表示されます:
+実行すると、下記のような出力が表示されます:
 
 ```
 類似度計算結果:
@@ -597,7 +597,7 @@ npm run lint:docs
 
 ## Contributing
 
-貢献をお待ちしています ! 以下の手順に従ってください:
+貢献をお待ちしています ! 下記の手順に従ってください:
 
 1. リポジトリをフォークしてください。
 2. 機能ブランチを作成してください (`git checkout -b feature/amazing-feature`)。
@@ -616,7 +616,7 @@ npm run lint:docs
 
 ## Contributors & Developers
 
-**"S2J Similarity Service"** はオープンソース・ソフトウェアです。以下の皆様がこのライブラリに貢献しています。
+**"S2J Similarity Service"** はオープンソース・ソフトウェアです。下記の皆様がこのライブラリに貢献しています。
 
 * **開発者**: Koutarou ISHIKAWA
 

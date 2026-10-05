@@ -3,9 +3,9 @@
 ## はじめに
 
 * 本ドキュメントでは、WordPress プラグイン開発等において利用可能な「意味的な類似度判定ライブラリ」の専用仕様を定義します。
-* 本プラグインの設計は、以下の共通 SPEC に準拠します。
+* 本プラグインの設計は、下記の共通 SPEC に準拠します。
     * [WordPress Plugin Development Spec (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/docs/WP_PLUGIN_SPEC.md) の「5.4. 共通ライブラリを Composer 化」
-* 以下は、本ライブラリ固有の仕様をまとめたものです。
+* 下記は、本ライブラリ固有の仕様をまとめたものです。
 
 **仕様の細分化版**  
 AI 伴走開発・メンテナンス時は、[docs/specs.md](specs.md) を起点に各ドキュメントを参照してください。  

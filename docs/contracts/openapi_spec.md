@@ -28,7 +28,7 @@ OpenAPI 定義を、本プロジェクトにおける唯一の契約定義 (Sour
 
 ## 対象範囲
 
-OpenAPI は、以下を対象とします。
+OpenAPI は、下記を対象とします。
 
 * REST API エンドポイント
 * リクエスト DTO、レスポンス DTO
@@ -63,7 +63,7 @@ Embedding API は、下記の理由から、OpenAPI の対象外とします。
 
 ## 型生成
 
-OpenAPI 定義から、以下を生成します。
+OpenAPI 定義から、下記を生成します。
 
 * TypeScript 型
 * Zod スキーマ (runtime validation)

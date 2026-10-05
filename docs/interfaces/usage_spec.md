@@ -9,7 +9,7 @@
 
 ## 概要
 
-本ライブラリは、以下の機能を提供します。
+本ライブラリは、下記の機能を提供します。
 
 * テキストから Embedding を生成します。
 * 2つのテキストの、類似度を算出します。
@@ -120,7 +120,7 @@ $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 
 ## JavaScript / TypeScript (擬似コード)
 
-本リポジトリは **PHP のライブラリ** として類似度計算を提供します。同一プロセスで動く TypeScript / JavaScript の `OpenAIEmbeddingStrategy` / `SimilarityService` クラスは **同梱していません**。以下は、PHP API と **対応関係を示す擬似コード** です。実運用では **PHP を呼び出す** か、デプロイ済み REST に **TypeScript SDK (`@s2j/similarity-client`)** からアクセスしてください。
+本リポジトリは **PHP のライブラリ** として類似度計算を提供します。同一プロセスで動く TypeScript / JavaScript の `OpenAIEmbeddingStrategy` / `SimilarityService` クラスは **同梱していません**。下記は、PHP API と **対応関係を示す擬似コード** です。実運用では **PHP を呼び出す** か、デプロイ済み REST に **TypeScript SDK (`@s2j/similarity-client`)** からアクセスしてください。
 
 ### 1. 初期化 (擬似)
 
