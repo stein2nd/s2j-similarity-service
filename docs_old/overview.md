@@ -31,7 +31,7 @@ WordPress プラグイン/テーマから Composer 経由で利用すること�
 
 ## 共通仕様との関係
 
-本ライブラリの設計は、次の共通 SPEC に準拠します。
+本ライブラリの設計は、下記の共通 SPEC に準拠します。
 
 * [WordPress Plugin Development Spec (共通仕様)](https://github.com/stein2nd/wp-plugin-spec/blob/main/docs/WP_PLUGIN_SPEC.md) の「5.4. 共通ライブラリを Composer 化」
 

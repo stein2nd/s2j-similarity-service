@@ -264,7 +264,7 @@ jobs:
 | 対象 | 内容 |
 | --- | --- |
 | TypeScript 型 | DTO 型 |
-| Zod スキーマ | runtime validation |
+| Zod スキーマ | ランタイム検証 |
 | API Client | fetch wrapper |
 | PHP DTO | サーバー連携用 |
 | エラーモデル | DomainError |
@@ -512,7 +512,7 @@ OpenAPI schema を唯一の契約定義 (Single Source of Truth) とし、各言
 * 管理画面
 * build tooling
 * Playground
-* Zod validation
+* Zod 検証
 * internal testing
 
 ### 実行タイミング

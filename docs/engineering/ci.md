@@ -134,7 +134,7 @@ npm run typecheck -w @s2j/similarity-client
 * パフォーマンスベンチマーク
 * 負荷テスト
 
-## OpenAPI レスポンス契約検証 (JSON Schema Validation)
+## OpenAPI レスポンス契約検証 (JSON Schema 検証)
 
 ### 設計意図 (ゴール)
 

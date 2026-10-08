@@ -6,7 +6,7 @@
 
 ## 入力パラメータ (similarity の引数)
 
-`SimilarityService::similarity()` の引数は次のとおりです。
+`SimilarityService::similarity()` の引数は下記のとおりです。
 
 | パラメータ | 型 | 説明 |
 |------------|-----|------|

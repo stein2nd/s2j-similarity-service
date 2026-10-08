@@ -14,9 +14,9 @@
 * テキストから Embedding を生成する API
 * 2つのテキストの類似度を算出する API
 
-* Contracts 層の DTO を変更した場合、本 API も追従します。
-* 将来的に OpenAPI で定義できます。
-* フロントエンドは型生成を前提とします。
+* Contracts 層の DTO を変更した場合、本 API も追従する。
+* 将来的に OpenAPI で定義できる。
+* フロントエンドは、型生成を前提とする。
 
 ## Contracts との関係
 
@@ -48,10 +48,10 @@
 
 ### 設計方針 (規約)
 
-* Contracts の DTO を、そのまま API 契約とします。
-* レスポンス形式を統一します。
-* 認証・認可を、明示的に扱います。
-* エラーは、機械可読な形式で返します。
+* Contracts の DTO を、そのまま API 契約とする。
+* レスポンス形式を統一する。
+* 認証・認可を、明示的に扱う。
+* エラーは、機械可読な形式で返す。
 
 本 API は、Contracts 層の DTO を直接公開しません。
 
@@ -86,7 +86,7 @@ Authorization: Bearer {token}
 
 ### 2. リクエストのレスポンス形式 - 成功
 
-成功時の JSON ボディは、常に次のトップレベル構造です (`meta` は空オブジェクト `{}` も許容します)。
+成功時の JSON ボディは、常に下記のトップレベル構造です (`meta` は空オブジェクト `{}` も許容します)。
 
 ```json id="success_format"
 {
@@ -96,7 +96,7 @@ Authorization: Bearer {token}
 ```
 
 * `data`: エンドポイント固有の結果 (下記 `/v1/embedding`、`/v1/similarity` の例を参照)。
-* `meta`: 実装が付与する任意のメタデータ (例: 相関 ID、処理時間)。将来の拡張用にキーを追加しても後方互換となります。
+* `meta`: 実装が付与する任意のメタデータ (例: 相関 ID、処理時間)。将来の拡張用にキーを追加しても後方互換となる。
 
 **契約上の参照**: `schema/openapi.yaml` の `SimilarityResponse`、`EmbeddingResponse` は、このエンベロープを Single Source として表現します。
 
@@ -127,7 +127,7 @@ Authorization: Bearer {token}
 
 ### 設計方針 (規約)
 
-* REST と SDK の命名は、一致させます。
+REST と SDK の命名は、一致させます。
 
 ```plaintext
 POST /v1/similarity
@@ -142,9 +142,9 @@ API の互換性を維持しつつ、破壊的変更を安全に導入できる�
 
 ### 設計方針 (規約)
 
-* URI パスに、バージョンを含めます。
-* メジャーバージョンのみを URL に含めます。
-* 後方互換性を重視します。
+* URI パスに、バージョンを含める。
+* メジャーバージョンのみを URL に含める。
+* 後方互換性を重視する。
 
 ### 責務
 
@@ -173,14 +173,14 @@ API の互換性を維持しつつ、破壊的変更を安全に導入できる�
 
 ### 互換性ポリシー
 
-* 同一メジャーバージョン内では、後方互換を維持します。
-* 既存フィールドの削除は、禁止します。
-* 新規フィールド追加は、optional とします。
+* 同一メジャーバージョン内では、後方互換を維持する。
+* 既存フィールドの削除は、禁止する。
+* 新規フィールド追加は、optional とする。
 
 ### 廃止 (Deprecation)
 
-* 旧バージョンは、一定期間、併存させます。
-* deprecation notice をレスポンスヘッダーで通知します。
+* 旧バージョンは、一定期間、併存させる。
+* deprecation notice をレスポンスヘッダーで通知する。
 
 ### ヘッダー (任意)
 
@@ -205,8 +205,8 @@ X-API-Version: 1
 
 #### バリデーション
 
-* text: 必須、空文字は不可です。
-* model: 任意です。
+* text: 必須、空文字は不可である。
+* model: 任意である。
 
 ### リクエストのレスポンス
 
@@ -240,9 +240,9 @@ X-API-Version: 1
 
 #### バリデーション
 
-* textA: 必須、空文字は不可です。
-* textB: 必須、空文字は不可です。
-* model: 任意です。
+* textA: 必須、空文字は不可である。
+* textB: 必須、空文字は不可である。
+* model: 任意である。
 
 ### リクエストのレスポンス
 
@@ -273,8 +273,8 @@ flowchart TD
 
 ### 設計方針 (規約)
 
-* Bearer Token を使用します。
-* エンドポイントごとに、権限チェックを実施します。
+* Bearer Token を使用する。
+* エンドポイントごとに、権限チェックを実施する。
 
 ### 認可例
 
@@ -283,7 +283,7 @@ flowchart TD
 | `/embedding`  | read |
 | `/similarity` | read |
 
-## Runtime Validation
+## ランタイム検証
 
 ### 設計意図 (ゴール)
 
@@ -291,8 +291,8 @@ flowchart TD
 
 ### 設計方針 (規約)
 
-* リクエスト受信時に、スキーマを検証します。
-* Contracts の定義と一致させます。
+* リクエスト受信時に、スキーマを検証する。
+* Contracts の定義と一致させる。
 
 ## 類似度スコアの意味
 
@@ -311,8 +311,8 @@ flowchart TD
 
 ### 設計方針 (規約)
 
-* エラー構造を統一します。
-* type により、分岐可能にします。
+* エラー構造を統一する。
+* type により、分岐可能にする。
 
 ## レート制限
 
@@ -322,8 +322,8 @@ API を安定的に運用します。
 
 ### 設計方針 (規約)
 
-* エンドポイント単位で、制限します。
-* `429` を返却します。
+* エンドポイント単位で、制限する。
+* `429` を返却する。
 
 ## フロントエンド状態遷移
 
@@ -349,8 +349,8 @@ flowchart TD
 
 ### リトライ
 
-* network / timeout のみ、自動リトライします。
-* validation エラーは、リトライ不可とします。
+* network / timeout のみ、自動リトライする。
+* 検証エラーは、リトライ不可とする。
 
 ## エラー仕様 (REST ↔ DomainError 対応)
 
@@ -360,11 +360,11 @@ REST API と PHP SDK のエラー表現を統一し、コール側が一貫し�
 
 ### 設計方針 (規約)
 
-* REST のエラーレスポンスは、共通フォーマットを使用します。
-* `error.type` を唯一の分類キーとします。
-* PHP 側では、`DomainError` 派生クラスにマッピングします。
-* エラー分類は、安定した値 (enum 的) とし、文字列の揺れを許しません。
-* HTTP ステータスコードと `error.type` は、対応関係を持ちます。
+* REST のエラーレスポンスは、共通フォーマットを使用する。
+* `error.type` を唯一の分類キーとする。
+* PHP 側では、`DomainError` 派生クラスにマッピングする。
+* エラー分類は、安定した値 (enum 的) とし、文字列の揺れを許さない。
+* HTTP ステータスコードと `error.type` は、対応関係を持つ。
 
 ### 非対象 (Out of Scope)
 
@@ -415,10 +415,10 @@ REST API と PHP SDK のエラー表現を統一し、コール側が一貫し�
 ### マッピングルール
 
 * REST レスポンス受信時
-  * `error.type` をもとに DomainError を生成します。
+  * `error.type` をもとに DomainError を生成する。
 * SDK 内部例外
-  * DomainError を REST 形式に変換可能とします。
-* `details` は、構造化データとして保持します。
+  * DomainError を REST 形式に変換可能とする。
+* `details` は、構造化データとして保持する。
 
 ### PHP 側設計
 
@@ -447,8 +447,8 @@ flowchart TD
 
 ### details の扱い
 
-* 任意の構造を許可します (JSON オブジェクト)。
-* フィールドエラーなどを含めます。
+* 任意の構造を許可する (JSON オブジェクト)。
+* フィールドエラーなどを含める。
 
 例:
 
@@ -467,19 +467,17 @@ flowchart TD
 
 ### 設計原則
 
-```plaintext id="rest_principle"
-Coreは、環境を知らない
-RESTは、薄く保つ
-Adapterで世界を繋ぐ
-```
+* Core は、環境を知らない
+* REST は、薄く保つ
+* Adapter で世界をつなぐ
 
 ### 設計方針 (規約)
 
-* REST API は、「参照実装 (Reference Implementation)」として定義します。
-* 特定のフレームワーク (Laravel / Express 等) には、依存しません。
-* コアロジック (SimilarityService) は、フレームワーク非依存とします。
-* 各ランタイムへの統合は、Adapter 層で行います。
-* HTTP 層は、薄いラッパーとして実装します。
+* REST API は、「参照実装 (Reference Implementation)」として定義する。
+* 特定のフレームワーク (Laravel / Express 等) には、依存しない。
+* コアロジック (SimilarityService) は、フレームワーク非依存とする。
+* 各ランタイムへの統合は、Adapter 層で行う。
+* HTTP 層は、薄いラッパーとして実装する。
 
 ### 非対象 (Out of Scope)
 
@@ -516,23 +514,19 @@ flowchart TD
 
 ### デプロイ形態
 
-```plaintext id="rest_deploy"
 * コンテナ (Docker)
-* サーバレス (Lambda / Workers)
-* 従来サーバ (Apache / Nginx + PHP)
-```
+* サーバーレス (Lambda / Workers)
+* 従来サーバー (Apache / nginx + PHP)
 
 ### 提供形態
 
 #### 1. コア (必須)
 
-* PHP Composer ライブラリとして提供します。
-* フレームワーク非依存とします。
+* PHP Composer ライブラリとして提供する。
+* フレームワーク非依存とする。
 
-```plaintext id="rest_core"
-SimilarityService (Application)
-EmbeddingStrategy (Infrastructure)
-```
+* SimilarityService (Application)
+* EmbeddingStrategy (Infrastructure)
 
 #### 2. REST API (参照実装)
 
@@ -541,11 +535,9 @@ EmbeddingStrategy (Infrastructure)
 
 ##### 例
 
-```plaintext id="rest_examples"
 * PHP: Slim / Laravel / Symfony
 * Node: Express / Fastify
-* Edge: Cloudflare Workers
-```
+* Edge: CloudFlare Workers
 
 #### 3. 推奨ランタイム (参考)
 
@@ -561,8 +553,8 @@ EmbeddingStrategy (Infrastructure)
 
 #### 方針
 
-* フレームワーク固有コードは、分離します。
-* ライブラリ本体には含めません。
+* フレームワーク固有コードは、分離する。
+* ライブラリ本体には含めない。
 
 #### 例
 
@@ -581,19 +573,17 @@ REST API に対するアクセスを安全に制御しつつ、ホスト環境�
 
 ### 設計原則
 
-```plaintext id="auth_principle"
-認証は、入口で止める
-Coreに持ち込まない
-権限は、軽く、拡張可能に
-```
+* 認証は、入口でとめる
+* Core に持ち込まない
+* 権限は、軽く、拡張可能に
 
 ### 設計方針 (規約)
 
-* 認証は、Bearer Token を使用します。
-* 認証処理は、Adapter 層で実施します (Core / Application には持ち込まない)。
-* トークン検証ロジックは、差し替え可能とします。
-* 認可 (権限) は、シンプルなスコープベースとします。
-* SDK / Core は、認証状態を保持しません。
+* 認証は、Bearer Token を使用する。
+* 認証処理は、Adapter 層で実施する (Core / Application には持ち込まない)。
+* トークン検証ロジックは、差し替え可能とする。
+* 認可 (権限) は、シンプルなスコープベースとする。
+* SDK / Core は、認証状態を保持しない。
 
 ### 非対象 (Out of Scope)
 
@@ -660,8 +650,8 @@ interface AuthenticatorInterface
 
 #### 方針
 
-* スコープベース制御を採用します。
-* エンドポイントごとに必要スコープを定義します。
+* スコープベース制御を採用する。
+* エンドポイントごとに必要スコープを定義する。
 
 #### 例
 
@@ -700,8 +690,8 @@ class AuthContext
 
 #### ルール
 
-* 認証ロジックは、含めません。
-* AuthContext は、必要に応じて引数として受け取ります。
+* 認証ロジックは、含めない。
+* AuthContext は、必要に応じて引数として受け取る。
 
 ## レート制限 (Rate Limiting)
 
@@ -711,20 +701,18 @@ class AuthContext
 
 ### 設計原則
 
-```plaintext id="rate_principle"
-制限は、明確に
-挙動は、予測可能に
-通知は、必ず返す
-```
+* 制限は、明確に
+* 挙動は、予測可能に
+* 通知は、必ず返す
 
 ### 設計方針 (規約)
 
-* レート制限は、Adapter 層で実施します。
-* 単位は、「時間あたりリクエスト数」とします (requests per window)。
-* 制限は、API キー (または subject) 単位で適用します。
-* 超過時は、`HTTP 429` を返却します。
-* `Retry-After` を必ず返却します。
-* 制限値は、環境ごとに設定可能とします。
+* レート制限は、Adapter 層で実施。
+* 単位は、「時間あたりリクエスト数」とする (requests per window)。
+* 制限は、API キー (または subject) 単位で適用する。
+* 超過時は、`HTTP 429` を返却する。
+* `Retry-After` を必ず返却する。
+* 制限値は、環境ごとに設定可能とする。
 
 ### 非対象 (Out of Scope)
 
@@ -768,8 +756,8 @@ requests / minute
 
 #### 補足
 
-* 上限は、ホスト環境で調整可能です。
-* 将来的にテナント別設定に拡張可能です。
+* 上限は、ホスト環境で調整可能である。
+* 将来的にテナント別設定に拡張可能である。
 
 ### 判定方式
 
@@ -838,16 +826,14 @@ X-RateLimit-Reset: 1710000000
 
 #### ルール
 
-* レート制限は、関知しません。
-* エラーは、DomainError (RateLimitError) として伝播可能とします。
+* レート制限は、関知しない。
+* エラーは、DomainError (RateLimitError) として伝播可能とする。
 
 ### 拡張 (将来)
 
-```plaintext id="rate_future"
 * エンドポイント別制限
 * テナント別制限
 * 動的スロットリング
-```
 
 ## HTTP サーバー実装 (Routing / Controller)
 
@@ -857,19 +843,17 @@ OpenAPI による REST 契約定義と、実際の HTTP サーバー実装 (rout
 
 ### 設計原則
 
-```plaintext id="rest_impl_principle"
-OpenAPI は、契約
-HTTP runtime は、実装
-Controller は、Adapter
-```
+* OpenAPI は、契約
+* HTTP runtime は、実装
+* Controller は、Adapter
 
 ### 設計方針 (規約)
 
-* OpenAPI は、「HTTP 契約」の source of truth とします。
-* REST API の「実装完了」は、HTTP runtime 実装を含みます。
-* routing / controller が存在しない場合、REST API は未実装扱いとします。
-* HTTP 層は、Adapter として実装します。
-* Core / Application は、HTTP を認識しません。
+* OpenAPI は、「HTTP 契約」の source of truth とする。
+* REST API の「実装完了」は、HTTP runtime 実装を含む。
+* routing / controller が存在しない場合、REST API は未実装扱いとする。
+* HTTP 層は、Adapter として実装する。
+* Core / Application は、HTTP を認識しない。
 
 ### 非対象 (Out of Scope)
 
@@ -888,10 +872,10 @@ Controller は、Adapter
 ### Controller の責務
 
 * Request → DTO に変換すること。
-* DTO validation すること。
+* DTO 検証すること。
 * Application 呼び出しすること。
 * DomainError → ErrorResponse に変換すること。
-* HTTP status code を決定すること。
+* HTTP ステータスコードを決定すること。
 
 ### Routing の責務
 
@@ -903,8 +887,8 @@ Controller は、Adapter
 
 #### 方針
 
-* HTTP 層は、Adapter として扱います。
-* フレームワーク依存を隔離します。
+* HTTP 層は、Adapter として扱う。
+* フレームワーク依存を隔離する。
 
 #### 例
 
@@ -927,8 +911,8 @@ adapters/http/
 
 #### 方針
 
-* OpenAPI は、「契約」であり runtime ではありません。
-* schema 定義のみでは API 実装完了とは見なしません。
+* OpenAPI は、「契約」であり runtime ではない。
+* schema 定義のみでは API 実装完了とは見なさない。
 
 ### ErrorResponse との関係
 
@@ -942,35 +926,29 @@ flowchart TD
 
 #### 実装済み
 
-```plaintext id="rest_impl_done"
 ✔ OpenAPI schema
 ✔ ErrorResponse
 ✔ DTO codegen
 ✔ SDK contracts
-```
 
 #### 未実装
 
-```plaintext id="rest_impl_todo"
 ✖ HTTP routing
 ✖ Controller / Handler
-✖ Request validation runtime
-✖ Response serialization
+✖ Request 検証 runtime
+✖ レスポンスのシリアライズ
 ✖ HTTP middleware
-```
 
 #### REST API の成立条件
 
 下記を満たした場合に「REST API 実装済み」とします。
 
-```plaintext id="rest_impl_requirements"
 1. OpenAPI schema 存在
 2. HTTP routing 実装
 3. Controller / Handler 実装
 4. Error mapping 実装
-5. Request validation 実装
-6. HTTP integration test
-```
+5. Request 検証実装
+6. HTTP 結合テスト
 
 ### 推奨構成
 
@@ -986,14 +964,14 @@ flowchart TD
 
 #### 必須
 
-* integration test
+* 結合テスト
 * HTTP status assertion
 * ErrorResponse assertion
 
 #### 推奨
 
 * OpenAPI contract test
-* schema validation
+* schema 検証
 
 ## エラー種別の命名規則 (error.type)
 
@@ -1003,19 +981,17 @@ REST API、OpenAPI、PHP SDK、TypeScript SDK 間で、一貫したエラー識�
 
 ### 設計方針 (規約)
 
-* `error.type` は、snake_case を正式仕様とします。
-* OpenAPI schema は、snake_case を source of truth とします。
-* PHP `DomainError::$type` も、snake_case を使用します。
-* PHP のクラス名のみ、PascalCase を使用します。
-* TypeScript SDK は、string literal union に snake_case を使用します。
+* `error.type` は、snake_case を正式仕様とする。
+* OpenAPI schema は、snake_case を source of truth とする。
+* PHP `DomainError::$type` も、snake_case を使用する。
+* PHP のクラス名のみ、PascalCase を使用する。
+* TypeScript SDK は、string literal union に snake_case を使用する。
 
 ### 設計原則
 
-```plaintext id="error_principle"
-識別子は、snake_case
-クラス名は、PascalCase
-JSON は、言語非依存
-```
+* 識別子は、snake_case
+* クラス名は、PascalCase
+* JSON は、言語非依存
 
 ### 非対象 (Out of Scope)
 
@@ -1119,41 +1095,33 @@ type:
 
 #### 許可対象
 
-```plaintext id="error_pascal"
-PHP class 名
-TypeScript class 名
-```
+* PHP クラス名
+* TypeScript クラス名
 
 #### 禁止対象
 
-```plaintext id="error_no_pascal"
-REST error.type
-OpenAPI enum
-JSON payload
-```
+* REST error.type
+* OpenAPI enum
+* JSON payload
 
 ### migration 方針
 
 #### 旧
 
-```plaintext id="error_old"
-ValidationError
-ProviderError
-```
+* `ValidationError`
+* `ProviderError`
 
 #### 新
 
-```plaintext id="error_new"
-validation_error
-provider_error
-```
+* `validation_error`
+* `provider_error`
 
 ### ErrorMapper
 
 #### 設計方針 (規約)
 
-* REST ↔ DomainError 変換を提供します。
-* snake_case を唯一の識別子とします。
+* REST ↔ DomainError 変換を提供する。
+* snake_case を唯一の識別子とする。
 
 #### 変換フロー
 
@@ -1163,30 +1131,28 @@ flowchart TD
   B --> C["PHP / TS error handling"]
 ```
 
-## HTTP integration test (WordPress REST API Adapter)
+## HTTP 結合テスト (WordPress REST API Adapter)
 
 ### 設計意図 (ゴール)
 
 REST API 仕様と実装の整合を、WordPress 実ランタイム上で検証可能にします。
 
-本ライブラリは WordPress REST API (`register_rest_route`) を HTTP runtime として利用するため、単なる Service 層テストではなく、WordPress の REST 実行経路を通した integration test を正式な品質基準とします。
+本ライブラリは WordPress REST API (`register_rest_route`) を HTTP ランタイムとして利用するため、単なる Service 層テストではなく、WordPress の REST 実行経路を通した結合テストを正式な品質基準とします。
 
 ### 設計原則
 
-```plaintext
-REST は、WordPress runtime を通して検証する
-Core は、unit test
-HTTP は、integration test
-```
+* REST は、WordPress ランタイムを通して検証する
+* Core は、ユニットテスト
+* HTTP は、結合テスト
 
 ### 設計方針 (規約)
 
-* HTTP integration test は、WordPress 実ランタイム上で実行します。
-* `WP_REST_Server` を経由して endpoint を検証します。
-* `register_rest_route` に登録された routing を通します。
-* `permission_callback` を含めて検証します。
-* OpenAPI 契約との整合を確認します。
-* Controller / Adapter 単体ではなく、HTTP entrypoint 全体を対象とします。
+* HTTP 結合テストは、WordPress 実ランタイム上で実行する。
+* `WP_REST_Server` を経由して endpoint を検証する。
+* `register_rest_route` に登録された routing を通す。
+* `permission_callback` を含めて検証する。
+* OpenAPI 契約との整合を確認する。
+* Controller / Adapter 単体ではなく、HTTP entrypoint 全体を対象とする。
 
 ### 責務
 
@@ -1197,11 +1163,11 @@ HTTP は、integration test
 
 ### 非責務
 
-* Core algorithm correctness
-* external provider uptime
-* performance benchmark
-* load test
-* browser E2E
+* コア・アルゴリズムの正確性
+* 外部プロバイダの稼働率
+* パフォーマンス・ベンチマーク
+* 負荷テスト
+* ブラウザー E2E
 
 ### 推奨テスト基盤
 
@@ -1230,15 +1196,15 @@ POST
 
 #### Request test
 
-下記を対象に、`WP_REST_Request` を生成して dispatch します。
+下記を対象に、`WP_REST_Request` を生成してディスパッチします。
 
 * 正常系
-* validation error
-* authentication failure
-* authorization failure
-* rate limit
-* provider error
-* timeout
+* 検証エラー
+* 認証失敗
+* 認可失敗
+* レート制限
+* プロバイダ・エラー
+* タイムアウト
 
 #### Error mapping
 
@@ -1261,11 +1227,11 @@ flowchart TD
 
 下記を検証します。
 
-* status code
-* response body
+* ステータスコード
+* レスポンス本文
 * JSON schema
 * error.type
-* Retry-After header (必要時)
+* Retry-After ヘッダー (必要時)
 
 ### テストダブル方針
 
@@ -1273,7 +1239,7 @@ Embedding provider は、下記の理由により、実 API を呼ばずに、st
 
 * CI 安定性
 * API key 不要
-* deterministic test
+* 決定論的テスト
 
 ### テスト構成
 
@@ -1292,20 +1258,20 @@ flowchart TD
 
 #### 対象
 
-* route registration
-* HTTP method
-* request validation
-* permission check
-* authentication
-* request → DTO mapping
-* Application 呼び出し
+* ルーティングの登録
+* HTTP メソッド
+* リクエストの検証
+* 権限チェック
+* 認証
+* リクエスト → DTO マッピング
+* アプリケーション 呼び出し
 * DomainError → `WP_Error`
-* response serialization
-* HTTP status code
+* レスポンスのシリアライズ
+* HTTP ステータスコード
 
 #### 非対象
 
-* Similarity algorithm 自体 (unit test)
+* Similarity アルゴリズム 自体 (ユニットテスト)
 * Embedding provider 実 API 呼び出し
 * WordPress Core 自体の動作保証
 * browser UI
@@ -1315,7 +1281,7 @@ flowchart TD
 
 #### 方針
 
-HTTP integration test の目的には、`schema/openapi.yaml` との契約整合の確認を含みます。整合確認の対象は、下記のとおりです。
+HTTP 結合テストの目的には、`schema/openapi.yaml` との契約整合の確認を含みます。整合確認の対象は、下記のとおりです。
 
 * パス
 * メソッド
@@ -1332,31 +1298,29 @@ WordPress REST API を HTTP runtime とする本ライブラリにおいて、RE
 本仕様では、下記を統合して定義します。
 
 * OpenAPI 契約
-* WordPress REST runtime
+* WordPress REST ランタイム
 * Controller / Adapter 実装
 * 認証
 * 権限
 * レート制御
-* integration test
+* 結合テスト
 
 ### 設計原則
 
-```plaintext
-REST = OpenAPI + WordPress runtime
-Authentication is adapter responsibility
-Rate limits are deployment policy
-```
+* REST = OpenAPI + WordPress ランタイム
+* 認証は、アダプタの責務
+* レート制限は、デプロイ・ポリシー
 
 ### 設計方針 (規約)
 
-* REST API は、OpenAPI 契約 と WordPress 実 runtime の両方で成立します。
-* `register_rest_route` を、唯一の HTTP routing とします。
-* `callback` / `permission_callback` を、Adapter (Controller) として扱います。
-* HTTP integration test は、WordPress 実 runtime (`WP_REST_Server`) を通します。
-* 認証・権限は、WordPress REST API のしくみに準拠します。
-* Rate limiting の enforcement 値は、インフラストラクチャ / ホスト側で決定します。
-* ライブラリは、RateLimitError と `Retry-After` 表現を保証します。
-* OpenAPI のパスは、論理契約として扱い、WordPress URL は、runtime endpoint として扱います。
+* REST API は、OpenAPI 契約 と WordPress 実 runtime の両方で成立する。
+* `register_rest_route` を、唯一の HTTP routing とする。
+* `callback` / `permission_callback` を、Adapter (Controller) として扱う。
+* HTTP 結合テストは、WordPress 実ランタイム (`WP_REST_Server`) を通す。
+* 認証・権限は、WordPress REST API のしくみに準拠する。
+* Rate limiting の enforcement 値は、インフラストラクチャ / ホスト側で決定する。
+* ライブラリは、RateLimitError と `Retry-After` 表現を保証する。
+* OpenAPI のパスは、論理契約として扱い、WordPress URL は、runtime endpoint として扱う。
 
 ### 非対象 (Out of Scope)
 
@@ -1392,7 +1356,7 @@ Rate limits are deployment policy
 * `SimilarityController`
 * `EmbeddingController`
 * `ErrorMapper`
-* request validation
+* request 検証
 * `tests/Integration/WordPressRestAdapterIntegrationTest.php`
 * `WorDBless`
 * `WP_REST_Server`
@@ -1413,15 +1377,15 @@ REST API は、下記を満たした場合に成立とします。
 2. WordPress routing が実装されている
 3. Controller / Adapter が実装されている
 4. Error mapping が実装されている
-5. request validation が実装されている
-6. WordPress runtime 上の HTTP integration test が存在する
+5. request 検証が実装されている
+6. WordPress runtime 上の HTTP 結合テストが存在する
 
-### HTTP integration test
+### HTTP 結合テスト
 
 #### 方針
 
-* integration test は、`WP_REST_Server` を経由して実施します。
-* 単なる Service unit test では、REST 成立条件を満たしません。
+* 結合テストは、`WP_REST_Server` を経由して実施する。
+* 単なる Service ユニットテストでは、REST 成立条件を満たさない。
 
 #### 対象
 
@@ -1429,20 +1393,20 @@ REST API は、下記を満たした場合に成立とします。
 
 * route registration
 * HTTP method
-* request validation
+* request 検証
 * permission callback
 * controller dispatch
 * error mapping
-* response serialization
-* status code
+* response のシリアライズ
+* ステータスコード
 * headers
 
 ### 認証モデル
 
 #### 方針
 
-* 認証は、WordPress REST API に準拠します。
-* 最小実装 (Bearer token string match) は許容するが、正式仕様としては adapter 実装責務とします。
+* 認証は、WordPress REST API に準拠する。
+* 最小実装 (Bearer token string match) は許容するが、正式仕様としては adapter 実装責務とする。
 
 #### 推奨モデル
 
@@ -1451,7 +1415,7 @@ REST API は、下記を満たした場合に成立とします。
 * Application Passwords
 * JWT
 * OAuth-compatible gateway
-* custom Bearer validation
+* custom Bearer 検証
 
 ### 権限モデル
 
@@ -1496,20 +1460,20 @@ REST API は、下記を満たした場合に成立とします。
 
 #### 契約
 
-* OpenAPI の `/v1/similarity` は、論理 API パスを表します。
-* WordPress 実エンドポイントは、`/wp-json/s2j/v1/similarity` となります。
+* OpenAPI の `/v1/similarity` は、論理 API パスを表す。
+* WordPress 実エンドポイントは、`/wp-json/s2j/v1/similarity` となる。
 
 #### 方針
 
-* README / REST API 仕様で、この対応を明示します。
+README / REST API 仕様で、この対応を明示します。
 
-### JSON Schema validation
+### JSON Schema 検証
 
-* integration test による実レスポンス検証は、実装済みとします。
+結合テストによる実レスポンス検証は、実装済みとします。
 
 #### 残判断
 
-* OpenAPI レスポンスの JSON Schema 検証を CI に載せ、engineering policy として別途判断します。
+OpenAPI レスポンスの JSON Schema 検証を CI に載せ、engineering policy として別途判断します。
 
 ## REST API (HTTP Runtime / WordPress REST Adapter)
 
@@ -1525,30 +1489,28 @@ OpenAPI で定義された下記の REST API 契約を、「WordPress REST API �
 また、下記の整合を保証し、ユーザーが迷わず利用できる状態を完成条件とします。
 
 * OpenAPI 契約
-* WordPress runtime
-* integration test
+* WordPress ランタイム
+* 結合テスト
 * ユーザー向け導線
 
 ### 設計方針 (規約)
 
-* OpenAPI schema を HTTP 契約の source of truth とします。
-* HTTP runtime は、WordPress REST API を使用します。
-* `register_rest_route()` を唯一の routing mechanism とします。
-* controller は、REST Adapter として実装します。
-* `permission_callback` により認証 / 権限を判定します。
-* `WP_REST_Server` を通る integration test を REST 成立条件とします。
-* REST エラーは、`ErrorMapper` により DomainError に対応付けます。
-* OpenAPI パスは、論理契約、WordPress エンドポイントは runtime エンドポイントとします。
-* [READ ME](../../README.md) (ユーザー向け導線) で runtime エンドポイントを明示します。
+* OpenAPI schema を HTTP 契約の source of truth とする。
+* HTTP runtime は、WordPress REST API を使用する。
+* `register_rest_route()` を唯一の routing mechanism とする。
+* controller は、REST Adapter として実装する。
+* `permission_callback` により認証 / 権限を判定する。
+* `WP_REST_Server` を通る結合テストを REST 成立条件とする。
+* REST エラーは、`ErrorMapper` により DomainError に対応付ける。
+* OpenAPI パスは、論理契約、WordPress エンドポイントは runtime エンドポイントとする。
+* [READ ME](../../README.md) (ユーザー向け導線) で runtime エンドポイントを明示する。
 
 ### 設計原則
 
-```plaintext
-REST contract is OpenAPI
-HTTP runtime is WordPress
-Integration means WP_REST_Server
-User-facing endpoint documentation is mandatory
-```
+* REST 契約は OpenAPI
+* HTTP ランタイムは WordPress
+* 統合とは WP_REST_Server
+* ユーザー向けのエンドポイント・ドキュメントは必須
 
 ### 責務
 
@@ -1559,10 +1521,10 @@ User-facing endpoint documentation is mandatory
 
 ### 非責務
 
-* インフラストラクチャ provisioning
-* distributed rate limiting
-* external IAM
-* deployment automation
+* インフラストラクチャ・プロビジョニング
+* 分散型レート制限
+* 外部 IAM
+* デプロイの自動化
 
 ### HTTP Adapter の責務
 
@@ -1589,8 +1551,8 @@ REST Adapter は、下記を責務としません。
 * API Gateway
 * WAF
 * CDN
-* infrastructure throttling
-* external auth provider implementation
+* インフラストラクチャの帯域制御
+* 外部認証プロバイダの実装
 
 ### 非対象 (Out of Scope)
 
@@ -1618,10 +1580,10 @@ REST Adapter は、下記を責務としません。
 * Routes
 * `SimilarityController`
 * `EmbeddingController`
-* request validation
+* request 検証
 * `ErrorMapper`
 
-#### integration test
+#### 結合テスト
 
 * `tests/Integration/WordPressRestAdapterIntegrationTest.php`
 * WorDBless
@@ -1660,7 +1622,7 @@ REST Adapter は、下記を責務としません。
 ?rest_route=/s2j/v1/embedding
 ```
 
-なお、integration test では、`rest_url()` により、URL 形式を検証します。
+なお、結合テストでは、`rest_url()` により、URL 形式を検証します。
 
 ### REST API の成立条件
 
@@ -1669,9 +1631,9 @@ REST Adapter は、下記を責務としません。
 1. OpenAPI schema が存在する
 2. WordPress routing が存在する
 3. controller / adapter が存在する
-4. request validation が存在する
+4. request 検証が存在する
 5. error mapping が存在する
-6. WordPress runtime integration test が存在する
+6. WordPress runtime 結合テストが存在する
 
 ### 100% 完了条件
 

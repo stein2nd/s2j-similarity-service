@@ -42,10 +42,10 @@ flowchart TD
 | Infrastructure | 外部依存 |
 | Interfaces | I/O |
 
-#### 5. runtime 戦略
+#### 5. ランタイム戦略
 
-* runtime 分岐はビルドで解決
-* 実行時判定は禁止
+* ランタイム分岐は、ビルドで解決
+* 実行時判定は、禁止
 
 #### 6. examples 中心設計
 

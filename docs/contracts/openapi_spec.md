@@ -66,7 +66,7 @@ Embedding API は、下記の理由から、OpenAPI の対象外とします。
 OpenAPI 定義から、下記を生成します。
 
 * TypeScript 型
-* Zod スキーマ (runtime validation)
+* Zod スキーマ (ランタイム検証)
 * API クライアント
 
 ## 型定義ルール (`required`、`nullable`、`enum`)
@@ -158,7 +158,7 @@ enum:
 
 ## バリデーション
 
-* runtime validation は、Zod により実施します。
+* ランタイム検証は、Zod により実施します。
 * スキーマは、OpenAPI から生成します。
 
 ## OpenAPI におけるバージョン

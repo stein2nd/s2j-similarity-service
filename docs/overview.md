@@ -69,11 +69,11 @@
 * API キー管理や認証基盤の提供
 * 機械学習モデルの学習・チューニング
 
-## WordPress REST API を HTTP Runtime として利用
+## WordPress REST API を HTTP ランタイムとして利用
 
 ### 概要
 
-本 Composer ライブラリは、単独の Web アプリケーションとして動作することよりも、下記に組み込まれることを主目的として設計しています。そのため、本ライブラリにおける HTTP runtime は、WordPress Core が提供する [WordPress REST API](https://ja.wordpress.org/team/handbook/plugin-development/rest-api/rest-api-overview/) (以降、`register_rest_route`) を前提とします。
+本 Composer ライブラリは、単独の Web アプリケーションとして動作することよりも、下記に組み込まれることを主目的として設計しています。そのため、本ライブラリにおける HTTP ランタイムは、WordPress Core が提供する [WordPress REST API](https://ja.wordpress.org/team/handbook/plugin-development/rest-api/rest-api-overview/) (以降、`register_rest_route`) を前提とします。
 
 * WordPress プラグイン
 * WordPress テーマ
@@ -81,16 +81,14 @@
 
 ### 設計方針 (規約)
 
-```plaintext id="wp_runtime_principle"
-WordPress を runtime として利用する
-ビジネスロジックは、WordPress 非依存に保つ
-```
+* WordPress をランタイムとして利用する
+* ビジネスロジックは、WordPress 非依存に保つ
 
 ### 非対象 (Out of Scope)
 
 * 独立 HTTP サーバーとしての提供
 * Slim / Laravel 同梱
-* WordPress 外での standalone runtime 提供
+* WordPress 外での standalone ランタイム提供
 * 独自 Router 実装
 
 ### Adapter の責務
@@ -98,7 +96,7 @@ WordPress を runtime として利用する
 #### callback
 
 * Request → DTO に変換すること。
-* Validation すること。
+* 検証すること。
 * SimilarityService 呼び出しすること。
 * Response に変換すること。
 
@@ -137,7 +135,7 @@ register_rest_route(
 
 #### 2. 二重 HTTP スタックを避ける
 
-本ライブラリでは、下記のようなサードパーティー製ツール等を同梱し、WordPress 内部に別 HTTP runtime を構築することは行いません。
+本ライブラリでは、下記のようなサードパーティー製ツール等を同梱し、WordPress 内部に別 HTTP ランタイムを構築することは行いません。
 
 * Slim
 * Laravel
@@ -222,7 +220,7 @@ WordPress ユーザーには、安定 API を公開する
 ### 非対象 (Out of Scope)
 
 * 本番環境での Node 実行
-* runtime codegen
+* ランタイム codegen
 * generated client の直接利用の推奨
 * standalone TS SDK 配布
 
@@ -352,7 +350,7 @@ $client->similarity(...)
 generated client を直接公開すると、下記に挙げる様なことがユーザーに漏出しやすいためです。
 
 * HTTP 差異
-* runtime 差異
+* ランタイム差異
 * エラー形式
 * retry 方針
 
@@ -386,5 +384,5 @@ client = 公開入口
 これにより、下記を SDK 内部に閉じ込めることを目的とします。
 
 * WordPress 環境依存
-* runtime 差異
+* ランタイム差異
 * HTTP 実装差異

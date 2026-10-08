@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.11 - 2026-10-08
+
+### Changed
+
+* 仕様ドキュメント (`README.md`、`docs/**`、`docs_old/**`) の文体を整備 (箇条書き文末の「します」を「する」へ、`runtime` → `ランタイム`、`validation` → `検証`、`integration test` → `結合テスト`、`次` → `下記`、など)
+* `package-lock.json` の package version を v2.0.11にそろえる
+* `composer.json` の `version` を `package.json` に合わせて v2.0.11に更新
+
 ## 2.0.10 - 2026-10-05
 
 ### Changed

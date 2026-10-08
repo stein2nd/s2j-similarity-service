@@ -254,7 +254,7 @@ public function similarity(
 | --- | --- |
 | 認証 | API キーを付与すること。 |
 | 通信 | HTTP リクエストを実行すること。 |
-| バリデーション | Zod による runtime validation を実行すること。 |
+| バリデーション | Zod によるランタイム検証を実行すること。 |
 | エラー処理 | HTTP エラーの統一処理を実行すること。 |
 
 ### 非責務
@@ -321,7 +321,7 @@ export class DefaultApiClient implements ApiClient {
 
     const json = await res.json();
 
-    // runtime validation (Zod)
+    // ランタイム検証 (Zod)
     return SimilarityResponseSchema.parse(json);
   }
 }
@@ -2281,7 +2281,7 @@ packages/php-sdk/src/Contracts/DTO/Generated/
 
 * 型共有
 * 外部統合
-* serialization
+* シリアライズ
 
 #### 2. core (公開・低レベル)
 
@@ -2771,7 +2771,7 @@ Errors are discriminated unions
 * Queue / orchestration は、提供しません。
 * エラー識別は、`error.type` を基準とします。
 * エラー型は、discriminated union を正本とします。
-* runtime 利便性のため、Error class を補助提供します。
+* ランタイム利便性のため、Error class を補助提供します。
 * enum は、採用しません。
 
 ### 非対象 (Out of Scope)
@@ -2786,7 +2786,7 @@ Errors are discriminated unions
 ### 責務
 
 * stable TypeScript API を提供すること。
-* runtime 差異を吸収すること。
+* ランタイム差異を吸収すること。
 * timeout / retry を標準化すること。
 * REST エラーを型安全に扱えるようにすること。
 * OpenAPI 契約と整合すること。
@@ -2819,7 +2819,7 @@ await client.similarity(textA, textB)
 
 #### 公開対象: HttpClient abstraction
 
-下記のコード例のように、runtime 差異を吸収します。
+下記のコード例のように、ランタイム差異を吸収します。
 
 ```ts
 interface HttpClient {
@@ -2928,7 +2928,7 @@ type SDKDomainError =
   | ProviderError
 ```
 
-#### runtime 補助
+#### ランタイム補助
 
 `instanceof` や `runtime ergonomics` に対する補助用途として、下記のコード例のような、Error class を提供しても良いでしょう。
 
@@ -2956,9 +2956,9 @@ error.type は、`snake_case` で統一します。
 * TS literal
 * PHP `DomainError::$type`
 
-### runtime 差異
+### ランタイム差異
 
-| runtime | transport |
+| ランタイム | 転送 |
 | --- | --- |
 | Browser | native fetch |
 | Edge | global fetch |
@@ -2970,7 +2970,7 @@ error.type は、`snake_case` で統一します。
 
 OpenAPI 契約に対応する TypeScript SDK として、HTTP ユーザー向けの安定した公開 API を提供します。
 
-本 SDK は、generated raw client を直接公開せず、下記を含む wrapper SDK として提供し、HTTP ユーザーが runtime 差異や generated implementation detail を意識せず利用できる状態を目標とします。
+本 SDK は、generated raw client を直接公開せず、下記を含む wrapper SDK として提供し、HTTP ユーザーがランタイム差異や generated implementation detail を意識せず利用できる状態を目標とします。
 
 * 型安全
 * transport abstraction
@@ -3002,7 +3002,7 @@ Transport is replaceable
 * REST ErrorResponse は、SDKError に正規化します。
 * error 判定は、`error.type` を基準とします。
 * SDK error は、discriminated union を正本とします。
-* runtime ergonomics のため、Error class を補助提供します。
+* ランタイム ergonomics のため、Error class を補助提供します。
 * enum は、採用しません。
 
 ### 責務
@@ -3036,7 +3036,7 @@ SDK は、下記を責務としません。
 * websocket トランスポート
 * GraphQL SDK
 * primary product としての npm 公開エコシステムパッケージ
-* ブラウザーサイドの runtime コード生成
+* ブラウザーサイドのランタイム・コード生成
 
 ### 実装済み
 
@@ -3057,7 +3057,7 @@ SDK は、下記を責務としません。
 
 * `HttpClient`
 * fetch abstraction
-* runtime transport boundary
+* ランタイム転送境界
 
 #### Resilience
 
@@ -3146,7 +3146,7 @@ engineering にて確定します。
 
 ### 任意の品質向上
 
-成功レスポンスの runtime 検証の候補は、下記のとおりです。現状は、形状検証を中心としてます。
+成功レスポンスのランタイム検証の候補は、下記のとおりです。現状は、形状検証を中心としてます。
 
 * Zod
 * 軽量なスキーマガード
@@ -3160,7 +3160,7 @@ engineering にて確定します。
 TypeScript SDK (`@s2j/similarity-client`) について、公開 API の安定性と回帰検知を保証しつつ、本プロジェクトの主製品である Composer ライブラリ (WordPress プラグイン / テーマへの組込み用途) と整合した、過不足のない品質保証の方針を定義します。
 
 本 SDK は、スタンドアローンフロントエンド SDK ではなく、REST API 利用を補助するラッパークライアントです。
-そのためブラウザー E2E や runtime スキーマ検証を標準の品質要件とはせず、責務に見合った軽量な品質保証を採用します。
+そのためブラウザー E2E やランタイム・スキーマ検証を標準の品質要件とはせず、責務に見合った軽量な品質保証を採用します。
 
 ### 設計方針 (規約)
 
@@ -3170,7 +3170,7 @@ TypeScript SDK (`@s2j/similarity-client`) について、公開 API の安定性
 * HTTP 通信は、`HttpClient` abstraction をモック化して検証します。
 * タイムアウト / リトライ / エラー標準化は、SDK の責務として検証します。
 * OpenAPI 契約整合は、コード生成の再現性により保証します。
-* success response の runtime 検証 (Zod 等) は、標準採用しません。
+* success response のランタイム検証 (Zod 等) は、標準採用しません。
 * generated raw クライアントの品質は、公開 API ではなく内部実装の品質として扱います。
 
 ### 責務
@@ -3196,7 +3196,7 @@ TypeScript SDK の非責務は、下記のとおりです。
 * プロバイダのライブ検証
 * 分散リトライ
 * サーキットブレーカー
-* runtime スキーマ検証
+* ランタイム・スキーマ検証
 
 ### 非対象 (Out of Scope)
 
@@ -3294,13 +3294,13 @@ isSDKError()
 * ブラウザー E2E
 * HTTP ライブ統合
 * 外部 API アクセス
-* WordPress runtime 統合
+* WordPress ランタイム統合
 
-### runtime 検証: 方針
+### ランタイム検証: 方針
 
-成功レスポンスの runtime 検証 (Zod 等) は、標準採用しません。
+成功レスポンスの ランタイム検証 (Zod 等) は、標準採用しません。
 
-### runtime 検証: 理由
+### ランタイム検証: 理由
 
 本プロジェクトでは、下記の構成により、producer / consumer が同一リポジトリ内で管理されているためです。
 
@@ -3310,14 +3310,14 @@ flowchart TD
   B --> C["wrapper SDK"]
 ```
 
-runtime 検証を追加すると、下記が発生します。
+ランタイム検証を追加すると、下記が発生します。
 
 * バンドルサイズの増加
-* runtime コスト
+* ランタイム・コスト
 * 契約の重複
 * ドリフトのリスク
 
-### runtime 検証: 例外
+### ランタイム検証: 例外
 
 下記コード例のような、開発アサーションとしてのみ、許容します。製品の依存関係としては、採用しません。
 

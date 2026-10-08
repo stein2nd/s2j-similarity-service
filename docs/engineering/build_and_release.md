@@ -826,7 +826,7 @@ pnpm turbo run build --parallel
 
 ---
 
-## TypeScript SDK Runtime Validation 配布ポリシー
+## TypeScript SDK ランタイム検証配布ポリシー
 
 ### 設計意図 (ゴール)
 

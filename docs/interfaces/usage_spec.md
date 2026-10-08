@@ -28,9 +28,9 @@
 
 ### 設計方針 (規約)
 
-* DI (依存性注入) を前提とします。
-* Strategy (Embedding 実装) を差し替え可能とします。
-* インプロセスの計算は **PHP ライブラリ** が正本です。HTTP 経由は OpenAPI 契約を共有する **TypeScript SDK (`@s2j/similarity-client`)** (同一ファイル内の後述節) を参照します。
+* DI (依存性注入) を前提とする。
+* Strategy (Embedding 実装) を差し替え可能とする。
+* インプロセスの計算は **PHP ライブラリ** が正本である。HTTP 経由は OpenAPI 契約を共有する **TypeScript SDK (`@s2j/similarity-client`)** (同一ファイル内の後述節) を参照する。
 
 ### 非対象 (Out of Scope)
 
@@ -110,13 +110,13 @@ $score = SimilarityCalculator::calculate($vectorA, $vectorB);
 
 ### ルール
 
-* DI 対象は、常に `strategy` と命名します。
-* `provider` という変数名は、使用しません。
+* DI 対象は、常に `strategy` と命名する。
+* `provider` という変数名は、使用しない。
 
 ### 補足
 
 * `$model` は、省略可能。
-* 未指定時は、Strategy のデフォルトモデルが使用される
+* 未指定時は、Strategy のデフォルトモデルが使用される。
 
 ## JavaScript / TypeScript (擬似コード)
 
@@ -170,7 +170,7 @@ npm ci
 npm run build -w @s2j/similarity-client
 ```
 
-OpenAPI / 生成コードとリポジトリ成果物に差分がないことを確認するには、ルートで次を実行します。
+OpenAPI / 生成コードとリポジトリ成果物に差分がないことを確認するには、ルートで下記を実行します。
 
 ```zsh
 npm run verify:codegen
@@ -299,18 +299,18 @@ try {
 
 ### Strategy の再利用
 
-* 毎回生成しません。
-* シングルトンとして扱います。
+* 毎回生成しない。
+* シングルトンとして扱う。
 
 ### キャッシュ
 
-* Embedding 結果をキャッシュします。
-* API コストを削減します。
+* Embedding 結果をキャッシュする。
+* API コストを削減する。
 
 ### 非同期処理 - JavaScript
 
-* 並列実行を可能とします。
-* Promise.all を活用します。
+* 並列実行を可能とする。
+* Promise.all を活用する。
 
 <!-- 小見出し「CI での契約検証」は、docs/engineering/build_and_replace.md に移動 -->
 
@@ -388,15 +388,15 @@ $service = new SimilarityService($strategy);
 
 ### 設計意図 (ゴール)
 
-* 初回での成功体験を、最速で提供します。
-* 離脱率を下げます。
-* 学習コストを最小化します。
+* 初回での成功体験を、最速で提供する。
+* 離脱率を下げる。
+* 学習コストを最小化する。
 
 ### 設計方針 (規約)
 
-* 10行以内で完結します。
-* コピー & ペーストで動作します。
-* 前提条件を最小化します。
+* 10行以内で完結する。
+* コピー & ペーストで動作する。
+* 前提条件を最小化する。
 
 ### 責務
 
@@ -497,15 +497,15 @@ await client.similarity({
 
 ### 設計意図 (ゴール)
 
-* 非エンジニアでも、仕様編集を可能にします。
-* 変更の即時反映による、フィードバックの高速化を目指します。
-* 開発体験の向上を目指します。
+* 非エンジニアでも、仕様編集を可能にする。
+* 変更の即時反映による、フィードバックの高速化を目指す。
+* 開発体験の向上を目指す。
 
 ### 設計方針 (規約)
 
-* OpenAPI を中心にすべて連動させます。
-* GUI 編集は、schema を直接更新します。
-* 保存時に、自動で codegen を実行します。
+* OpenAPI を中心にすべて連動させる。
+* GUI 編集は、schema を直接更新する。
+* 保存時に、自動で codegen を実行する。
 
 ### 責務
 
@@ -561,14 +561,14 @@ flowchart TD
 
 ### バリデーション
 
-* OpenAPI schema validation
+* OpenAPI schema 検証
 * breaking change 検出
 * CI 連携
 
 ### 推奨運用
 
-* GUI は、ブランチ上で利用します。
-* Pull-Request レビューが必須です。
+* GUI は、ブランチ上で利用する。
+* Pull-Request レビューが必須である。
 
 ### 利点
 
@@ -578,8 +578,8 @@ flowchart TD
 
 ### 注意点
 
-* 誤操作リスクが不可避です。
-* バージョン管理が重要です。
+* 誤操作リスクが不可避である。
+* バージョン管理が重要である。
 
 <!-- 小見出し「OpenAPI → DB schema 連動」は、docs/contracts/codegen_spec.md に移動 -->
 
@@ -589,15 +589,15 @@ flowchart TD
 
 ### 設計意図 (ゴール)
 
-* 非エンジニアでも開発可能にします。
-* 開発スピードを最大化します。
-* 仕様変更のコストを最小化します。
+* 非エンジニアでも開発可能にする。
+* 開発スピードを最大化する。
+* 仕様変更のコストを最小化する。
 
 ### 設計方針 (規約)
 
-* すべての変更は GUI 経由で OpenAPI に反映します。
-* GUI 操作は、codegen パイプラインに接続します。
-* 手動コード編集は、最小限に抑えます。
+* すべての変更は GUI 経由で OpenAPI に反映する。
+* GUI 操作は、codegen パイプラインに接続する。
+* 手動コード編集は、最小限に抑える。
 
 ### 責務
 
@@ -644,17 +644,15 @@ flowchart TD
 
 ### UI 構成
 
-```plaintext id="nocode_ui"
-API Editor
-Schema Builder
-Preview (Playground)
-Diff Viewer
-```
+* API Editor
+* Schema Builder
+* Preview (Playground)
+* Diff Viewer
 
 ### 推奨
 
-* コア部分は、エンジニアが設計
-* GUI は、拡張・運用に利用
+* コア部分は、エンジニアが設計する
+* GUI は、拡張・運用に利用する
 
 ### 利点
 
@@ -664,8 +662,8 @@ Diff Viewer
 
 ### 注意点
 
-* 柔軟性が制限されます。
-* 高度ロジックの表現が困難になります。
+* 柔軟性が制限される。
+* 高度ロジックの表現が困難になる。
 
 <!-- 小見出し「マルチテナント対応」は、docs/governance/security.md に移動 -->
 
@@ -677,15 +675,15 @@ Diff Viewer
 
 ### 設計意図 (ゴール)
 
-* 非同期処理を管理します。
-* 業務フローを可視化します。
-* 拡張性を確保します。
+* 非同期処理を管理する。
+* 業務フローを可視化する。
+* 拡張性を確保する。
 
 ### 設計方針 (規約)
 
-* ワークフローは、外部エンジンに委譲します。
-* SDK は、トリガー・結果取得のみ担当します。
-* 状態は、明示的に管理します。
+* ワークフローは、外部エンジンに委譲する。
+* SDK は、トリガー・結果取得のみ担当する。
+* 状態は、明示的に管理する。
 
 ### 責務
 
@@ -714,12 +712,10 @@ flowchart TD
 
 ### 状態管理
 
-```plaintext id="workflow_state"
-pending
-running
-completed
-failed
-```
+* `pending`
+* `running`
+* `completed`
+* `failed`
 
 ### 利用例
 
@@ -743,8 +739,8 @@ failed
 
 ### 注意点
 
-* 複雑性の増加に注意してください。
-* デバッグ難易度の増加に注意してください。
+* 複雑性の増加に注意すること。
+* デバッグ難易度の増加に注意すること。
 
 <!-- 小見出し「監査ログ (Audit Log)」は、docs/governance/compliance.md に移動 -->
 
@@ -790,11 +786,11 @@ failed
 
 ### 設計方針 (規約)
 
-* サンプルコードの命名は、実装と完全一致させます。
-* 抽象インターフェースとしては `EmbeddingStrategyInterface` を型の入口とします (`BatchEmbeddingStrategyInterface` はこれを拡張)。
-* DI されるインスタンスは、`strategy` と命名します。
-* `provider` という用語は、使用しません (概念としてのみ存在し、命名には使わない)。
-* 実装クラスは、`*EmbeddingStrategy` 形式で統一します。
+* サンプルコードの命名は、実装と完全一致させること。
+* 抽象インターフェースとしては `EmbeddingStrategyInterface` を型の入口とする (`BatchEmbeddingStrategyInterface` はこれを拡張)。
+* DI されるインスタンスは、`strategy` と命名する。
+* `provider` という用語は、使用しない (概念としてのみ存在し、命名には使わない)。
+* 実装クラスは、`*EmbeddingStrategy` 形式で統一する。
 
 ### 非対象 (Out of Scope)
 
@@ -855,9 +851,9 @@ const score = await client.similarity(textA, textB);
 
 * Provider
   * 外部 API の概念 (OpenAI / Claude / Gemini)
-  * **命名としては使用しません**
+  * **命名としては使用しない**
 * Strategy
-  * 実装上の抽象および具象クラスの名称として使用します。
+  * 実装上の抽象および具象クラスの名称として使用する。
 
 ### 禁止事項
 
@@ -873,19 +869,17 @@ SDK の公開 API を単一の体系に統合し、ユーザー・実装者・�
 
 ### 設計原則
 
-```plaintext id="api_principle"
-公開入口は、1つ
-命名は、1つ
-責務は、1つ
-```
+* 公開入口は、1つ
+* 命名は、1つ
+* 責務は、1つ
 
 ### 設計方針 (規約)
 
-* `S2J\Similarity\...` を唯一の正式 API とします。
-* `S2J\SimilarityService\...` は、旧 API として廃止します。
-* 旧 API は、互換レイヤを提供せず削除します。
-* README、examples、Playground、SDK は、新 API のみを使用します。
-* API 命名は、`similarity()`、`embed()` に統一します。
+* `S2J\Similarity\...` を唯一の正式 API とする。
+* `S2J\SimilarityService\...` は、旧 API として廃止する。
+* 旧 API は、互換レイヤを提供せず削除する。
+* README、examples、Playground、SDK は、新 API のみを使用する。
+* API 命名は、`similarity()`、`embed()` に統一する。
 
 ### 非対象 (Out of Scope)
 
@@ -904,15 +898,13 @@ SDK の公開 API を単一の体系に統合し、ユーザー・実装者・�
 
 * 旧 API ユーザーの自動移行
 * legacy adapter 提供
-* 廃止 warning runtime
+* 廃止 warning ランタイム
 
 ### 現行 API
 
 #### 正式 API (採用)
 
-```plaintext id="api_new"
-S2J\Similarity\...
-```
+`S2J\Similarity\...`
 
 たとえば
 
@@ -923,9 +915,7 @@ $strategy->embed($text)
 
 ### 旧 API (削除対象)
 
-```plaintext id="api_old"
-S2J\SimilarityService\...
-```
+`S2J\SimilarityService\...
 
 たとえば
 
@@ -938,14 +928,12 @@ $strategy->getEmbedding(...)
 
 #### 1. 責務重複
 
-* 新 API と旧 API が、実質同一の機能を提供しています。
+* 新 API と旧 API が、実質同一の機能を提供している。
 
 #### 2. 命名不整合
 
-```plaintext id="api_old_names"
-compare() vs similarity()
-getEmbedding() vs embed()
-```
+* `compare()` vs `similarity()`
+* `getEmbedding()` vs `embed()`
 
 #### 3. DI 設計との不整合
 
@@ -968,19 +956,15 @@ getEmbedding() vs embed()
 
 #### Application 層
 
-```plaintext id="api_public"
-SimilarityService
-EmbeddingService
-```
+* `SimilarityService`
+* `EmbeddingService`
 
 #### Strategy
 
-```plaintext id="api_strategy"
-EmbeddingStrategyInterface
-OpenAIEmbeddingStrategy
-ClaudeEmbeddingStrategy
-GeminiEmbeddingStrategy
-```
+* `EmbeddingStrategyInterface`
+* `OpenAIEmbeddingStrategy`
+* `ClaudeEmbeddingStrategy`
+* `GeminiEmbeddingStrategy`
 
 ### 命名規則
 
@@ -992,17 +976,15 @@ GeminiEmbeddingStrategy
 
 ### 削除方針
 
-* 旧 API は、段階的な廃止ではなく、即時削除となります。
-* compatibility layer は、提供しません。
-* namespace ごと削除します。
+* 旧 API は、段階的な廃止ではなく、即時削除となる。
+* compatibility layer は、提供しない。
+* namespace ごと削除する。
 
 #### 削除対象
 
-```plaintext id="api_remove"
-S2J\SimilarityService\...
-compare()
-getEmbedding()
-```
+* `S2J\SimilarityService\...`
+* `compare()`
+* `getEmbedding()`
 
 ### migration 方針
 
@@ -1022,12 +1004,12 @@ $service->similarity($a, $b)
 
 #### ルール
 
-* すべて新 API のみ掲載します。
-* 旧 API の記述を残しません。
+* すべて新 API のみ掲載する。
+* 旧 API の記述を残さない。
 
 ### Playground / SDK
 
 #### ルール
 
-* Playground は、新 API のみ利用します。
-* codegen 出力も、新 API 前提とします。
+* Playground は、新 API のみ利用する。
+* codegen 出力も、新 API 前提とする。

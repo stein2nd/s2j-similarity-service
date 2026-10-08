@@ -129,7 +129,7 @@ $strategy = new OpenAIEmbeddingStrategy(
 主なオプション:
 
 * `apiKey` — API キー
-* `defaultModel` — `embed()` / `embedBatch()` でモデル未指定のとき使うデフォルトモデル (省略時 `text-embedding-3-small`)
+* `defaultModel` — `embed()` / `embedBatch()` でモデル未指定の場合に使うデフォルトモデル (省略時 `text-embedding-3-small`)
 * `endpoint` — Embeddings API の URL (省略時は OpenAI デフォルト `https://api.openai.com/v1/embeddings`)
 * `timeoutSeconds` — cURL タイムアウト (秒。省略時は30)
 
@@ -228,20 +228,20 @@ $matrix = $service->similarityMatrix(['a', 'b', 'c']);
 
 * `float` (0.0〜1.0の類似度スコア)
 
-## REST API (HTTP runtime / WordPress REST Adapter)
+## REST API (HTTP ランタイム/ WordPress REST Adapter)
 
-HTTP 経由で利用する場合、本ライブラリは、**独自の HTTP サーバーを持たず**、WordPress Core の REST API (`register_rest_route`) を HTTP runtime として用います。契約の詳細・責務境界は [**REST API 仕様**](docs/interfaces/rest_api_spec.md) の「REST API (HTTP Runtime / WordPress REST Adapter)」を参照してください。
+HTTP 経由で利用する場合、本ライブラリは、**独自の HTTP サーバーを持たず**、WordPress Core の REST API (`register_rest_route`) を HTTP ランタイムとして用います。契約の詳細・責務境界は [**REST API 仕様**](docs/interfaces/rest_api_spec.md) の「REST API (HTTP ランタイム/ WordPress REST Adapter)」を参照してください。
 
 ### OpenAPI と実エンドポイントの対応
 
 契約の source of truth は、[`schema/openapi.yaml`](schema/openapi.yaml) です。
 
-| 論理 API (OpenAPI) | WordPress runtime URL (例) |
+| 論理 API (OpenAPI) | WordPress ランタイム URL (例) |
 | --- | --- |
 | `POST /v1/similarity` | `https://<サイト>/wp-json/s2j/v1/similarity` |
 | `POST /v1/embedding` | `https://<サイト>/wp-json/s2j/v1/embedding` |
 
-パーマリンク設定により URL が変わる場合は、次の形式になることがあります (いずれも WordPress の標準挙動です)。
+パーマリンク設定により URL が変わる場合は、下記の形式になることがあります (いずれも WordPress の標準挙動です)。
 
 * `https://<サイト>/?rest_route=/s2j/v1/similarity`
 * `https://<サイト>/?rest_route=/s2j/v1/embedding`
@@ -337,7 +337,7 @@ OpenAPI 契約に沿った **公式の TypeScript ラッパー** です。生成
 }
 ```
 
-パスは、プロジェクト配置に合わせて調整してください。ビルド済みの `dist/` が必要な場合は、依存先で次のビルドを実行します。
+パスは、プロジェクト配置に合わせて調整してください。ビルド済みの `dist/` が必要な場合は、依存先で下記のビルドを実行します。
 
 ```zsh
 npm run build -w @s2j/similarity-client
@@ -371,7 +371,7 @@ Bearer を使わない開発環境では `apiKey` を省略できます (サー�
 
 ### ビルドと codegen の検証 (開発者向け)
 
-リポジトリルートで Node.js v20以上を用意し、依存関係を入れたうえで次を実行します。
+リポジトリルートで Node.js v20以上を用意し、依存関係を入れたうえで下記を実行します。
 
 ```zsh
 npm ci

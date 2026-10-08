@@ -219,12 +219,12 @@ ApiClient の責務は、下記の通りです。
 | Application | 制御 |
 | Interfaces | 入出力 |
 
-### Validation の Source of Truth
+### 検証の Source of Truth
 
 バリデーションの定義は、Contracts 層の OpenAPI を唯一の正とします。
 
 * Contracts は、概念仕様です。
-* Interfaces は、OpenAPI 由来のスキーマで runtime validation を実施します。
+* Interfaces は、OpenAPI 由来のスキーマでランタイム検証を実施します。
 
 ## PHP パッケージの責務分離
 
@@ -311,7 +311,7 @@ Infra       → 詳細ログ
 * Application / Interfaces で emit します。
 * Infrastructure は、詳細ログを出してよい
 
-## Runtime 依存の分離
+## ランタイム依存の分離
 
 ### 構造
 
@@ -319,13 +319,13 @@ Infra       → 詳細ログ
 flowchart TD
   A["Core"] --> B["Application"]
   B --> C["Interfaces (ApiClient)"]
-  C --> D["Infrastructure (HttpClient / Runtime 実装)"]
+  C --> D["Infrastructure (HttpClient / ランタイム実装)"]
 ```
 
 ### ルール
 
-* runtime 依存は、Infrastructure 層に閉じ込めます。
-* Core / Application は、runtime を知りません。
+* ランタイム依存は、Infrastructure 層に閉じ込めます。
+* Core / Application は、ランタイムを知りません。
 * Interfaces は、抽象のみを扱います。
 
 ## 非同期境界の分離
@@ -612,7 +612,7 @@ flowchart TD
 * DTO は、生成物として扱う (編集禁止) します。
 * 抽象インターフェースは、手書きで管理します。
 
-## Runtime Validation
+## ランタイム検証
 
 ### 設計意図 (ゴール)
 
