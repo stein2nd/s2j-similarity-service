@@ -112,7 +112,7 @@ Authorization: Bearer {token}
 }
 ```
 
-### 4. HTTP ステータスコード
+### 4. HTTP ステータス・コード
 
 | コード | 意味 |
 | --- | --- |
@@ -364,7 +364,7 @@ REST API と PHP SDK のエラー表現を統一し、コール側が一貫し�
 * `error.type` を唯一の分類キーとする。
 * PHP 側では、`DomainError` 派生クラスにマッピングする。
 * エラー分類は、安定した値 (enum 的) とし、文字列の揺れを許さない。
-* HTTP ステータスコードと `error.type` は、対応関係を持つ。
+* HTTP ステータス・コードと `error.type` は、対応関係を持つ。
 
 ### 非対象 (Out of Scope)
 
@@ -875,7 +875,7 @@ OpenAPI による REST 契約定義と、実際の HTTP サーバー実装 (rout
 * DTO 検証すること。
 * Application 呼び出しすること。
 * DomainError → ErrorResponse に変換すること。
-* HTTP ステータスコードを決定すること。
+* HTTP ステータス・コードを決定すること。
 
 ### Routing の責務
 
@@ -1227,7 +1227,7 @@ flowchart TD
 
 下記を検証します。
 
-* ステータスコード
+* ステータス・コード
 * レスポンス本文
 * JSON schema
 * error.type
@@ -1267,7 +1267,7 @@ flowchart TD
 * アプリケーション 呼び出し
 * DomainError → `WP_Error`
 * レスポンスのシリアライズ
-* HTTP ステータスコード
+* HTTP ステータス・コード
 
 #### 非対象
 
@@ -1398,7 +1398,7 @@ REST API は、下記を満たした場合に成立とします。
 * controller dispatch
 * error mapping
 * response のシリアライズ
-* ステータスコード
+* ステータス・コード
 * headers
 
 ### 認証モデル

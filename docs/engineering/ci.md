@@ -93,7 +93,7 @@ composer run lint:php
 * 権限コールバック
 * コントローラのディスパッチ
 * REST エラーのマッピング
-* ステータスコード
+* ステータス・コード
 * Retry-After
 
 #### ジョブ3: OpenAPI / コード生成

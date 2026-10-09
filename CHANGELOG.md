@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 2.0.12 - 2026-10-09
+
+### Changed
+
+* 仕様ドキュメント (`docs/engineering/ci.md`、`docs/interfaces/rest_api_spec.md`、`docs_old/embedding_api_spec.md`) の表記を整備 (`ステータスコード` → `ステータス・コード`)
+
 ## 2.0.11 - 2026-10-08
 
 ### Changed
