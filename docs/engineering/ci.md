@@ -303,7 +303,7 @@ WorDBless
 
 本プロジェクトの CI 品質ゲートについて、現在の実装規模、責務分離、実行コストを踏まえつつ、段階的に品質保証レベルを引き上げられる拡張方針を定義します。
 
-本プロジェクトは、WordPress プラグイン / テーマへ組み込まれる Composer ライブラリを主製品としつつ、OpenAPI を Single Source of Truth とした REST API、コード生成、TypeScript SDK を併せ持つ複合構成です。
+本プロジェクトは、WordPress プラグイン / テーマに組み込まれる Composer ライブラリを主製品としつつ、OpenAPI を Single Source of Truth とした REST API、コード生成、TypeScript SDK を併せ持つ複合構成です。
 
 そのため、品質ゲートは、一度に最大化するのではなく、下記を考慮しながら、成熟度に応じて段階的に拡張します。
 

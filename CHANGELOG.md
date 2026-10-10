@@ -2,11 +2,14 @@
 
 ## unreleased
 
-## 2.0.12 - 2026-10-09
+## 2.0.12 - 2026-10-10
 
 ### Changed
 
 * 仕様ドキュメント (`docs/engineering/ci.md`、`docs/interfaces/rest_api_spec.md`、`docs_old/embedding_api_spec.md`) の表記を整備 (`ステータスコード` → `ステータス・コード`)
+* 仕様ドキュメント (`docs/**`) の表記を整備 (助詞 `へ` → `に`、`sdk_spec.md` の plaintext ブロックを箇条書きへ、など)
+* `package-lock.json` の package version を v2.0.12にそろえる
+* `composer.json` の `version` を `package.json` に合わせて v2.0.12に更新
 
 ## 2.0.11 - 2026-10-08
 

@@ -2152,7 +2152,7 @@ raw は、裏口
 * OpenAPI schema を唯一の契約定義とします。
 * DTO / contracts は、codegen により生成します。
 * Application / core は、手書き実装とします。
-* codegen 出力物は、contracts 層へ配置します。
+* codegen 出力物は、contracts 層に配置します。
 * SDK の公開範囲を、contracts / core / client に分離します。
 * raw client は、opt-in の限定公開とします。
 
@@ -2386,15 +2386,13 @@ client/              = handwritten
 
 ### 設計意図 (ゴール)
 
-TypeScript SDK において、「最低限必要な通信機能」と「ユーザー側へ委譲する責務」の境界を明確化します。
+TypeScript SDK において、「最低限必要な通信機能」と「ユーザー側に委譲する責務」の境界を明確化します。
 
 ### 設計原則
 
-```plaintext id="sdk_scope_principle"
-SDK は、軽量に
-Retry は、最小限に
-高度制御は、ホストへ委譲
-```
+* SDK は、軽量に
+* Retry は、最小限に
+* 高度制御は、ホストに委譲
 
 ### 設計方針 (規約)
 

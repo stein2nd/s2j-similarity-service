@@ -1,6 +1,6 @@
 {
   "name": "s2j-similarity-service",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "A pure PHP library for semantic similarity detection",
   "type": "module",
   "author": "Koutarou ISHIKAWA",

@@ -445,7 +445,7 @@ OpenAPI schema を唯一の契約定義 (Single Source of Truth) とし、各言
 * `schema/openapi.yaml` を唯一の契約定義とします。
 * コード生成は、開発環境 / CI / リリースビルドのみで実行します。
 * 本番 WordPress 環境では、コード生成しません。
-* PHP DTO は、Composer 配布物へ同梱します。
+* PHP DTO は、Composer 配布物に同梱します。
 * TypeScript 生成コードは、開発用途に限定します。
 * TS generated/raw client は、WordPress ユーザー向け公開 API としません。
 * codegen 出力は、deterministic (再現可能) でなければなりません。
