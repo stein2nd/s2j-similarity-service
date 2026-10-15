@@ -2,6 +2,16 @@
 
 ## unreleased
 
+## 2.0.13 - 2026-10-15
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@s2j/docs-linter` ^1.0.29)
+* 開発用 Composer ロックを更新 (`phpunit/phpunit` 13.4.2、`phpstan/phpstan` 2.3.1、`johnpbloch/wordpress` 6.9.10、`symfony/yaml` v6.4.48、等)
+* `.textlintrc.json` の allowlist に GitHub issue アンカー (`#status-...`) を追加
+* `package-lock.json` の package version を v2.0.13にそろえる
+* `composer.json` の `version` を `package.json` に合わせて v2.0.13に更新
+
 ## 2.0.12 - 2026-10-10
 
 ### Changed
