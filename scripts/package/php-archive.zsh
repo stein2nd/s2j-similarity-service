@@ -4,9 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT_DIR"
 
-VERSION="$(php -r 'echo json_decode(file_get_contents("composer.json"))->version ?? "";')"
+VERSION="$(php -r 'echo json_decode(file_get_contents("package.json"))->version ?? "";')"
 if [[ -z "$VERSION" ]]; then
-  echo "error: composer.json に version が未設定です" >&2
+  echo "error: package.json に version が未設定です" >&2
   exit 1
 fi
 

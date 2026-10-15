@@ -1,55 +1,61 @@
 {
-  "name": "s2j-similarity-service",
-  "version": "2.0.13",
-  "description": "A pure PHP library for semantic similarity detection",
-  "type": "module",
-  "author": "Koutarou ISHIKAWA",
-  "license": "GPL-3.0-or-later",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/stein2nd/s2j-similarity-service.git"
-  },
-  "homepage": "https://github.com/stein2nd/s2j-similarity-service#readme",
-  "bugs": {
-    "url": "https://github.com/stein2nd/s2j-similarity-service/issues"
-  },
-  "keywords": [
-    "php",
-    "library",
-    "semantic",
-    "similarity"
-  ],
-  "workspaces": [
-    "packages/*"
-  ],
-  "directories": {
-    "doc": "docs",
-    "example": "examples",
-    "test": "tests"
-  },
-  "files": [
-    "README.md",
-    "COMMON_SPEC.md",
-    "LICENSE"
-  ],
-  "main": "src/SimilarityService.php",
-  "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.41.0",
-    "@s2j/docs-linter": "^1.0.29",
-    "openapi-typescript": "^7.13.0",
-    "openapi-typescript-codegen": "^0.31.0",
-    "openapi-zod-client": "^1.18.3"
-  },
-  "scripts": {
-    "generate": "./scripts/generate/all.zsh",
-    "verify:codegen": "./scripts/generate/all.zsh && git diff --exit-code",
-    "build:ts-client": "npm run build -w @s2j/similarity-client",
-    "test:ts-client": "npm test -w @s2j/similarity-client",
-    "lint:docs": "s2j-docs-linter ./README.md ./CHANGELOG.md ./docs/**/*.md"
-  },
-  "allowScripts": {
-    "@openapitools/openapi-generator-cli": true,
-    "@s2j/docs-linter": true,
-    "esbuild": true
-  }
+    "name": "s2j-similarity-service",
+    "version": "2.0.14",
+    "description": "A pure PHP library for semantic similarity detection",
+    "type": "module",
+    "author": "Koutarou ISHIKAWA",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/stein2nd/s2j-similarity-service.git"
+    },
+    "homepage": "https://github.com/stein2nd/s2j-similarity-service#readme",
+    "bugs": {
+        "url": "https://github.com/stein2nd/s2j-similarity-service/issues"
+    },
+    "keywords": [
+        "php",
+        "library",
+        "semantic",
+        "similarity"
+    ],
+    "workspaces": [
+        "packages/*"
+    ],
+    "directories": {
+        "doc": "docs",
+        "example": "examples",
+        "test": "tests"
+    },
+    "files": [
+        "README.md",
+        "COMMON_SPEC.md",
+        "LICENSE"
+    ],
+    "main": "src/SimilarityService.php",
+    "devDependencies": {
+        "@openapitools/openapi-generator-cli": "^2.41.0",
+        "@s2j/docs-linter": "^1.0.29",
+        "openapi-typescript": "^7.13.0",
+        "openapi-typescript-codegen": "^0.31.0",
+        "openapi-zod-client": "^1.18.3"
+    },
+    "scripts": {
+        "lint:docs": "s2j-docs-linter ./README.md ./CHANGELOG.md ./docs/**/*.md",
+        "lint:php": "composer lint:php",
+        "phpstan": "composer phpstan",
+        "phpcs": "composer phpcs",
+        "generate": "./scripts/generate/all.zsh",
+        "verify:codegen": "./scripts/generate/all.zsh && git diff --exit-code",
+        "build:ts-client": "npm run build -w @s2j/similarity-client",
+        "test:ts-client": "npm test -w @s2j/similarity-client",
+        "pretest:unit:php:local": "composer install --no-interaction --prefer-dist",
+        "test:unit:php:local": "composer test",
+        "pretest:lint:php": "composer install --no-interaction --prefer-dist"
+    },
+    "allowScripts": {
+        "@openapitools/openapi-generator-cli": true,
+        "@s2j/docs-linter": true,
+        "esbuild": true
+    }
 }

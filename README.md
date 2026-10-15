@@ -1,7 +1,7 @@
 # S2J Similarity Service
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![PHP](https://img.shields.io/badge/PHP-8.0-blue.svg)](https://www.php.net/)
+[![PHP](https://img.shields.io/badge/PHP-8.1-blue.svg)](https://www.php.net/)
 [![Composer](https://img.shields.io/badge/Composer-v2-blue.svg)](https://getcomposer.org)
 [![PHPUnit](https://img.shields.io/badge/PHPUnit-13.1-blue.svg)](https://phpunit.de/)
 
@@ -49,7 +49,7 @@ Strategy パターンを採用した `EmbeddingStrategyInterface` により、�
 
 ### 前提条件
 
-* PHP 8.0以降
+* PHP 8.1以降
 * Composer
 * OpenAI API キー (または互換 API のキー)
 
@@ -399,7 +399,7 @@ A: 通常利用では `text-embedding-3-small` を推奨します。精度重視
 
 ### Q: 必要な PHP のバージョンは ?
 
-A: PHP v8.0以降が必要です。Composer に対応した環境が必要です。
+A: PHP v8.1以降が必要です。Composer に対応した環境が必要です。
 
 ### Q: 外部依存の関係はありますか ?
 
@@ -412,7 +412,7 @@ A: 外部依存はありません。cURL は PHP 標準機能を使用します�
 ### 技術スタック
 
 * **PHP**:
-  * v8.0以降 (Composer に対応)
+  * v8.1以降 (Composer に対応)
 * **OpenAI Embeddings API**:
   * 「意味的な類似度」の算出
 * **Composer**:

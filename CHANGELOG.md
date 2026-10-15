@@ -2,6 +2,15 @@
 
 ## unreleased
 
+## 2.0.14 - 2026-10-16
+
+### Changed
+
+* 対応 PHP の下限を v8.1に更新 (`composer.json`、`README.md`)。`readonly` 利用と PHPStan v2.3系の解析前提に合わせる
+* `phpstan.neon` に `phpVersion: 80100` を明示
+* バージョン表記を `package.json` のみに集約 (`composer.json` の `version` を削除、`scripts/package/php-archive.zsh` は `package.json` を参照)
+* `package-lock.json` の package version を v2.0.14にそろえる
+
 ## 2.0.13 - 2026-10-15
 
 ### Changed
