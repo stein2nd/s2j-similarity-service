@@ -2,10 +2,6 @@
 
 ## unreleased
 
-### Changed
-
-* 開発用 `phpunit/phpunit` を ^12.0 に変更 (PHPUnit 13 系は PHP 8.4 以上必須のため、対応 PHP 8.3 下限と CI matrix 8.3 で `composer install` できるようにする)
-
 ## 2.0.15 - 2026-10-24
 
 ### Breaking Changes
@@ -13,6 +9,8 @@
 * 対応 PHP の下限を v8.3に更新 (`composer.json`、`README.md`)。[WordPress 必須要件](https://ja.wordpress.org/about/requirements/) の推奨に合わせた。
 
 ### Changed
+
+* 開発用 `phpunit/phpunit` を ^12.0に変更 (PHPUnit v13系は PHP v8.4以上必須のため、対応 PHP v8.3下限と CI matrix v8.3で `composer install` できるようにする)
 
 * `phpstan.neon` の `phpVersion` を `80300` に更新
 * CI の PHP 品質ゲート、WordPress 統合テストを PHP v8.3 / v8.4の matrix で実行
