@@ -2,6 +2,10 @@
 
 ## unreleased
 
+### Changed
+
+* 開発用 `phpunit/phpunit` を ^12.0 に変更 (PHPUnit 13 系は PHP 8.4 以上必須のため、対応 PHP 8.3 下限と CI matrix 8.3 で `composer install` できるようにする)
+
 ## 2.0.15 - 2026-10-24
 
 ### Breaking Changes

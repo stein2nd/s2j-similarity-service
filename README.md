@@ -3,7 +3,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![PHP](https://img.shields.io/badge/PHP-8.3-blue.svg)](https://www.php.net/)
 [![Composer](https://img.shields.io/badge/Composer-v2-blue.svg)](https://getcomposer.org)
-[![PHPUnit](https://img.shields.io/badge/PHPUnit-13.1-blue.svg)](https://phpunit.de/)
+[![PHPUnit](https://img.shields.io/badge/PHPUnit-12-blue.svg)](https://phpunit.de/)
 
 ## Description
 
