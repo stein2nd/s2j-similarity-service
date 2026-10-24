@@ -2,6 +2,18 @@
 
 ## unreleased
 
+## 2.0.15 - 2026-10-24
+
+### Breaking Changes
+
+* 対応 PHP の下限を v8.3に更新 (`composer.json`、`README.md`)。[WordPress 必須要件](https://ja.wordpress.org/about/requirements/) の推奨に合わせた。
+
+### Changed
+
+* `phpstan.neon` の `phpVersion` を `80300` に更新
+* CI の PHP 品質ゲート、WordPress 統合テストを PHP v8.3 / v8.4の matrix で実行
+* `package-lock.json` の package version を v2.0.15にそろえる
+
 ## 2.0.14 - 2026-10-16
 
 ### Changed
