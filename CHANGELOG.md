@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.16 - 2026-10-29
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@openapitools/openapi-generator-cli` ^2.42.0、`@s2j/docs-linter` ^1.0.31)
+* 開発用 Composer ロックを更新 (`phpunit/phpunit` 12.5.42、`phpstan/phpstan` 2.3.4、`johnpbloch/wordpress` 6.9.11、`symfony/yaml` v6.4.49、等)
+
 ## 2.0.15 - 2026-10-24
 
 ### Breaking Changes
