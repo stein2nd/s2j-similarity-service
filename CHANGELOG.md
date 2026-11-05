@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.17 - 2026-11-05
+
+### Changed
+
+* 開発用 npm 依存を更新 (`@s2j/docs-linter` ^1.0.32)
+* 開発用 Composer ロックを更新 (`phpunit/phpunit` 12.5.43、`phpstan/phpstan` 2.3.5、`symfony/yaml` v6.4.50、等)
+
 ## 2.0.16 - 2026-10-29
 
 ### Changed
