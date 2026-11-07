@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.18 - 2026-11-07
+
+### Changed
+
+* CI の PHP 品質ゲート、WordPress 統合テストを PHP v8.3に統一 (matrix v8.3 / v8.4を廃止)
+* GitHub Actions の Node 実行環境を v24に統一 (`ci.yml`、`docs-lint.yml`)
+
 ## 2.0.17 - 2026-11-05
 
 ### Changed
