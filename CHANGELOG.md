@@ -6,6 +6,9 @@
 
 ### Changed
 
+* GitHub Actions の Runner を `ubuntu-24.04` に固定
+* `actions/checkout` v5、`actions/setup-node` v5、`dorny/paths-filter` v4に更新 (Node v24ランタイム action 向け非推奨 Annotation 対策)
+
 * CI の PHP 品質ゲート、WordPress 統合テストを PHP v8.3に統一 (matrix v8.3 / v8.4を廃止)
 * GitHub Actions の Node 実行環境を v24に統一 (`ci.yml`、`docs-lint.yml`)
 
