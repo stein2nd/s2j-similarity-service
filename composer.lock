@@ -56,20 +56,20 @@
         },
         {
             "name": "johnpbloch/wordpress",
-            "version": "6.9.11",
+            "version": "6.9.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress.git",
-                "reference": "588045917d8d4532ffd573cee221a88cbf504773"
+                "reference": "a7652cbd8f0d66f9eaf4cef333a90e0b8fa09edc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress/zipball/588045917d8d4532ffd573cee221a88cbf504773",
-                "reference": "588045917d8d4532ffd573cee221a88cbf504773",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress/zipball/a7652cbd8f0d66f9eaf4cef333a90e0b8fa09edc",
+                "reference": "a7652cbd8f0d66f9eaf4cef333a90e0b8fa09edc",
                 "shasum": ""
             },
             "require": {
-                "johnpbloch/wordpress-core": "6.9.11",
+                "johnpbloch/wordpress-core": "6.9.12",
                 "johnpbloch/wordpress-core-installer": "^1.0 || ^2.0",
                 "php": ">=7.0.0"
             },
@@ -98,21 +98,21 @@
                 "issues": "https://core.trac.wordpress.org/",
                 "source": "https://core.trac.wordpress.org/browser"
             },
-            "time": "2026-10-28T19:48:40+00:00",
-            "published-time": "2026-10-28T19:48:48+00:00"
+            "time": "2026-11-18T18:01:30+00:00",
+            "published-time": "2026-11-18T18:01:38+00:00"
         },
         {
             "name": "johnpbloch/wordpress-core",
-            "version": "6.9.11",
+            "version": "6.9.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress-core.git",
-                "reference": "819dd5acbf39cde7c15364c5b9f2b1a90295ff5d"
+                "reference": "1cd1cd4babc7ffc838b3cdaa656eba57a2eaed94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/819dd5acbf39cde7c15364c5b9f2b1a90295ff5d",
-                "reference": "819dd5acbf39cde7c15364c5b9f2b1a90295ff5d",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/1cd1cd4babc7ffc838b3cdaa656eba57a2eaed94",
+                "reference": "1cd1cd4babc7ffc838b3cdaa656eba57a2eaed94",
                 "shasum": ""
             },
             "require": {
@@ -120,7 +120,7 @@
                 "php": ">=7.2.24"
             },
             "provide": {
-                "wordpress/core-implementation": "6.9.11"
+                "wordpress/core-implementation": "6.9.12"
             },
             "type": "wordpress-core",
             "notification-url": "https://packagist.org/downloads/",
@@ -147,8 +147,8 @@
                 "source": "https://core.trac.wordpress.org/browser",
                 "wiki": "https://codex.wordpress.org/"
             },
-            "time": "2026-10-28T19:48:30+00:00",
-            "published-time": "2026-10-28T19:48:48+00:00"
+            "time": "2026-11-18T18:01:25+00:00",
+            "published-time": "2026-11-18T18:01:49+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -531,11 +531,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.3.5",
+            "version": "2.3.7",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/645a1bd6bead15fc1b8474137467961d0fa30a79",
-                "reference": "645a1bd6bead15fc1b8474137467961d0fa30a79",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/90c91c2498849ab8cc4e873864bbf1cb2bf6ea12",
+                "reference": "90c91c2498849ab8cc4e873864bbf1cb2bf6ea12",
                 "shasum": ""
             },
             "require": {
@@ -591,8 +591,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-03T12:14:22+00:00",
-            "published-time": "2026-11-03T12:14:36+00:00"
+            "time": "2026-11-19T10:31:11+00:00",
+            "published-time": "2026-11-19T10:31:27+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -958,16 +958,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.43",
+            "version": "12.5.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1d5a4a3c98fa1ca3a51402c74b66c2c8df85e0bb"
+                "reference": "ca97be2931de6a0adf824da12889cbf935a016e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1d5a4a3c98fa1ca3a51402c74b66c2c8df85e0bb",
-                "reference": "1d5a4a3c98fa1ca3a51402c74b66c2c8df85e0bb",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ca97be2931de6a0adf824da12889cbf935a016e9",
+                "reference": "ca97be2931de6a0adf824da12889cbf935a016e9",
                 "shasum": ""
             },
             "require": {
@@ -995,7 +995,7 @@
                 "sebastian/object-enumerator": "^7.0.0",
                 "sebastian/recursion-context": "^7.0.1",
                 "sebastian/type": "^6.0.4",
-                "sebastian/version": "^6.0.1",
+                "sebastian/version": "^6.0.2",
                 "staabm/side-effects-detector": "^1.0.5"
             },
             "bin": [
@@ -1036,7 +1036,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.43"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.45"
             },
             "funding": [
                 {
@@ -1044,12 +1044,12 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-11-02T07:10:00+00:00",
-            "published-time": "2026-11-02T07:10:59+00:00"
+            "time": "2026-11-19T12:16:09+00:00",
+            "published-time": "2026-11-19T12:17:59+00:00"
         },
         {
             "name": "roots/wordpress",
-            "version": "7.1.4",
+            "version": "7.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/roots/wordpress.git",
@@ -1080,7 +1080,7 @@
             ],
             "support": {
                 "issues": "https://github.com/roots/wordpress/issues",
-                "source": "https://github.com/roots/wordpress/tree/7.1.4"
+                "source": "https://github.com/roots/wordpress/tree/7.1.5"
             },
             "funding": [
                 {
@@ -1089,7 +1089,7 @@
                 }
             ],
             "time": "2026-03-22T13:26:54+00:00",
-            "published-time": "2026-10-28T17:16:37+00:00"
+            "published-time": "2026-11-18T17:14:22+00:00"
         },
         {
             "name": "roots/wordpress-core-installer",
@@ -1161,23 +1161,23 @@
         },
         {
             "name": "roots/wordpress-no-content",
-            "version": "7.1.4",
+            "version": "7.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/WordPress.git",
-                "reference": "7.1.4"
+                "reference": "7.1.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.w.org/release/wordpress-7.1.4-no-content.zip",
-                "reference": "7.1.4",
-                "shasum": "1dd4bfa7b13dec725c0062a3fb62ba0536cb8699"
+                "url": "https://downloads.w.org/release/wordpress-7.1.5-no-content.zip",
+                "reference": "7.1.5",
+                "shasum": "360c3644ce4e382e254aa4f0c1e56d5082efe2ff"
             },
             "require": {
                 "php": ">= 7.4"
             },
             "provide": {
-                "wordpress/core-implementation": "7.1.4"
+                "wordpress/core-implementation": "7.1.5"
             },
             "suggest": {
                 "ext-curl": "Performs remote request operations.",
@@ -1228,8 +1228,8 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-28T17:15:58+00:00",
-            "published-time": "2026-10-28T17:16:09+00:00"
+            "time": "2026-11-18T17:13:39+00:00",
+            "published-time": "2026-11-18T17:13:48+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2112,16 +2112,16 @@
         },
         {
             "name": "sebastian/version",
-            "version": "6.0.1",
+            "version": "6.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/version.git",
-                "reference": "9e935a16187e14f39b0e79910dabd614972cdb26"
+                "reference": "a8b6643a19ba6c8125a473623e45fb8cbb0e4159"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/9e935a16187e14f39b0e79910dabd614972cdb26",
-                "reference": "9e935a16187e14f39b0e79910dabd614972cdb26",
+                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/a8b6643a19ba6c8125a473623e45fb8cbb0e4159",
+                "reference": "a8b6643a19ba6c8125a473623e45fb8cbb0e4159",
                 "shasum": ""
             },
             "require": {
@@ -2154,7 +2154,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/version/issues",
                 "security": "https://github.com/sebastianbergmann/version/security/policy",
-                "source": "https://github.com/sebastianbergmann/version/tree/6.0.1"
+                "source": "https://github.com/sebastianbergmann/version/tree/6.0.2"
             },
             "funding": [
                 {
@@ -2174,8 +2174,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-04T05:50:08+00:00",
-            "published-time": "2026-10-04T05:50:36+00:00"
+            "time": "2026-11-09T06:30:55+00:00",
+            "published-time": "2026-11-09T06:31:20+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
